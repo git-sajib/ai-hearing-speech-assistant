@@ -715,30 +715,9 @@ fun MainScreen(
                                 }
                             }
                         },
-                        label = { Text(if (isBanglaLanguage) "অনুভূতি" else "Emotions", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "অনুভূতি" else "Emotions", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = Color(0xFFF472B6),
-                            indicatorColor = Color.Transparent,
-                            unselectedTextColor = Color(0xFF64748B)
-                        )
-                    )
-                    NavigationBarItem(
-                        selected = activeBottomTab == "QUIZ",
-                        onClick = { activeBottomTab = "QUIZ" },
-                        icon = {
-                            Surface(
-                                shape = CircleShape,
-                                color = if (activeBottomTab == "QUIZ") Color(0xFFD97706) else Color.Transparent,
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Quiz, contentDescription = "Sign Quiz Game", tint = if (activeBottomTab == "QUIZ") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
-                                }
-                            }
-                        },
-                        label = { Text(if (isBanglaLanguage) "কুইজ" else "AI Quiz", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = Color(0xFFFBBF24),
                             indicatorColor = Color.Transparent,
                             unselectedTextColor = Color(0xFF64748B)
                         )
@@ -757,7 +736,7 @@ fun MainScreen(
                                 }
                             }
                         },
-                        label = { Text(if (isBanglaLanguage) "এসওএস" else "SOS", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "এসওএস" else "SOS", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = Color(0xFFF87171),
                             indicatorColor = Color.Transparent,
@@ -1882,120 +1861,6 @@ fun MainScreen(
                                             }
                                         }
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                "QUIZ" -> {
-                    // AI Interactive Gamified Sign Language Quiz Game
-                    val targetQuizSigns = remember { listOf("A", "B", "C", "1", "2", "3", "5", "L", "V", "Y") }
-                    var quizScore by remember { mutableStateOf(0) }
-                    var currentQuizIndex by remember { mutableStateOf(0) }
-                    var quizStreak by remember { mutableStateOf(0) }
-
-                    val targetSign = targetQuizSigns[currentQuizIndex % targetQuizSigns.size]
-                    val isMatchDetected = currentGesture.replace("Label: ", "").uppercase().contains(targetSign)
-
-                    LaunchedEffect(isMatchDetected) {
-                        if (isMatchDetected && currentGesture != "Detecting...") {
-                            quizScore += 10
-                            quizStreak += 1
-                            kotlinx.coroutines.delay(1200)
-                            currentQuizIndex = (currentQuizIndex + 1) % targetQuizSigns.size
-                        }
-                    }
-
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        // Score Header
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 10.dp),
-                            shape = RoundedCornerShape(18.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B)),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF59E0B))
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(14.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.Quiz, contentDescription = "Quiz", tint = Color(0xFFF59E0B), modifier = Modifier.size(28.dp))
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Column {
-                                        Text(if (isBanglaLanguage) "এআই কুইজ শিখন গেম" else "AI Sign Practice Game", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                                        Text(if (isBanglaLanguage) "ক্যামেরায় সংকেত দেখিয়ে পয়েন্ট অর্জন করুন" else "Show target sign to camera to win points", color = Color(0xFFFCD34D), fontSize = 10.sp)
-                                    }
-                                }
-
-                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFD97706)) {
-                                        Text("Score: $quizScore", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
-                                    }
-                                }
-                            }
-                        }
-
-                        // Target Sign Challenge Card
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
-                            border = androidx.compose.foundation.BorderStroke(2.dp, if (isMatchDetected) Color(0xFF10B981) else Color(0xFF6366F1))
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    if (isBanglaLanguage) "ক্যামেরার সামনে নিচের সংকেতটি প্রদর্শন করুন:" else "SHOW THIS ASL SIGN TO CAMERA:",
-                                    color = Color(0xFF94A3B8),
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                Surface(
-                                    shape = CircleShape,
-                                    color = if (isMatchDetected) Color(0xFF065F46) else Color(0xFF312E81),
-                                    border = androidx.compose.foundation.BorderStroke(3.dp, if (isMatchDetected) Color(0xFF10B981) else Color(0xFF818CF8)),
-                                    modifier = Modifier.size(90.dp),
-                                    shadowElevation = 8.dp
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Text(targetSign, color = Color.White, fontSize = 42.sp, fontWeight = FontWeight.Black)
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(14.dp))
-
-                                Text(
-                                    if (isMatchDetected) (if (isBanglaLanguage) "🎉 দারুণ! সঠিক সংকেত শনাক্ত হয়েছে!" else "🎉 PERFECT! MATCH DETECTED!")
-                                    else (if (isBanglaLanguage) "ক্যামেরায় হাত উঁচিয়ে ধরুন..." else "Position hand clearly in camera view..."),
-                                    color = if (isMatchDetected) Color(0xFF34D399) else Color(0xFF38BDF8),
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Spacer(modifier = Modifier.height(14.dp))
-
-                                Button(
-                                    onClick = { currentQuizIndex = (currentQuizIndex + 1) % targetQuizSigns.size },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
-                                    shape = RoundedCornerShape(12.dp)
-                                ) {
-                                    Text(if (isBanglaLanguage) "পরবর্তী সংকেত ➡️" else "Next Challenge ➡️", color = Color.White, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
