@@ -21,10 +21,11 @@ def extract_landmarks():
     )
 
     data_rows = []
-    classes = [d for d in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir, d))]
+    # Filter strictly for A-Z alphabet classes only
+    classes = [d for d in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir, d)) and len(d) == 1 and d.isupper()]
     classes.sort()
 
-    print(f"Found {len(classes)} classes: {classes}", flush=True)
+    print(f"Found {len(classes)} strictly A-Z Alphabet classes: {classes}", flush=True)
 
     # 100 high quality samples per class for ultra fast processing
     SAMPLES_PER_CLASS = 100
