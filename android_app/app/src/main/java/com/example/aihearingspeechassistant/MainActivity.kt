@@ -41,8 +41,12 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -519,11 +523,24 @@ fun MainScreen(
                         selected = activeBottomTab == "DICTIONARY",
                         onClick = { activeBottomTab = "DICTIONARY" },
                         icon = { Icon(Icons.Default.Book, contentDescription = "Dictionary") },
-                        label = { Text("Sign Dictionary", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text("Sign Dictionary", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
                             indicatorColor = Color(0xFF6366F1),
+                            unselectedIconColor = Color(0xFF64748B),
+                            unselectedTextColor = Color(0xFF64748B)
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = activeBottomTab == "SOS",
+                        onClick = { activeBottomTab = "SOS" },
+                        icon = { Icon(Icons.Default.Warning, contentDescription = "Emergency SOS") },
+                        label = { Text("Emergency SOS", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = Color(0xFFF87171),
+                            indicatorColor = Color(0xFFDC2626),
                             unselectedIconColor = Color(0xFF64748B),
                             unselectedTextColor = Color(0xFF64748B)
                         )
@@ -1181,6 +1198,81 @@ fun MainScreen(
                                             fontSize = 11.sp,
                                             fontWeight = FontWeight.Medium
                                         )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                "SOS" -> {
+                    // AI-Driven Emergency Quick Speech Phrases for Speech Impaired Users
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp),
+                            shape = RoundedCornerShape(18.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF450A0A)),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEF4444))
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Default.Warning, contentDescription = "Emergency", tint = Color(0xFFF87171), modifier = Modifier.size(32.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column {
+                                    Text("Emergency Quick Assist", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                                    Text("Tap any phrase to instantly trigger high-volume Text-to-Speech audio", color = Color(0xFFFCA5A5), fontSize = 11.sp)
+                                }
+                            }
+                        }
+
+                        val sosPhrases = listOf(
+                            "🚨 Emergency! I am mute/speech impaired. Please help me!",
+                            "🏥 I need medical assistance immediately. Call an ambulance!",
+                            "📍 I am lost and need directions to BUP Campus.",
+                            "🗣️ Please write down your words on paper or phone screen.",
+                            "📞 Please call my family emergency contact number.",
+                            "🚌 Which bus goes to Mirpur 12 / BUP?"
+                        )
+
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(sosPhrases) { phrase ->
+                                Card(
+                                    onClick = { onSpeakText(phrase) },
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = phrase,
+                                            color = Color.White,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                        Surface(
+                                            shape = CircleShape,
+                                            color = Color(0xFFDC2626),
+                                            modifier = Modifier.size(36.dp)
+                                        ) {
+                                            Box(contentAlignment = Alignment.Center) {
+                                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak SOS", tint = Color.White, modifier = Modifier.size(20.dp))
+                                            }
+                                        }
                                     }
                                 }
                             }
