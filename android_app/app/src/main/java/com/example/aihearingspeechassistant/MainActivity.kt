@@ -682,15 +682,17 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "TRANSLATOR") Color(0xFF6366F1) else Color.Transparent,
-                                modifier = Modifier.size(32.dp)
+                                color = if (activeBottomTab == "TRANSLATOR") Color(0xFF4F46E5) else Color(0xFF1E293B).copy(alpha = 0.6f),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "TRANSLATOR") Color(0xFF818CF8) else Color(0xFF334155)),
+                                modifier = Modifier.size(36.dp),
+                                shadowElevation = if (activeBottomTab == "TRANSLATOR") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.CameraAlt, contentDescription = "Sign AI", tint = if (activeBottomTab == "TRANSLATOR") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.CameraAlt, contentDescription = "Sign AI", tint = if (activeBottomTab == "TRANSLATOR") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
-                        label = { Text(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = Color(0xFF818CF8),
                             indicatorColor = Color.Transparent,
@@ -703,15 +705,17 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "LISTEN") Color(0xFF10B981) else Color.Transparent,
-                                modifier = Modifier.size(32.dp)
+                                color = if (activeBottomTab == "LISTEN") Color(0xFF059669) else Color(0xFF1E293B).copy(alpha = 0.6f),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "LISTEN") Color(0xFF34D399) else Color(0xFF334155)),
+                                modifier = Modifier.size(36.dp),
+                                shadowElevation = if (activeBottomTab == "LISTEN") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Mic, contentDescription = "Listen", tint = if (activeBottomTab == "LISTEN") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.Mic, contentDescription = "Listen", tint = if (activeBottomTab == "LISTEN") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
-                        label = { Text(if (isBanglaLanguage) "লিসেন" else "Listen", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "লিসেন" else "Listen", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = Color(0xFF34D399),
                             indicatorColor = Color.Transparent,
@@ -724,15 +728,17 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "DICTIONARY") Color(0xFF818CF8) else Color.Transparent,
-                                modifier = Modifier.size(32.dp)
+                                color = if (activeBottomTab == "DICTIONARY") Color(0xFF4338CA) else Color(0xFF1E293B).copy(alpha = 0.6f),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "DICTIONARY") Color(0xFFA5B4FC) else Color(0xFF334155)),
+                                modifier = Modifier.size(36.dp),
+                                shadowElevation = if (activeBottomTab == "DICTIONARY") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Book, contentDescription = "Dictionary", tint = if (activeBottomTab == "DICTIONARY") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.Book, contentDescription = "Dictionary", tint = if (activeBottomTab == "DICTIONARY") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
-                        label = { Text(if (isBanglaLanguage) "অভিধান" else "Dictionary", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "অভিধান" else "Dictionary", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = Color(0xFFA5B4FC),
                             indicatorColor = Color.Transparent,
@@ -745,15 +751,17 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "EMOTIONS") Color(0xFFDB2777) else Color.Transparent,
-                                modifier = Modifier.size(32.dp)
+                                color = if (activeBottomTab == "EMOTIONS") Color(0xFFBE185D) else Color(0xFF1E293B).copy(alpha = 0.6f),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "EMOTIONS") Color(0xFFF472B6) else Color(0xFF334155)),
+                                modifier = Modifier.size(36.dp),
+                                shadowElevation = if (activeBottomTab == "EMOTIONS") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.EmojiEmotions, contentDescription = "Emotions & Needs", tint = if (activeBottomTab == "EMOTIONS") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.EmojiEmotions, contentDescription = "Emotions & Needs", tint = if (activeBottomTab == "EMOTIONS") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
-                        label = { Text(if (isBanglaLanguage) "অনুভূতি" else "Emotions", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "অনুভূতি" else "Emotions", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = Color(0xFFF472B6),
                             indicatorColor = Color.Transparent,
@@ -766,15 +774,17 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "SOS") Color(0xFFDC2626) else Color.Transparent,
-                                modifier = Modifier.size(32.dp)
+                                color = if (activeBottomTab == "SOS") Color(0xFFB91C1C) else Color(0xFF1E293B).copy(alpha = 0.6f),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "SOS") Color(0xFFF87171) else Color(0xFF334155)),
+                                modifier = Modifier.size(36.dp),
+                                shadowElevation = if (activeBottomTab == "SOS") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Warning, contentDescription = "Emergency SOS", tint = if (activeBottomTab == "SOS") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.Warning, contentDescription = "Emergency SOS", tint = if (activeBottomTab == "SOS") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
-                        label = { Text(if (isBanglaLanguage) "এসওএস" else "SOS", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "এসওএস" else "SOS", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = Color(0xFFF87171),
                             indicatorColor = Color.Transparent,
@@ -1224,10 +1234,10 @@ fun MainScreen(
                                     modifier = Modifier.padding(vertical = 16.dp)
                                 )
 
-                                Row(
+                                Column(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                                    horizontalAlignment = Alignment.Start
                                 ) {
                                     Text(
                                         text = "Bidirectional Speech-to-Text Assist Engine",
@@ -1247,10 +1257,10 @@ fun MainScreen(
                                             Icon(Icons.Default.Vibration, contentDescription = "Haptic Vibration Alert", tint = Color(0xFF34D399), modifier = Modifier.size(12.dp))
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text(
-                                                text = if (isBanglaLanguage) "হ্যাপটিক অ্যালার্ট অন" else "Haptic Alert ON",
+                                                text = if (isBanglaLanguage) "হ্যাপটিক শব্দ অ্যালার্ট চালু" else "Haptic Sound Alert Active",
                                                 color = Color(0xFF34D399),
                                                 fontWeight = FontWeight.Bold,
-                                                fontSize = 9.sp
+                                                fontSize = 10.sp
                                             )
                                         }
                                     }
