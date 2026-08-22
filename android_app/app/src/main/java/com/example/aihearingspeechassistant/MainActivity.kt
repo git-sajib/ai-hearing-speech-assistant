@@ -352,12 +352,14 @@ fun CameraXInferenceView(
                                 }
                             }
 
+                            val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                            
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks)
                             onGestureDetected(gesture, confidence)
                             
-                            // Send 21 hand landmarks to overlay view for visual skeleton drawing
+                            // Send 21 hand landmarks and rotation to overlay view for exact screen alignment
                             ContextCompat.getMainExecutor(context).execute {
-                                overlayView.updateLandmarks(handLandmarks)
+                                overlayView.updateLandmarks(handLandmarks, rotationDegrees)
                             }
                         } else {
                             onGestureDetected("nothing", 1.0f)
