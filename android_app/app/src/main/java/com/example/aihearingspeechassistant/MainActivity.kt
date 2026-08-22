@@ -1424,36 +1424,62 @@ fun MainScreen(
                         ) {
                             items(filteredItems) { (label, category, desc) ->
                                 Card(
-                                    shape = RoundedCornerShape(18.dp),
+                                    onClick = {
+                                        val pronounceText = if (category == "ALPHABET") "Sign for Letter $label. $desc" else "Sign for Number $label. $desc"
+                                        onSpeakText(pronounceText)
+                                    },
+                                    shape = RoundedCornerShape(20.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF6366F1).copy(alpha = 0.4f)),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                                 ) {
                                     Column(
-                                        modifier = Modifier.padding(14.dp),
+                                        modifier = Modifier.padding(12.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Surface(
-                                            shape = CircleShape,
-                                            color = Color(0xFF1E1B4B),
-                                            border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(listOf(Color(0xFF6366F1), Color(0xFF38BDF8)))),
-                                            modifier = Modifier.size(52.dp),
-                                            shadowElevation = 6.dp
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Box(contentAlignment = Alignment.Center) {
-                                                Text(
-                                                    text = label,
-                                                    color = Color(0xFF38BDF8),
-                                                    fontSize = 22.sp,
-                                                    fontWeight = FontWeight.ExtraBold
-                                                )
+                                            Surface(
+                                                shape = CircleShape,
+                                                color = Color(0xFF312E81),
+                                                border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(listOf(Color(0xFF6366F1), Color(0xFF38BDF8)))),
+                                                modifier = Modifier.size(46.dp),
+                                                shadowElevation = 6.dp
+                                            ) {
+                                                Box(contentAlignment = Alignment.Center) {
+                                                    Text(
+                                                        text = label,
+                                                        color = Color(0xFF38BDF8),
+                                                        fontSize = 20.sp,
+                                                        fontWeight = FontWeight.ExtraBold
+                                                    )
+                                                }
+                                            }
+
+                                            Surface(
+                                                shape = CircleShape,
+                                                color = Color(0xFF4F46E5),
+                                                modifier = Modifier.size(30.dp),
+                                                shadowElevation = 4.dp
+                                            ) {
+                                                Box(contentAlignment = Alignment.Center) {
+                                                    Icon(Icons.Default.VolumeUp, contentDescription = "Listen Sign Description", tint = Color.White, modifier = Modifier.size(14.dp))
+                                                }
                                             }
                                         }
-                                        Spacer(modifier = Modifier.height(10.dp))
+
+                                        Spacer(modifier = Modifier.height(8.dp))
+
                                         Text(
                                             text = desc,
-                                            color = Color(0xFF94A3B8),
-                                            fontSize = 11.sp,
-                                            fontWeight = FontWeight.Medium
+                                            color = Color(0xFFCBD5E1),
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            maxLines = 2,
+                                            modifier = Modifier.fillMaxWidth()
                                         )
                                     }
                                 }
