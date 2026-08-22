@@ -482,11 +482,11 @@ fun MainScreen(
                         )
                     }
 
-                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 8.dp))
+                    HorizontalDivider(color = if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1), modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(
                         text = if (isBanglaLanguage) "প্রজেক্ট টিম ও গবেষকবৃন্দ" else "PROJECT TEAM",
-                        color = Color(0xFF64748B),
+                        color = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(vertical = 4.dp)
@@ -508,45 +508,46 @@ fun MainScreen(
                         ) {
                             Surface(
                                 shape = CircleShape,
-                                color = Color(0xFF312E81),
+                                color = if (isDarkTheme) Color(0xFF312E81) else Color(0xFFE0F2FE),
                                 modifier = Modifier.size(36.dp),
                                 shadowElevation = 4.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
                                     Text(
                                         text = name.first().toString(),
-                                        color = Color(0xFF38BDF8),
+                                        color = if (isDarkTheme) Color(0xFF38BDF8) else Color(0xFF0284C7),
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
-                                Text(name, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
-                                Text(info, color = Color(0xFF94A3B8), fontSize = 9.sp)
+                                Text(name, color = if (isDarkTheme) Color.White else Color(0xFF0F172A), fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Text(info, color = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569), fontSize = 9.sp, fontWeight = FontWeight.Medium)
                             }
                         }
                     }
 
-                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 8.dp))
+                    HorizontalDivider(color = if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1), modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(
                         text = "SUPERVISOR",
-                        color = Color(0xFF64748B),
+                        color = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(vertical = 2.dp)
                     )
                     Text(
                         text = "Dr. Ahmedul Kabir",
-                        color = Color(0xFF38BDF8),
+                        color = if (isDarkTheme) Color(0xFF38BDF8) else Color(0xFF0284C7),
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp
                     )
                     Text(
                         text = "Affiliation: University of Dhaka",
-                        color = Color(0xFF94A3B8),
-                        fontSize = 10.sp
+                        color = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -669,21 +670,21 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "TRANSLATOR") Color(0xFF4F46E5) else Color(0xFF1E293B).copy(alpha = 0.6f),
-                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "TRANSLATOR") Color(0xFF818CF8) else Color(0xFF334155)),
+                                color = if (activeBottomTab == "TRANSLATOR") Color(0xFF4F46E5) else (if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.6f) else Color(0xFFE2E8F0)),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "TRANSLATOR") Color(0xFF818CF8) else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                 modifier = Modifier.size(36.dp),
                                 shadowElevation = if (activeBottomTab == "TRANSLATOR") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.CameraAlt, contentDescription = "Sign AI", tint = if (activeBottomTab == "TRANSLATOR") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.CameraAlt, contentDescription = "Sign AI", tint = if (activeBottomTab == "TRANSLATOR") Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569)), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
                         label = { Text(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = Color(0xFF818CF8),
+                            selectedTextColor = if (isDarkTheme) Color(0xFF818CF8) else Color(0xFF4F46E5),
                             indicatorColor = Color.Transparent,
-                            unselectedTextColor = Color(0xFF64748B)
+                            unselectedTextColor = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569)
                         )
                     )
                     NavigationBarItem(
@@ -692,21 +693,21 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "LISTEN") Color(0xFF059669) else Color(0xFF1E293B).copy(alpha = 0.6f),
-                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "LISTEN") Color(0xFF34D399) else Color(0xFF334155)),
+                                color = if (activeBottomTab == "LISTEN") Color(0xFF059669) else (if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.6f) else Color(0xFFE2E8F0)),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "LISTEN") Color(0xFF34D399) else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                 modifier = Modifier.size(36.dp),
                                 shadowElevation = if (activeBottomTab == "LISTEN") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Mic, contentDescription = "Listen", tint = if (activeBottomTab == "LISTEN") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.Mic, contentDescription = "Listen", tint = if (activeBottomTab == "LISTEN") Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569)), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
                         label = { Text(if (isBanglaLanguage) "লিসেন" else "Listen", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = Color(0xFF34D399),
+                            selectedTextColor = if (isDarkTheme) Color(0xFF34D399) else Color(0xFF059669),
                             indicatorColor = Color.Transparent,
-                            unselectedTextColor = Color(0xFF64748B)
+                            unselectedTextColor = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569)
                         )
                     )
                     NavigationBarItem(
@@ -715,21 +716,21 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "DICTIONARY") Color(0xFF4338CA) else Color(0xFF1E293B).copy(alpha = 0.6f),
-                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "DICTIONARY") Color(0xFFA5B4FC) else Color(0xFF334155)),
+                                color = if (activeBottomTab == "DICTIONARY") Color(0xFF4338CA) else (if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.6f) else Color(0xFFE2E8F0)),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "DICTIONARY") Color(0xFFA5B4FC) else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                 modifier = Modifier.size(36.dp),
                                 shadowElevation = if (activeBottomTab == "DICTIONARY") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Book, contentDescription = "Dictionary", tint = if (activeBottomTab == "DICTIONARY") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.Book, contentDescription = "Dictionary", tint = if (activeBottomTab == "DICTIONARY") Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569)), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
                         label = { Text(if (isBanglaLanguage) "অভিধান" else "Dictionary", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = Color(0xFFA5B4FC),
+                            selectedTextColor = if (isDarkTheme) Color(0xFFA5B4FC) else Color(0xFF4338CA),
                             indicatorColor = Color.Transparent,
-                            unselectedTextColor = Color(0xFF64748B)
+                            unselectedTextColor = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569)
                         )
                     )
                     NavigationBarItem(
@@ -738,21 +739,21 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "EMOTIONS") Color(0xFFBE185D) else Color(0xFF1E293B).copy(alpha = 0.6f),
-                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "EMOTIONS") Color(0xFFF472B6) else Color(0xFF334155)),
+                                color = if (activeBottomTab == "EMOTIONS") Color(0xFFBE185D) else (if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.6f) else Color(0xFFE2E8F0)),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "EMOTIONS") Color(0xFFF472B6) else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                 modifier = Modifier.size(36.dp),
                                 shadowElevation = if (activeBottomTab == "EMOTIONS") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.EmojiEmotions, contentDescription = "Emotions & Needs", tint = if (activeBottomTab == "EMOTIONS") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.EmojiEmotions, contentDescription = "Emotions & Needs", tint = if (activeBottomTab == "EMOTIONS") Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569)), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
                         label = { Text(if (isBanglaLanguage) "অনুভূতি" else "Emotions", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = Color(0xFFF472B6),
+                            selectedTextColor = if (isDarkTheme) Color(0xFFF472B6) else Color(0xFFBE185D),
                             indicatorColor = Color.Transparent,
-                            unselectedTextColor = Color(0xFF64748B)
+                            unselectedTextColor = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569)
                         )
                     )
                     NavigationBarItem(
@@ -761,21 +762,21 @@ fun MainScreen(
                         icon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (activeBottomTab == "SOS") Color(0xFFB91C1C) else Color(0xFF1E293B).copy(alpha = 0.6f),
-                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "SOS") Color(0xFFF87171) else Color(0xFF334155)),
+                                color = if (activeBottomTab == "SOS") Color(0xFFB91C1C) else (if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.6f) else Color(0xFFE2E8F0)),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (activeBottomTab == "SOS") Color(0xFFF87171) else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                 modifier = Modifier.size(36.dp),
                                 shadowElevation = if (activeBottomTab == "SOS") 8.dp else 0.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Warning, contentDescription = "Emergency SOS", tint = if (activeBottomTab == "SOS") Color.White else Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.Warning, contentDescription = "Emergency SOS", tint = if (activeBottomTab == "SOS") Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569)), modifier = Modifier.size(18.dp))
                                 }
                             }
                         },
                         label = { Text(if (isBanglaLanguage) "এসওএস" else "SOS", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = Color(0xFFF87171),
+                            selectedTextColor = if (isDarkTheme) Color(0xFFF87171) else Color(0xFFB91C1C),
                             indicatorColor = Color.Transparent,
-                            unselectedTextColor = Color(0xFF64748B)
+                            unselectedTextColor = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569)
                         )
                     )
                 }
@@ -851,8 +852,8 @@ fun MainScreen(
                                 Surface(
                                     onClick = { selectedMode = modeKey },
                                     shape = RoundedCornerShape(20.dp),
-                                    color = if (isSelected) Color(0xFF4F46E5) else Color(0xFF1E293B).copy(alpha = 0.7f),
-                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color(0xFF818CF8) else Color(0xFF334155)),
+                                    color = if (isSelected) Color(0xFF4F46E5) else (if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFE2E8F0)),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color(0xFF818CF8) else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                     modifier = Modifier.weight(1f),
                                     shadowElevation = if (isSelected) 8.dp else 0.dp
                                 ) {
@@ -864,13 +865,13 @@ fun MainScreen(
                                         Icon(
                                             imageVector = icon,
                                             contentDescription = modeTitle,
-                                            tint = if (isSelected) Color.White else Color(0xFF94A3B8),
+                                            tint = if (isSelected) Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569)),
                                             modifier = Modifier.size(14.dp)
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
                                             text = modeTitle,
-                                            color = if (isSelected) Color.White else Color(0xFF94A3B8),
+                                            color = if (isSelected) Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF334155)),
                                             fontSize = 10.sp,
                                             fontWeight = FontWeight.ExtraBold
                                         )
@@ -1029,7 +1030,7 @@ fun MainScreen(
                                             }
                                         },
                                         shape = RoundedCornerShape(10.dp),
-                                        color = Color(0xFF334155),
+                                        color = if (isDarkTheme) Color(0xFF334155) else Color(0xFF64748B),
                                         shadowElevation = 4.dp,
                                         modifier = Modifier.size(34.dp)
                                     ) {
@@ -1048,7 +1049,7 @@ fun MainScreen(
                                     Surface(
                                         onClick = { translatedSentence = "" },
                                         shape = RoundedCornerShape(10.dp),
-                                        color = Color(0xFF991B1B),
+                                        color = Color(0xFFDC2626),
                                         shadowElevation = 4.dp,
                                         modifier = Modifier.size(34.dp)
                                     ) {
@@ -1069,7 +1070,7 @@ fun MainScreen(
                                         enabled = translatedSentence.isNotEmpty() && isTtsReady,
                                         colors = ButtonDefaults.buttonColors(
                                             containerColor = Color(0xFF4F46E5),
-                                            disabledContainerColor = Color(0xFF334155)
+                                            disabledContainerColor = if (isDarkTheme) Color(0xFF334155) else Color(0xFF94A3B8)
                                         ),
                                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp, pressedElevation = 2.dp),
                                         shape = RoundedCornerShape(12.dp)
