@@ -336,21 +336,28 @@ fun CameraXInferenceView(
                     val mpImage = BitmapImageBuilder(bitmap).build()
                     val result: HandLandmarkerResult? = handLandmarker.detect(mpImage)
 
-                    if (result != null && result.landmarks().isNotEmpty()) {
-                        val handLandmarks = result.landmarks()[0]
-                        val wrist = handLandmarks[0]
-                        val floatLandmarks = FloatArray(63)
+                    try {
+                        if (result != null && result.landmarks().isNotEmpty() && result.landmarks()[0].size >= 21) {
+                            val handLandmarks = result.landmarks()[0]
+                            val wrist = handLandmarks[0]
+                            val floatLandmarks = FloatArray(63)
 
-                        var idx = 0
-                        for (lm in handLandmarks) {
-                            floatLandmarks[idx++] = lm.x() - wrist.x()
-                            floatLandmarks[idx++] = lm.y() - wrist.y()
-                            floatLandmarks[idx++] = lm.z() - wrist.z()
+                            var idx = 0
+                            for (lm in handLandmarks) {
+                                if (idx + 2 < 63) {
+                                    floatLandmarks[idx++] = lm.x() - wrist.x()
+                                    floatLandmarks[idx++] = lm.y() - wrist.y()
+                                    floatLandmarks[idx++] = lm.z() - wrist.z()
+                                }
+                            }
+
+                            val (gesture, confidence) = gestureClassifier.classify(floatLandmarks)
+                            onGestureDetected(gesture, confidence)
+                        } else {
+                            onGestureDetected("nothing", 1.0f)
                         }
-
-                        val (gesture, confidence) = gestureClassifier.classify(floatLandmarks)
-                        onGestureDetected(gesture, confidence)
-                    } else {
+                    } catch (e: Exception) {
+                        Log.e("CameraXInference", "Error analyzing landmarks: ${e.message}")
                         onGestureDetected("nothing", 1.0f)
                     }
                 }
