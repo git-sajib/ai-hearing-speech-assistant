@@ -17,13 +17,13 @@ class HandOverlayView @JvmOverloads constructor(
     private var landmarks: List<NormalizedLandmark> = emptyList()
 
     private val pointPaint = Paint().apply {
-        color = Color.parseColor("#00FF88") // Vibrant neon green for hand keypoints
+        color = Color.parseColor("#FFA726") // Warm orange dots matching friend UI
         style = Paint.Style.FILL
         isAntiAlias = true
     }
 
     private val linePaint = Paint().apply {
-        color = Color.parseColor("#38BDF8") // Sky blue connections for finger skeleton
+        color = Color.parseColor("#FFFFFF") // Clean white finger connections
         strokeWidth = 6f
         style = Paint.Style.STROKE
         isAntiAlias = true
@@ -79,7 +79,7 @@ class HandOverlayView @JvmOverloads constructor(
         for (lm in landmarks) {
             val cx = (1.0f - lm.x()) * viewWidth
             val cy = lm.y() * viewHeight
-            canvas.drawCircle(cx, cy, 10f, pointPaint)
+            canvas.drawCircle(cx, cy, 16f, pointPaint)
         }
     }
 }
