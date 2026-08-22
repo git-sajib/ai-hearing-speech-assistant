@@ -1,11 +1,12 @@
 package com.example.aihearingspeechassistant
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -15,14 +16,14 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.VolumeUp
@@ -39,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.example.aihearingspeechassistant.ui.theme.AIHearingSpeechAssistantTheme
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
@@ -49,19 +49,18 @@ import java.util.Locale
 import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
-
+    private lateinit var gestureClassifier: GestureClassifier
     private var tts: TextToSpeech? = null
     private var isTtsReady by mutableStateOf(false)
-    private lateinit var gestureClassifier: GestureClassifier
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tts = TextToSpeech(this, this)
         gestureClassifier = GestureClassifier(this)
+        tts = TextToSpeech(this, this)
 
         setContent {
-            AIHearingSpeechAssistantTheme {
-                MainAppScreen(
+            MaterialTheme {
+                MainScreen(
                     gestureClassifier = gestureClassifier,
                     onSpeakText = { text -> speakOut(text) },
                     isTtsReady = isTtsReady
@@ -80,22 +79,22 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun speakOut(text: String) {
-        if (isTtsReady && text.isNotBlank()) {
+        if (isTtsReady && text.isNotEmpty()) {
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
         }
     }
 
     override fun onDestroy() {
+        gestureClassifier.close()
         tts?.stop()
         tts?.shutdown()
-        gestureClassifier.close()
         super.onDestroy()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainAppScreen(
+fun MainScreen(
     gestureClassifier: GestureClassifier,
     onSpeakText: (String) -> Unit,
     isTtsReady: Boolean
@@ -123,10 +122,10 @@ fun MainAppScreen(
         }
     }
 
+    var selectedMode by remember { mutableStateOf("ALPHABET") } // Modes: ALPHABET, DIGIT, ALL
     var currentGesture by remember { mutableStateOf("Detecting...") }
     var confidence by remember { mutableStateOf(0.0f) }
     var translatedSentence by remember { mutableStateOf("") }
-    var lastAddedChar by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -153,7 +152,58 @@ fun MainAppScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (hasCameraPermission) {
-                // Live Camera View with MediaPipe & TFLite
+                // Segmented Tab Selector Bar (Alphabets vs Digits vs All Signs)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        val modes = listOf(
+                            "ALPHABET" to "🔤 Alphabets",
+                            "DIGIT" to "🔢 Digits (0-9)",
+                            "ALL" to "🌐 All Signs"
+                        )
+
+                        modes.forEach { (modeKey, modeTitle) ->
+                            val isSelected = selectedMode == modeKey
+                            val backgroundColor by animateColorAsState(
+                                if (isSelected) Color(0xFF6366F1) else Color.Transparent,
+                                label = "tabBg"
+                            )
+                            val textColor by animateColorAsState(
+                                if (isSelected) Color.White else Color(0xFF94A3B8),
+                                label = "tabText"
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(backgroundColor)
+                                    .clickable { selectedMode = modeKey }
+                                    .padding(vertical = 10.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = modeTitle,
+                                    color = textColor,
+                                    fontSize = 13.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Live Camera View with MediaPipe & Dual TFLite Models
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -163,8 +213,9 @@ fun MainAppScreen(
                 ) {
                     CameraXInferenceView(
                         gestureClassifier = gestureClassifier,
+                        selectedMode = selectedMode,
                         onGestureDetected = { gesture, conf ->
-                            if (conf >= 0.70f && gesture != "Unknown") {
+                            if (conf >= 0.65f && gesture != "Unknown") {
                                 currentGesture = gesture
                                 confidence = conf
                             }
@@ -224,7 +275,13 @@ fun MainAppScreen(
                         )
 
                         Text(
-                            text = if (currentGesture == "nothing" || currentGesture == "Detecting...") "Show hand sign to camera..." else "Detected Alphabet: $currentGesture",
+                            text = when {
+                                currentGesture == "Detecting..." -> "Show hand sign to camera..."
+                                currentGesture == "nothing" -> "Show hand sign to camera..."
+                                selectedMode == "DIGIT" -> "Detected Digit: $currentGesture"
+                                selectedMode == "ALPHABET" -> "Detected Alphabet: $currentGesture"
+                                else -> "Detected Sign: $currentGesture"
+                            },
                             color = if (currentGesture == "nothing" || currentGesture == "Detecting...") Color(0xFF64748B) else Color(0xFF38BDF8),
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold
@@ -249,7 +306,6 @@ fun MainAppScreen(
                             IconButton(
                                 onClick = {
                                     translatedSentence = ""
-                                    lastAddedChar = ""
                                 }
                             ) {
                                 Icon(Icons.Default.Clear, contentDescription = "Clear All", tint = Color(0xFFEF4444))
@@ -289,6 +345,7 @@ fun MainAppScreen(
 @Composable
 fun CameraXInferenceView(
     gestureClassifier: GestureClassifier,
+    selectedMode: String,
     onGestureDetected: (String, Float) -> Unit
 ) {
     val context = LocalContext.current
@@ -299,7 +356,11 @@ fun CameraXInferenceView(
     val predictionWindow = remember { mutableListOf<String>() }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(selectedMode) {
+        synchronized(predictionWindow) {
+            predictionWindow.clear()
+        }
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
@@ -355,21 +416,22 @@ fun CameraXInferenceView(
 
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                             
-                            val (gesture, confidence) = gestureClassifier.classify(floatLandmarks)
+                            val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
                             
-                            // Add prediction to 2.5s sliding window (~75 frames buffer at 30 FPS)
+                            // Add prediction to 10-frame sliding window (~0.3s) for fast instant detection
                             synchronized(predictionWindow) {
                                 predictionWindow.add(gesture)
-                                if (predictionWindow.size > 75) {
+                                if (predictionWindow.size > 10) {
                                     predictionWindow.removeAt(0)
                                 }
                                 
-                                // Compute Most Frequent / Top Predicted gesture over 2.5 second window
                                 val mostFrequentGesture = predictionWindow.groupingBy { it }
                                     .eachCount()
                                     .maxByOrNull { it.value }?.key ?: gesture
 
-                                onGestureDetected(mostFrequentGesture, confidence)
+                                ContextCompat.getMainExecutor(context).execute {
+                                    onGestureDetected(mostFrequentGesture, confidence)
+                                }
                             }
                             
                             // Send 21 hand landmarks and rotation to overlay view for exact screen alignment
@@ -380,15 +442,15 @@ fun CameraXInferenceView(
                             synchronized(predictionWindow) {
                                 predictionWindow.clear()
                             }
-                            onGestureDetected("nothing", 1.0f)
                             ContextCompat.getMainExecutor(context).execute {
+                                onGestureDetected("nothing", 1.0f)
                                 overlayView.clear()
                             }
                         }
                     } catch (e: Exception) {
                         Log.e("CameraXInference", "Error analyzing landmarks: ${e.message}")
-                        onGestureDetected("nothing", 1.0f)
                         ContextCompat.getMainExecutor(context).execute {
+                            onGestureDetected("nothing", 1.0f)
                             overlayView.clear()
                         }
                     }
