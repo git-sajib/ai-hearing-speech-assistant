@@ -1,0 +1,27 @@
+# Python / Virtual Environment
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Machine Learning & Large Artifacts
+*.h5
+*.pkl
+*.onnx
+# Note: Keep .tflite if needed or exclude large datasets
+data/
+raw_data/
+datasets/
+
+# Android / IDE
+.gradle/
+build/
+.idea/
+*.iml
+local.properties
+.DS_Store
+
+# Logs
+*.log
