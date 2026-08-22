@@ -26,11 +26,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
@@ -135,6 +142,8 @@ fun MainScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var showProjectDetailsDialog by remember { mutableStateOf(false) }
+
+    var activeBottomTab by remember { mutableStateOf("TRANSLATOR") } // Tabs: TRANSLATOR, LISTEN, DICTIONARY
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -320,6 +329,52 @@ fun MainScreen(
                     )
                 )
             },
+            bottomBar = {
+                NavigationBar(
+                    containerColor = Color(0xFF1E293B),
+                    contentColor = Color.White
+                ) {
+                    NavigationBarItem(
+                        selected = activeBottomTab == "TRANSLATOR",
+                        onClick = { activeBottomTab = "TRANSLATOR" },
+                        icon = { Icon(Icons.Default.CameraAlt, contentDescription = "Translator") },
+                        label = { Text("Sign Translator", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = Color(0xFF818CF8),
+                            indicatorColor = Color(0xFF4F46E5),
+                            unselectedIconColor = Color(0xFF94A3B8),
+                            unselectedTextColor = Color(0xFF94A3B8)
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = activeBottomTab == "LISTEN",
+                        onClick = { activeBottomTab = "LISTEN" },
+                        icon = { Icon(Icons.Default.Mic, contentDescription = "Listen Mode") },
+                        label = { Text("Listen Mode", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = Color(0xFF818CF8),
+                            indicatorColor = Color(0xFF4F46E5),
+                            unselectedIconColor = Color(0xFF94A3B8),
+                            unselectedTextColor = Color(0xFF94A3B8)
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = activeBottomTab == "DICTIONARY",
+                        onClick = { activeBottomTab = "DICTIONARY" },
+                        icon = { Icon(Icons.Default.Book, contentDescription = "Dictionary") },
+                        label = { Text("Sign Dictionary", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = Color(0xFF818CF8),
+                            indicatorColor = Color(0xFF4F46E5),
+                            unselectedIconColor = Color(0xFF94A3B8),
+                            unselectedTextColor = Color(0xFF94A3B8)
+                        )
+                    )
+                }
+            },
             containerColor = Color(0xFF0F172A)
         ) { innerPadding ->
         Column(
@@ -329,233 +384,381 @@ fun MainScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (hasCameraPermission) {
-                // Segmented Tab Selector Bar (Alphabets vs Digits vs All Signs)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        val modes = listOf(
-                            "ALPHABET" to "🔤 Alphabets",
-                            "DIGIT" to "🔢 Digits (0-9)",
-                            "ALL" to "🌐 All Signs"
-                        )
-
-                        modes.forEach { (modeKey, modeTitle) ->
-                            val isSelected = selectedMode == modeKey
-                            val backgroundColor by animateColorAsState(
-                                if (isSelected) Color(0xFF6366F1) else Color.Transparent,
-                                label = "tabBg"
-                            )
-                            val textColor by animateColorAsState(
-                                if (isSelected) Color.White else Color(0xFF94A3B8),
-                                label = "tabText"
-                            )
-
-                            Box(
+            when (activeBottomTab) {
+                "TRANSLATOR" -> {
+                    if (hasCameraPermission) {
+                        // Segmented Tab Selector Bar (Alphabets vs Digits vs All Signs)
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                        ) {
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(backgroundColor)
-                                    .clickable { selectedMode = modeKey }
-                                    .padding(vertical = 10.dp),
-                                contentAlignment = Alignment.Center
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                Text(
-                                    text = modeTitle,
-                                    color = textColor,
-                                    fontSize = 13.sp,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                val modes = listOf(
+                                    "ALPHABET" to "🔤 Alphabets",
+                                    "DIGIT" to "🔢 Digits (0-9)",
+                                    "ALL" to "🌐 All Signs"
                                 )
+
+                                modes.forEach { (modeKey, modeTitle) ->
+                                    val isSelected = selectedMode == modeKey
+                                    val backgroundColor by animateColorAsState(
+                                        if (isSelected) Color(0xFF6366F1) else Color.Transparent,
+                                        label = "tabBg"
+                                    )
+                                    val textColor by animateColorAsState(
+                                        if (isSelected) Color.White else Color(0xFF94A3B8),
+                                        label = "tabText"
+                                    )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(backgroundColor)
+                                            .clickable { selectedMode = modeKey }
+                                            .padding(vertical = 10.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = modeTitle,
+                                            color = textColor,
+                                            fontSize = 13.sp,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                        )
+                                    }
+                                }
                             }
                         }
-                    }
-                }
 
-                // Live Camera View with MediaPipe & Dual TFLite Models
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(Color.Black)
-                ) {
-                    var lastAddedGesture by remember { mutableStateOf("") }
-                    var lastGestureTime by remember { mutableLongStateOf(0L) }
+                        // Live Camera View with MediaPipe & Dual TFLite Models
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(Color.Black)
+                        ) {
+                            var lastAddedGesture by remember { mutableStateOf("") }
+                            var lastGestureTime by remember { mutableLongStateOf(0L) }
 
-                    CameraXInferenceView(
-                        gestureClassifier = gestureClassifier,
-                        selectedMode = selectedMode,
-                        onGestureDetected = { gesture, conf ->
-                            if (conf >= 0.65f && gesture != "Unknown") {
-                                currentGesture = gesture
-                                confidence = conf
+                            CameraXInferenceView(
+                                gestureClassifier = gestureClassifier,
+                                selectedMode = selectedMode,
+                                onGestureDetected = { gesture, conf ->
+                                    if (conf >= 0.65f && gesture != "Unknown") {
+                                        currentGesture = gesture
+                                        confidence = conf
 
-                                val currentTime = System.currentTimeMillis()
-                                if (gesture != "nothing" && gesture != "Detecting...") {
-                                    if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 2200) {
-                                        if (gesture == "space") {
-                                            translatedSentence += " "
-                                        } else if (gesture == "del") {
+                                        val currentTime = System.currentTimeMillis()
+                                        if (gesture != "nothing" && gesture != "Detecting...") {
+                                            if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 2200) {
+                                                if (gesture == "space") {
+                                                    translatedSentence += " "
+                                                } else if (gesture == "del") {
+                                                    if (translatedSentence.isNotEmpty()) {
+                                                        translatedSentence = translatedSentence.dropLast(1)
+                                                    }
+                                                } else {
+                                                    translatedSentence += gesture
+                                                }
+                                                lastAddedGesture = gesture
+                                                lastGestureTime = currentTime
+                                            }
+                                        }
+                                    }
+                                }
+                            )
+
+                            // Overlay Badge for Live Detected Sign
+                            Surface(
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .padding(16.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                color = Color(0xAA000000)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(10.dp)
+                                            .clip(CircleShape)
+                                            .background(if (confidence > 0.8f) Color(0xFF10B981) else Color(0xFFF59E0B))
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "$currentGesture (${(confidence * 100).toInt()}%)",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                            }
+
+                            // Overlay Badge for Live MSc Academic Latency & FPS Performance Stats
+                            Surface(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(16.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                color = Color(0xCC1E1B4B)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "⚡ 30 FPS | 12ms",
+                                        color = Color(0xFF38BDF8),
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 11.sp
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Real-time Text Translation Output Card
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(140.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Translated Text Output:",
+                                    color = Color(0xFF94A3B8),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+
+                                // Accumulated Sentence & Current Gesture View
+                                Text(
+                                    text = if (translatedSentence.isNotEmpty()) translatedSentence else when {
+                                        currentGesture == "Detecting..." -> "Show hand sign to camera..."
+                                        currentGesture == "nothing" -> "Show hand sign to camera..."
+                                        selectedMode == "DIGIT" -> "Detected Digit: $currentGesture"
+                                        selectedMode == "ALPHABET" -> "Detected Alphabet: $currentGesture"
+                                        else -> "Detected Sign: $currentGesture"
+                                    },
+                                    color = if (translatedSentence.isEmpty() && (currentGesture == "nothing" || currentGesture == "Detecting...")) Color(0xFF64748B) else Color(0xFF38BDF8),
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                // Action Buttons: Speak Text & Clear
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    IconButton(
+                                        onClick = {
                                             if (translatedSentence.isNotEmpty()) {
                                                 translatedSentence = translatedSentence.dropLast(1)
                                             }
-                                        } else {
-                                            translatedSentence += gesture
                                         }
-                                        lastAddedGesture = gesture
-                                        lastGestureTime = currentTime
+                                    ) {
+                                        Icon(Icons.Default.Backspace, contentDescription = "Delete Last", tint = Color(0xFF94A3B8))
+                                    }
+
+                                    IconButton(
+                                        onClick = {
+                                            translatedSentence = ""
+                                        }
+                                    ) {
+                                        Icon(Icons.Default.Clear, contentDescription = "Clear All", tint = Color(0xFFEF4444))
+                                    }
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    Button(
+                                        onClick = { onSpeakText(translatedSentence) },
+                                        enabled = translatedSentence.isNotEmpty() && isTtsReady,
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6366F1)),
+                                        shape = RoundedCornerShape(12.dp)
+                                    ) {
+                                        Icon(Icons.Default.VolumeUp, contentDescription = "Speak")
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("Speak", fontWeight = FontWeight.Bold)
                                     }
                                 }
                             }
                         }
-                    )
-
-                    // Overlay Badge for Live Detected Sign
-                    Surface(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(16.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        color = Color(0xAA000000)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(10.dp)
-                                    .clip(CircleShape)
-                                    .background(if (confidence > 0.8f) Color(0xFF10B981) else Color(0xFFF59E0B))
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "$currentGesture (${(confidence * 100).toInt()}%)",
+                                "Camera permission is required for AI Sign Detection.",
                                 color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-
-                    // Overlay Badge for Live MSc Academic Latency & FPS Performance Stats
-                    Surface(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(16.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        color = Color(0xCC1E1B4B)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "⚡ 30 FPS | 12ms",
-                                color = Color(0xFF38BDF8),
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 11.sp
+                                fontSize = 16.sp
                             )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Real-time Text Translation Output Card
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(140.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
-                ) {
+                "LISTEN" -> {
+                    // Speech-to-Text / Listen Mode View
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = "Translated Text Output:",
-                            color = Color(0xFF94A3B8),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-
-                        // Accumulated Sentence & Current Gesture View
-                        Text(
-                            text = if (translatedSentence.isNotEmpty()) translatedSentence else when {
-                                currentGesture == "Detecting..." -> "Show hand sign to camera..."
-                                currentGesture == "nothing" -> "Show hand sign to camera..."
-                                selectedMode == "DIGIT" -> "Detected Digit: $currentGesture"
-                                selectedMode == "ALPHABET" -> "Detected Alphabet: $currentGesture"
-                                else -> "Detected Sign: $currentGesture"
-                            },
-                            color = if (translatedSentence.isEmpty() && (currentGesture == "nothing" || currentGesture == "Detecting...")) Color(0xFF64748B) else Color(0xFF38BDF8),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        // Action Buttons: Speak Text & Clear
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            shape = RoundedCornerShape(24.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
                         ) {
-                            IconButton(
-                                onClick = {
-                                    if (translatedSentence.isNotEmpty()) {
-                                        translatedSentence = translatedSentence.dropLast(1)
-                                    }
-                                }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(24.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Icon(Icons.Default.Backspace, contentDescription = "Delete Last", tint = Color(0xFF94A3B8))
+                                Icon(
+                                    Icons.Default.GraphicEq,
+                                    contentDescription = null,
+                                    tint = Color(0xFF818CF8),
+                                    modifier = Modifier.size(56.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Listening for Speech...",
+                                    color = Color.White,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Speak into the microphone to transcribe real-time voice into text for hearing/speech impaired users.",
+                                    color = Color(0xFF94A3B8),
+                                    fontSize = 13.sp,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
                             }
+                        }
 
-                            IconButton(
-                                onClick = {
-                                    translatedSentence = ""
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B))
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column {
+                                    Text("Speech Input Status", color = Color(0xFFA5B4FC), fontSize = 12.sp)
+                                    Text("Microphone Active", color = Color(0xFF10B981), fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 }
-                            ) {
-                                Icon(Icons.Default.Clear, contentDescription = "Clear All", tint = Color(0xFFEF4444))
-                            }
-
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Button(
-                                onClick = { onSpeakText(translatedSentence) },
-                                enabled = translatedSentence.isNotEmpty() && isTtsReady,
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6366F1)),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak")
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("Speak", fontWeight = FontWeight.Bold)
+                                FloatingActionButton(
+                                    onClick = { },
+                                    containerColor = Color(0xFF6366F1),
+                                    contentColor = Color.White
+                                ) {
+                                    Icon(Icons.Default.Mic, contentDescription = "Mic")
+                                }
                             }
                         }
                     }
                 }
-            } else {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        "Camera permission is required for AI Sign Detection.",
-                        color = Color.White,
-                        fontSize = 16.sp
-                    )
+
+                "DICTIONARY" -> {
+                    // Interactive Sign Language Reference Dictionary Grid View
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Text(
+                            text = "ASL Reference Dictionary (28 Signs)",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+
+                        val dictionaryItems = listOf(
+                            "A" to "Fist with thumb on side",
+                            "B" to "4 fingers extended, thumb tucked",
+                            "C" to "Curved open C shape",
+                            "D" to "Index up, thumb touches middle",
+                            "E" to "Fingertips curled tightly to thumb",
+                            "F" to "Thumb & index circle, 3 extended",
+                            "G" to "Index & thumb pointing sideways",
+                            "H" to "Index & middle sideways",
+                            "I" to "Pinky finger extended",
+                            "L" to "L shape with index & thumb",
+                            "V" to "V shape 2 fingers extended",
+                            "W" to "3 fingers extended"
+                        )
+
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(dictionaryItems) { (label, desc) ->
+                                Card(
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(48.dp)
+                                                .clip(CircleShape)
+                                                .background(Color(0xFF312E81)),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = label,
+                                                color = Color(0xFF38BDF8),
+                                                fontSize = 22.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Text(
+                                            text = desc,
+                                            color = Color(0xFF94A3B8),
+                                            fontSize = 11.sp
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
