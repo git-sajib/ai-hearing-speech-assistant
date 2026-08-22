@@ -5,6 +5,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.content.Intent
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -189,12 +193,12 @@ fun MainScreen(
                         }
                     }
 
-                    // Modern Gradient Banner with Round Official BUP Emblem Crest Logo
+                    // Compact Modern Gradient Banner with Official BUP Emblem Crest Logo
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp)
-                            .clip(RoundedCornerShape(20.dp))
+                            .padding(bottom = 12.dp)
+                            .clip(RoundedCornerShape(16.dp))
                             .background(
                                 Brush.verticalGradient(
                                     colors = listOf(
@@ -204,47 +208,48 @@ fun MainScreen(
                                     )
                                 )
                             )
-                            .border(1.5.dp, Color(0x44818CF8), RoundedCornerShape(20.dp))
+                            .border(1.dp, Color(0x44818CF8), RoundedCornerShape(16.dp))
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Surface(
                                 shape = CircleShape,
                                 color = Color.White,
-                                modifier = Modifier.size(72.dp),
-                                shadowElevation = 8.dp
+                                modifier = Modifier.size(56.dp),
+                                shadowElevation = 6.dp
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.bup_logo),
                                     contentDescription = "Round Official BUP Emblem Crest Logo",
                                     modifier = Modifier
-                                        .padding(4.dp)
+                                        .padding(3.dp)
                                         .fillMaxSize()
                                 )
                             }
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "BANGLADESH UNIVERSITY OF PROFESSIONALS",
+                                text = "Bangladesh University of Professionals",
                                 color = Color(0xFFA5B4FC),
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.ExtraBold
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "AI-Driven Assistance System",
+                                text = "AI-Driven Assistance for Hearing & Speech Impairments",
                                 color = Color.White,
-                                fontSize = 14.sp,
+                                fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = "Dept of ICT, FST, BUP",
                                 color = Color(0xFF38BDF8),
-                                fontSize = 11.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -363,14 +368,15 @@ fun MainScreen(
                     title = {
                         Column(modifier = Modifier.padding(start = 4.dp)) {
                             Text(
-                                "AI-Driven Assistance System",
+                                "AI-Driven Assistance for Hearing & Speech Impairments",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = Color.White
+                                fontSize = 12.sp,
+                                color = Color.White,
+                                maxLines = 1
                             )
                             Spacer(modifier = Modifier.height(1.dp))
                             Text(
-                                "BUP MICT-2023",
+                                "BUP MICT-2023 | Dept of ICT",
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color(0xFFA5B4FC)
@@ -750,7 +756,48 @@ fun MainScreen(
                 }
 
                 "LISTEN" -> {
-                    // Speech-to-Text / Listen Mode View
+                    // Fully Functional Speech-to-Text / Listen Mode Engine
+                    var isListening by remember { mutableStateOf(false) }
+                    var recognizedSpeechText by remember { mutableStateOf("Tap the microphone button below and speak into your phone to convert voice to text for hearing impaired users.") }
+
+                    val speechRecognizer = remember { SpeechRecognizer.createSpeechRecognizer(context) }
+                    val speechIntent = remember {
+                        Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+                        }
+                    }
+
+                    DisposableEffect(Unit) {
+                        val listener = object : RecognitionListener {
+                            override fun onReadyForSpeech(params: Bundle?) { isListening = true }
+                            override fun onBeginningOfSpeech() { isListening = true }
+                            override fun onRmsChanged(rmsdB: Float) {}
+                            override fun onBufferReceived(buffer: ByteArray?) {}
+                            override fun onEndOfSpeech() { isListening = false }
+                            override fun onError(error: Int) { isListening = false }
+                            override fun onResults(results: Bundle?) {
+                                isListening = false
+                                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                                if (!matches.isNullOrEmpty()) {
+                                    recognizedSpeechText = matches[0]
+                                }
+                            }
+                            override fun onPartialResults(partialResults: Bundle?) {
+                                val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                                if (!matches.isNullOrEmpty()) {
+                                    recognizedSpeechText = matches[0]
+                                }
+                            }
+                            override fun onEvent(eventType: Int, params: Bundle?) {}
+                        }
+                        speechRecognizer.setRecognitionListener(listener)
+                        onDispose {
+                            speechRecognizer.destroy()
+                        }
+                    }
+
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -761,34 +808,53 @@ fun MainScreen(
                                 .fillMaxWidth()
                                 .weight(1f),
                             shape = RoundedCornerShape(24.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                         ) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(24.dp),
-                                verticalArrangement = Arrangement.Center,
+                                verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Icon(
-                                    Icons.Default.GraphicEq,
-                                    contentDescription = null,
-                                    tint = Color(0xFF818CF8),
-                                    modifier = Modifier.size(56.dp)
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Surface(
+                                        shape = RoundedCornerShape(12.dp),
+                                        color = if (isListening) Color(0xFF10B981) else Color(0xFF312E81)
+                                    ) {
+                                        Text(
+                                            text = if (isListening) "🎙️ LISTENING LIVE" else "READY FOR SPEECH",
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 11.sp,
+                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                                        )
+                                    }
+
+                                    IconButton(onClick = {
+                                        recognizedSpeechText = "Tap the microphone button below and speak into your phone..."
+                                    }) {
+                                        Icon(Icons.Default.Clear, contentDescription = "Clear Speech", tint = Color(0xFF94A3B8))
+                                    }
+                                }
+
                                 Text(
-                                    text = "Listening for Speech...",
-                                    color = Color.White,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
+                                    text = recognizedSpeechText,
+                                    color = if (isListening) Color(0xFF38BDF8) else Color.White,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(vertical = 16.dp)
                                 )
-                                Spacer(modifier = Modifier.height(8.dp))
+
                                 Text(
-                                    text = "Speak into the microphone to transcribe real-time voice into text for hearing/speech impaired users.",
-                                    color = Color(0xFF94A3B8),
-                                    fontSize = 13.sp,
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    text = "Bidirectional Speech-to-Text Assist Engine",
+                                    color = Color(0xFF64748B),
+                                    fontSize = 11.sp
                                 )
                             }
                         }
@@ -798,9 +864,10 @@ fun MainScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(100.dp),
+                                .height(90.dp),
                             shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B))
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B)),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                         ) {
                             Row(
                                 modifier = Modifier
@@ -810,15 +877,32 @@ fun MainScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Column {
-                                    Text("Speech Input Status", color = Color(0xFFA5B4FC), fontSize = 12.sp)
-                                    Text("Microphone Active", color = Color(0xFF10B981), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    Text("Microphone Control", color = Color(0xFFA5B4FC), fontSize = 11.sp)
+                                    Text(
+                                        text = if (isListening) "Stop Speech Listening" else "Tap Mic to Start Talking",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp
+                                    )
                                 }
+
                                 FloatingActionButton(
-                                    onClick = { },
-                                    containerColor = Color(0xFF6366F1),
+                                    onClick = {
+                                        if (isListening) {
+                                            speechRecognizer.stopListening()
+                                            isListening = false
+                                        } else {
+                                            speechRecognizer.startListening(speechIntent)
+                                            isListening = true
+                                        }
+                                    },
+                                    containerColor = if (isListening) Color(0xFFEF4444) else Color(0xFF4F46E5),
                                     contentColor = Color.White
                                 ) {
-                                    Icon(Icons.Default.Mic, contentDescription = "Mic")
+                                    Icon(
+                                        imageVector = if (isListening) Icons.Default.GraphicEq else Icons.Default.Mic,
+                                        contentDescription = "Toggle Mic"
+                                    )
                                 }
                             }
                         }
