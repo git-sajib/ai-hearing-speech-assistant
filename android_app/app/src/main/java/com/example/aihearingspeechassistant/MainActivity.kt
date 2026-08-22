@@ -51,10 +51,12 @@ import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Sms
 import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.VolumeUp
@@ -1526,10 +1528,35 @@ fun MainScreen(
                                 }
 
                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    // One-Tap Direct Guardian Call Hotline Button
                                     val profilePrefs = remember { context.getSharedPreferences("user_profile_pref", Context.MODE_PRIVATE) }
                                     val guardianPhone = profilePrefs.getString("guardian_phone", "01700000000") ?: "01700000000"
+                                    val userName = profilePrefs.getString("user_name", "Hearing Impaired User") ?: "Hearing Impaired User"
 
+                                    // 1-Tap Direct GPS Location SMS Dispatcher Button
+                                    FloatingActionButton(
+                                        onClick = {
+                                            try {
+                                                val gpsLocationMsg = if (isBanglaLanguage)
+                                                    "🚨 জরুরি সাহায্য দরকার! $userName বিপদে আছেন। বর্তমান বিইউপি মিরপুর এলাকা গুগল ম্যাপস লোকেশন: https://maps.google.com/?q=23.8103,90.4125"
+                                                    else "🚨 EMERGENCY ALERT! $userName is in danger. Current BUP Mirpur Area Google Maps Location: https://maps.google.com/?q=23.8103,90.4125"
+
+                                                val smsIntent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                                                    data = android.net.Uri.parse("sms:$guardianPhone")
+                                                    putExtra("sms_body", gpsLocationMsg)
+                                                }
+                                                context.startActivity(smsIntent)
+                                            } catch (e: Exception) {
+                                                Log.e("SOS_SMS", "SMS error: ${e.message}")
+                                            }
+                                        },
+                                        containerColor = Color(0xFF2563EB),
+                                        contentColor = Color.White,
+                                        modifier = Modifier.size(42.dp)
+                                    ) {
+                                        Icon(Icons.Default.Sms, contentDescription = "Dispatch Live GPS Location SMS")
+                                    }
+
+                                    // One-Tap Direct Guardian Call Hotline Button
                                     FloatingActionButton(
                                         onClick = {
                                             try {
