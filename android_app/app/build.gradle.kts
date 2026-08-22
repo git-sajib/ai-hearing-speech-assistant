@@ -33,6 +33,11 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
 }
 
 dependencies {
@@ -53,12 +58,8 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$cameraVersion")
     implementation("androidx.camera:camera-view:$cameraVersion")
 
-    // TensorFlow Lite dependencies
-    implementation("org.tensorflow:tensorflow-lite:2.14.0")
-    implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0")
-    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
-
-    // MediaPipe Tasks Vision
+    // TensorFlow Lite & MediaPipe Tasks Vision
+    implementation("org.tensorflow:tensorflow-lite-support-api:0.4.4")
     implementation("com.google.mediapipe:tasks-vision:0.10.14")
 
     testImplementation(libs.junit)

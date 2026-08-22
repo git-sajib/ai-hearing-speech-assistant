@@ -1,7 +1,6 @@
 package com.example.aihearingspeechassistant
 
 import android.Manifest
-import android.content.contentValuesOf
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -334,7 +333,7 @@ fun CameraXInferenceView(
             val options = HandLandmarker.HandLandmarkerOptions.builder()
                 .setBaseOptions(baseOptions)
                 .setMinHandDetectionConfidence(0.5f)
-                .setMinHandTrackingConfidence(0.5f)
+                .setMinTrackingConfidence(0.5f)
                 .setNumHands(1)
                 .setRunningMode(RunningMode.IMAGE)
                 .build()
