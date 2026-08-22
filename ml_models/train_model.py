@@ -33,18 +33,19 @@ def train_individual_model(csv_path, model_name_prefix):
 
     model = keras.Sequential([
         keras.layers.Input(shape=(63,)),
-        keras.layers.Dense(128, activation='relu'),
+        keras.layers.Dense(256, activation='relu'),
         keras.layers.BatchNormalization(),
         keras.layers.Dropout(0.3),
-        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(128, activation='relu'),
         keras.layers.BatchNormalization(),
         keras.layers.Dropout(0.2),
-        keras.layers.Dense(32, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.BatchNormalization(),
         keras.layers.Dense(num_classes, activation='softmax')
     ])
 
     model.compile(
-        optimizer='adam',
+        optimizer=keras.optimizers.Adam(learning_rate=0.001),
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
@@ -52,8 +53,8 @@ def train_individual_model(csv_path, model_name_prefix):
     model.fit(
         X_train, y_train,
         validation_data=(X_test, y_test),
-        epochs=35,
-        batch_size=32,
+        epochs=40,
+        batch_size=64,
         verbose=1
     )
 
@@ -70,5 +71,5 @@ def train_individual_model(csv_path, model_name_prefix):
     print(f"[SUCCESS] Converted mobile-ready TFLite saved to: {tflite_path}", flush=True)
 
 if __name__ == "__main__":
-    train_individual_model(r"C:\Projects\ai-hearing-speech-assistant\ml_models\asl_landmarks.csv", "alphabet")
+    train_individual_model(r"C:\Projects\ai-hearing-speech-assistant\ml_models\asl_alphabet_augmented.csv", "alphabet")
     train_individual_model(r"C:\Projects\ai-hearing-speech-assistant\ml_models\asl_digit_landmarks.csv", "digit")
