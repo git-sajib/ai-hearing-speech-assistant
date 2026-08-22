@@ -1693,22 +1693,22 @@ fun MainScreen(
 
                     val emotionPhrases = mapOf(
                         "LOVE" to listOf(
-                            Pair(if (isBanglaLanguage) "আমি আপনাকে অনেক ভালোবাসি।" else "I love you very much.", Color(0xFFF472B6)),
-                            Pair(if (isBanglaLanguage) "আপনার সাহায্যের জন্য আমি চিরকৃতজ্ঞ।" else "I am deeply grateful for your support.", Color(0xFFFB7185)),
-                            Pair(if (isBanglaLanguage) "আপনাকে পাশে পেয়ে আমার খুব আনন্দ লাগছে।" else "Having you by my side brings me so much joy.", Color(0xFFE879F9)),
-                            Pair(if (isBanglaLanguage) "মন খারাপ করবেন না, সব ঠিক হয়ে যাবে।" else "Don't worry, everything will be alright.", Color(0xFFC084FC)),
-                            Pair(if (isBanglaLanguage) "আমার খুব কষ্ট হচ্ছে, একটু সময় দিতে পারবেন?" else "I am feeling upset, can you give me some time?", Color(0xFFA78BFA))
+                            Triple("💖", if (isBanglaLanguage) "আমি আপনাকে অনেক ভালোবাসি।" else "I love you very much.", Color(0xFFF472B6)),
+                            Triple("🙏", if (isBanglaLanguage) "আপনার সাহায্যের জন্য আমি চিরকৃতজ্ঞ।" else "I am deeply grateful for your support.", Color(0xFFFB7185)),
+                            Triple("😊", if (isBanglaLanguage) "আপনাকে পাশে পেয়ে আমার খুব আনন্দ লাগছে।" else "Having you by my side brings me so much joy.", Color(0xFFE879F9)),
+                            Triple("🤗", if (isBanglaLanguage) "মন খারাপ করবেন না, সব ঠিক হয়ে যাবে।" else "Don't worry, everything will be alright.", Color(0xFFC084FC)),
+                            Triple("🥺", if (isBanglaLanguage) "আমার খুব কষ্ট হচ্ছে, একটু সময় দিতে পারবেন?" else "I am feeling upset, can you give me some time?", Color(0xFFA78BFA))
                         ),
                         "NEEDS" to listOf(
-                            Pair(if (isBanglaLanguage) "আমার খুব ক্ষুধা পেয়েছে, কিছু খাওয়ার আছে?" else "I am hungry, do you have something to eat?", Color(0xFF34D399)),
-                            Pair(if (isBanglaLanguage) "আমার খুব তৃষ্ণা পেয়েছে, একটু পানি দিবেন?" else "I am thirsty, can I get some water please?", Color(0xFF38BDF8)),
-                            Pair(if (isBanglaLanguage) "আমি খুব ক্লান্ত, একটু বিশ্রাম নিতে চাই।" else "I am very tired, I need to rest for a bit.", Color(0xFF818CF8)),
-                            Pair(if (isBanglaLanguage) "ওয়াশরুম কোথায় একটু দেখিয়ে দিবেন?" else "Could you please show me where the washroom is?", Color(0xFFA855F7))
+                            Triple("🍲", if (isBanglaLanguage) "আমার খুব ক্ষুধা পেয়েছে, কিছু খাওয়ার আছে?" else "I am hungry, do you have something to eat?", Color(0xFF34D399)),
+                            Triple("💧", if (isBanglaLanguage) "আমার খুব তৃষ্ণা পেয়েছে, একটু পানি দিবেন?" else "I am thirsty, can I get some water please?", Color(0xFF38BDF8)),
+                            Triple("🥱", if (isBanglaLanguage) "আমি খুব ক্লান্ত, একটু বিশ্রাম নিতে চাই।" else "I am very tired, I need to rest for a bit.", Color(0xFF818CF8)),
+                            Triple("🚽", if (isBanglaLanguage) "ওয়াশরুম কোথায় একটু দেখিয়ে দিবেন?" else "Could you please show me where the washroom is?", Color(0xFFA855F7))
                         ),
                         "WISHES" to listOf(
-                            Pair(if (isBanglaLanguage) "শুভ জন্মদিন! তোমার জীবন সুখে ভরে উঠুক।" else "Happy Birthday! May your life be filled with happiness.", Color(0xFFFBBF24)),
-                            Pair(if (isBanglaLanguage) "অনেক শুভেচ্ছা ও অভিনন্দন!" else "Warmest congratulations and best wishes!", Color(0xFFF59E0B)),
-                            Pair(if (isBanglaLanguage) "শুভ সকাল! আপনার দিনটি অনেক ভালো কাটুক।" else "Good Morning! Have a wonderful day ahead.", Color(0xFF38BDF8))
+                            Triple("🎂", if (isBanglaLanguage) "শুভ জন্মদিন! তোমার জীবন সুখে ভরে উঠুক।" else "Happy Birthday! May your life be filled with happiness.", Color(0xFFFBBF24)),
+                            Triple("🌟", if (isBanglaLanguage) "অনেক শুভেচ্ছা ও অভিনন্দন!" else "Warmest congratulations and best wishes!", Color(0xFFF59E0B)),
+                            Triple("👋", if (isBanglaLanguage) "শুভ সকাল! আপনার দিনটি অনেক ভালো কাটুক।" else "Good Morning! Have a wonderful day ahead.", Color(0xFF38BDF8))
                         )
                     )
 
@@ -1741,7 +1741,7 @@ fun MainScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(emotionPhrases[selectedEmotionCategory] ?: emptyList()) { (phraseText, accentColor) ->
+                            items(emotionPhrases[selectedEmotionCategory] ?: emptyList()) { (emoji, phraseText, accentColor) ->
                                 Card(
                                     onClick = { onSpeakText(phraseText) },
                                     shape = RoundedCornerShape(20.dp),
@@ -1756,7 +1756,7 @@ fun MainScreen(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        // 3D Circular Vector Tile Badge
+                                        // Visual Emoji Circular Badge Tile
                                         Surface(
                                             shape = CircleShape,
                                             color = accentColor.copy(alpha = 0.15f),
@@ -1764,12 +1764,7 @@ fun MainScreen(
                                             modifier = Modifier.size(42.dp)
                                         ) {
                                             Box(contentAlignment = Alignment.Center) {
-                                                Icon(
-                                                    imageVector = if (selectedEmotionCategory == "LOVE") Icons.Default.Favorite else if (selectedEmotionCategory == "NEEDS") Icons.Default.AutoAwesome else Icons.Default.EmojiEmotions,
-                                                    contentDescription = "Emotion Badge",
-                                                    tint = accentColor,
-                                                    modifier = Modifier.size(22.dp)
-                                                )
+                                                Text(emoji, fontSize = 20.sp)
                                             }
                                         }
 
