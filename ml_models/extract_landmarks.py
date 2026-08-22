@@ -21,11 +21,11 @@ def extract_landmarks():
     )
 
     data_rows = []
-    # Filter strictly for A-Z alphabet classes only
-    classes = [d for d in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir, d)) and len(d) == 1 and d.isupper()]
+    # Extract all 29 dataset classes (A-Z, del, space, nothing)
+    classes = [d for d in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir, d))]
     classes.sort()
 
-    print(f"Found {len(classes)} strictly A-Z Alphabet classes: {classes}", flush=True)
+    print(f"Found {len(classes)} classes in dataset: {classes}", flush=True)
 
     # Extract 500 high-quality images per class across all 26 A-Z classes for rock solid dataset generalization
     SAMPLES_PER_CLASS = 500

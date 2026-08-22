@@ -296,6 +296,7 @@ fun CameraXInferenceView(
 
     val previewView = remember { PreviewView(context) }
     val overlayView = remember { HandOverlayView(context) }
+    val predictionWindow = remember { mutableListOf<String>() }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
     LaunchedEffect(Unit) {
@@ -355,13 +356,30 @@ fun CameraXInferenceView(
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                             
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks)
-                            onGestureDetected(gesture, confidence)
+                            
+                            // Add prediction to 2.5s sliding window (~75 frames buffer at 30 FPS)
+                            synchronized(predictionWindow) {
+                                predictionWindow.add(gesture)
+                                if (predictionWindow.size > 75) {
+                                    predictionWindow.removeAt(0)
+                                }
+                                
+                                // Compute Most Frequent / Top Predicted gesture over 2.5 second window
+                                val mostFrequentGesture = predictionWindow.groupingBy { it }
+                                    .eachCount()
+                                    .maxByOrNull { it.value }?.key ?: gesture
+
+                                onGestureDetected(mostFrequentGesture, confidence)
+                            }
                             
                             // Send 21 hand landmarks and rotation to overlay view for exact screen alignment
                             ContextCompat.getMainExecutor(context).execute {
                                 overlayView.updateLandmarks(handLandmarks, rotationDegrees)
                             }
                         } else {
+                            synchronized(predictionWindow) {
+                                predictionWindow.clear()
+                            }
                             onGestureDetected("nothing", 1.0f)
                             ContextCompat.getMainExecutor(context).execute {
                                 overlayView.clear()
