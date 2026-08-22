@@ -159,7 +159,7 @@ fun MainScreen(
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
-                                text = "BUP Thesis Proposal",
+                                text = "BUP Project Proposal",
                                 color = Color(0xFF818CF8),
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold
@@ -183,7 +183,7 @@ fun MainScreen(
                     HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(
-                        text = "RESEARCH TEAM",
+                        text = "PROJECT TEAM",
                         color = Color(0xFF64748B),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
