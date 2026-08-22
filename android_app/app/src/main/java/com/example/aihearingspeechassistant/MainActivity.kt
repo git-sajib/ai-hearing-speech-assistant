@@ -365,13 +365,20 @@ fun MainScreen(
                             Text(
                                 "AI-Driven Assistance System",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
+                                fontSize = 14.sp,
                                 color = Color.White
                             )
+                            Spacer(modifier = Modifier.height(1.dp))
                             Text(
-                                "BUP MICT-2023 | Supervisor: Dr. Ahmedul Kabir",
-                                fontSize = 11.sp,
+                                "BUP MICT-2023",
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.SemiBold,
                                 color = Color(0xFFA5B4FC)
+                            )
+                            Text(
+                                "Supervisor: Dr. Ahmedul Kabir",
+                                fontSize = 10.sp,
+                                color = Color(0xFF38BDF8)
                             )
                         }
                     },
@@ -660,41 +667,70 @@ fun MainScreen(
                                     fontWeight = FontWeight.Bold
                                 )
 
-                                // Action Buttons: Speak Text & Clear
+                                // Action Buttons: Backspace, Clear & Speak Text (3D Elevated Style)
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.End,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    IconButton(
+                                    // 3D Elevated Backspace Button
+                                    Surface(
                                         onClick = {
                                             if (translatedSentence.isNotEmpty()) {
                                                 translatedSentence = translatedSentence.dropLast(1)
                                             }
-                                        }
+                                        },
+                                        shape = RoundedCornerShape(12.dp),
+                                        color = Color(0xFF334155),
+                                        shadowElevation = 6.dp,
+                                        modifier = Modifier.size(40.dp)
                                     ) {
-                                        Icon(Icons.Default.Backspace, contentDescription = "Delete Last", tint = Color(0xFF94A3B8))
+                                        Box(contentAlignment = Alignment.Center) {
+                                            Icon(
+                                                Icons.Default.Backspace,
+                                                contentDescription = "Delete Last",
+                                                tint = Color.White,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
                                     }
 
-                                    IconButton(
-                                        onClick = {
-                                            translatedSentence = ""
-                                        }
+                                    Spacer(modifier = Modifier.width(10.dp))
+
+                                    // 3D Elevated Clear All Button
+                                    Surface(
+                                        onClick = { translatedSentence = "" },
+                                        shape = RoundedCornerShape(12.dp),
+                                        color = Color(0xFF991B1B),
+                                        shadowElevation = 6.dp,
+                                        modifier = Modifier.size(40.dp)
                                     ) {
-                                        Icon(Icons.Default.Clear, contentDescription = "Clear All", tint = Color(0xFFEF4444))
+                                        Box(contentAlignment = Alignment.Center) {
+                                            Icon(
+                                                Icons.Default.Clear,
+                                                contentDescription = "Clear All",
+                                                tint = Color.White,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
                                     }
 
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(12.dp))
 
+                                    // 3D Gradient Speak Button
                                     Button(
                                         onClick = { onSpeakText(translatedSentence) },
                                         enabled = translatedSentence.isNotEmpty() && isTtsReady,
-                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6366F1)),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFF4F46E5),
+                                            disabledContainerColor = Color(0xFF334155)
+                                        ),
+                                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp, pressedElevation = 2.dp),
                                         shape = RoundedCornerShape(12.dp)
                                     ) {
-                                        Icon(Icons.Default.VolumeUp, contentDescription = "Speak")
+                                        Icon(Icons.Default.VolumeUp, contentDescription = "Speak", tint = Color.White)
                                         Spacer(modifier = Modifier.width(6.dp))
-                                        Text("Speak", fontWeight = FontWeight.Bold)
+                                        Text("Speak", fontWeight = FontWeight.Bold, color = Color.White)
                                     }
                                 }
                             }
