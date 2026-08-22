@@ -189,63 +189,64 @@ fun MainScreen(
                         }
                     }
 
-                    // Modern Gradient Banner with High-Res Official BUP Emblem Logo
+                    // Modern Gradient Banner with Large Official BUP Emblem Crest Logo
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp)
                             .clip(RoundedCornerShape(20.dp))
                             .background(
-                                Brush.linearGradient(
+                                Brush.verticalGradient(
                                     colors = listOf(
+                                        Color(0xFF1E1B4B),
                                         Color(0xFF312E81),
-                                        Color(0xFF4F46E5),
-                                        Color(0xFF0284C7)
+                                        Color(0xFF0F172A)
                                     )
                                 )
                             )
-                            .border(1.dp, Color(0x33FFFFFF), RoundedCornerShape(20.dp))
+                            .border(1.5.dp, Color(0x44818CF8), RoundedCornerShape(20.dp))
                     ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Surface(
-                                shape = CircleShape,
+                                shape = RoundedCornerShape(16.dp),
                                 color = Color.White,
-                                modifier = Modifier.size(56.dp),
-                                shadowElevation = 8.dp
+                                modifier = Modifier.size(110.dp),
+                                shadowElevation = 10.dp
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.bup_logo),
-                                    contentDescription = "BUP Logo",
+                                    contentDescription = "Official BUP Emblem Crest Logo",
                                     modifier = Modifier
-                                        .padding(3.dp)
+                                        .padding(6.dp)
                                         .fillMaxSize()
                                 )
                             }
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text(
-                                    text = "BUP Project Proposal",
-                                    color = Color(0xFFA5B4FC),
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.height(2.dp))
-                                Text(
-                                    text = "AI-Driven Assistance System",
-                                    color = Color.White,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.height(2.dp))
-                                Text(
-                                    text = "Dept of ICT, FST, BUP",
-                                    color = Color(0xFFE0E7FF),
-                                    fontSize = 11.sp
-                                )
-                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = "BANGLADESH UNIVERSITY OF PROFESSIONALS",
+                                color = Color(0xFFA5B4FC),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "AI-Driven Assistance System",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "Dept of ICT, FST, BUP",
+                                color = Color(0xFF38BDF8),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
 
