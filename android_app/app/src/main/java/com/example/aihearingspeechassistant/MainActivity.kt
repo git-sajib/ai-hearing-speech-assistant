@@ -163,6 +163,31 @@ fun MainScreen(
                         .fillMaxSize()
                         .padding(20.dp)
                 ) {
+                    // Drawer Top Bar with Close (X) Button
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "PROJECT NAVIGATION",
+                            color = Color(0xFF64748B),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        IconButton(
+                            onClick = { scope.launch { drawerState.close() } }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Close Drawer",
+                                tint = Color(0xFF94A3B8)
+                            )
+                        }
+                    }
+
                     // Header Banner with Official BUP Logo
                     Card(
                         modifier = Modifier
