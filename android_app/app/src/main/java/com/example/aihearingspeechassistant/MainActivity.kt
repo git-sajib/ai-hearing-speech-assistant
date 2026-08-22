@@ -205,7 +205,7 @@ fun MainScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "PROJECT NAVIGATION",
+                            text = if (isBanglaLanguage) "প্রজেক্ট মেনু ও নেভিগেশন" else "PROJECT NAVIGATION",
                             color = Color(0xFF64748B),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
@@ -260,7 +260,7 @@ fun MainScreen(
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Bangladesh University of Professionals",
+                                text = if (isBanglaLanguage) "বাংলাদেশ ইউনিভার্সিটি অব প্রফেশনালস" else "Bangladesh University of Professionals",
                                 color = Color(0xFFA5B4FC),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
@@ -268,14 +268,14 @@ fun MainScreen(
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "AI-Driven Assistance for Hearing & Speech Impairments",
+                                text = if (isBanglaLanguage) "বাক ও শ্রবণপ্রতিবন্ধীদের জন্য এআই সহকারী" else "AI-Driven Assistance for Hearing & Speech Impairments",
                                 color = Color.White,
-                                fontSize = 12.sp,
+                                fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "Dept of ICT, FST, BUP",
+                                text = if (isBanglaLanguage) "আইসিটি বিভাগ, এফএসটি, বিইউপি" else "Dept of ICT, FST, BUP",
                                 color = Color(0xFF38BDF8),
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.SemiBold
@@ -285,7 +285,7 @@ fun MainScreen(
 
                     // bKash-Inspired Circular Quick Feature Grid Shortcuts in Drawer
                     Text(
-                        text = "QUICK NAVIGATION SHORTCUTS",
+                        text = if (isBanglaLanguage) "দ্রুত নেভিগেশন শর্টকাট" else "QUICK NAVIGATION SHORTCUTS",
                         color = Color(0xFF64748B),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
@@ -299,10 +299,10 @@ fun MainScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         val shortcuts = listOf(
-                            Triple("Sign AI", Icons.Default.CameraAlt, "TRANSLATOR"),
-                            Triple("Listen", Icons.Default.Mic, "LISTEN"),
-                            Triple("Dictionary", Icons.Default.Book, "DICTIONARY"),
-                            Triple("Emotions", Icons.Default.EmojiEmotions, "EMOTIONS")
+                            Triple(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", Icons.Default.CameraAlt, "TRANSLATOR"),
+                            Triple(if (isBanglaLanguage) "লিসেন" else "Listen", Icons.Default.Mic, "LISTEN"),
+                            Triple(if (isBanglaLanguage) "অভিধান" else "Dictionary", Icons.Default.Book, "DICTIONARY"),
+                            Triple(if (isBanglaLanguage) "অনুভূতি" else "Emotions", Icons.Default.EmojiEmotions, "EMOTIONS")
                         )
 
                         shortcuts.forEach { (label, icon, tabKey) ->
@@ -327,7 +327,7 @@ fun MainScreen(
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(6.dp))
-                                Text(label, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                Text(label, color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -335,7 +335,7 @@ fun MainScreen(
                     HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 10.dp))
 
                     Text(
-                        text = "PROJECT TEAM",
+                        text = if (isBanglaLanguage) "প্রজেক্ট টিম ও গবেষকবৃন্দ" else "PROJECT TEAM",
                         color = Color(0xFF64748B),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
@@ -446,7 +446,7 @@ fun MainScreen(
                     title = {
                         Column(modifier = Modifier.padding(start = 4.dp)) {
                             Text(
-                                "AI-Driven Assistance for Hearing & Speech Impairments",
+                                if (isBanglaLanguage) "বাক ও শ্রবণপ্রতিবন্ধীদের এআই সহকারী" else "AI Assistance for Hearing & Speech Impairments",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp,
                                 color = Color.White,
@@ -454,13 +454,13 @@ fun MainScreen(
                             )
                             Spacer(modifier = Modifier.height(1.dp))
                             Text(
-                                "BUP MICT-2023 | Dept of ICT",
+                                if (isBanglaLanguage) "বিইউপি এমআইসিটি-২০২৩ | আইসিটি বিভাগ" else "BUP MICT-2023 | Dept of ICT",
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color(0xFFA5B4FC)
                             )
                             Text(
-                                "Supervisor: Dr. Ahmedul Kabir",
+                                if (isBanglaLanguage) "তত্ত্বাবধায়ক: ড. আহমেদুল কবীর" else "Supervisor: Dr. Ahmedul Kabir",
                                 fontSize = 10.sp,
                                 color = Color(0xFF38BDF8)
                             )
@@ -601,9 +601,9 @@ fun MainScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             val metrics = listOf(
-                                Triple("36", "Supported Signs", Color(0xFF818CF8)),
-                                Triple("99.9%", "Model Accuracy", Color(0xFF34D399)),
-                                Triple("12ms", "On-Device Latency", Color(0xFF38BDF8))
+                                Triple("36", if (isBanglaLanguage) "মোট সংকেত" else "Supported Signs", Color(0xFF818CF8)),
+                                Triple("99.9%", if (isBanglaLanguage) "মডেল নির্ভুলতা" else "Model Accuracy", Color(0xFF34D399)),
+                                Triple("12ms", if (isBanglaLanguage) "অন-ডিভাইস সময়" else "On-Device Latency", Color(0xFF38BDF8))
                             )
                             metrics.forEach { (value, label, accentColor) ->
                                 Card(
@@ -651,9 +651,9 @@ fun MainScreen(
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 val modes = listOf(
-                                    Triple("ALPHABET", "Alphabets", Icons.Default.Abc),
-                                    Triple("DIGIT", "Digits 0-9", Icons.Default.Numbers),
-                                    Triple("ALL", "All Signs", Icons.Default.Public)
+                                    Triple("ALPHABET", if (isBanglaLanguage) "বর্ণমালা" else "Alphabets", Icons.Default.Abc),
+                                    Triple("DIGIT", if (isBanglaLanguage) "সংখ্যা ০-৯" else "Digits 0-9", Icons.Default.Numbers),
+                                    Triple("ALL", if (isBanglaLanguage) "সকল সংকেত" else "All Signs", Icons.Default.Public)
                                 )
 
                                 modes.forEach { (modeKey, modeTitle, icon) ->
@@ -811,7 +811,7 @@ fun MainScreen(
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = "Translated Text Output:",
+                                    text = if (isBanglaLanguage) "অনুবাদিত টেক্সট আউটপুট:" else "Translated Text Output:",
                                     color = Color(0xFF94A3B8),
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Medium
@@ -820,11 +820,11 @@ fun MainScreen(
                                 // Accumulated Sentence & Current Gesture View
                                 Text(
                                     text = if (translatedSentence.isNotEmpty()) translatedSentence else when {
-                                        currentGesture == "Detecting..." -> "Show hand sign to camera..."
-                                        currentGesture == "nothing" -> "Show hand sign to camera..."
-                                        selectedMode == "DIGIT" -> "Detected Digit: $currentGesture"
-                                        selectedMode == "ALPHABET" -> "Detected Alphabet: $currentGesture"
-                                        else -> "Detected Sign: $currentGesture"
+                                        currentGesture == "Detecting..." -> if (isBanglaLanguage) "ক্যামেরার সামনে হাত উঁচিয়ে সংকেত প্রদর্শন করুন..." else "Show hand sign to camera..."
+                                        currentGesture == "nothing" -> if (isBanglaLanguage) "ক্যামেরার সামনে হাত উঁচিয়ে সংকেত প্রদর্শন করুন..." else "Show hand sign to camera..."
+                                        selectedMode == "DIGIT" -> if (isBanglaLanguage) "শনাক্তকৃত সংখ্যা: $currentGesture" else "Detected Digit: $currentGesture"
+                                        selectedMode == "ALPHABET" -> if (isBanglaLanguage) "শনাক্তকৃত বর্ণ: $currentGesture" else "Detected Alphabet: $currentGesture"
+                                        else -> if (isBanglaLanguage) "শনাক্তকৃত সংকেত: $currentGesture" else "Detected Sign: $currentGesture"
                                     },
                                     color = if (translatedSentence.isEmpty() && (currentGesture == "nothing" || currentGesture == "Detecting...")) Color(0xFF64748B) else Color(0xFF38BDF8),
                                     fontSize = 20.sp,
@@ -916,18 +916,18 @@ fun MainScreen(
                 "LISTEN" -> {
                     // Fully Functional Speech-to-Text / Listen Mode Engine
                     var isListening by remember { mutableStateOf(false) }
-                    var recognizedSpeechText by remember { mutableStateOf("Tap the microphone button below and speak into your phone to convert voice to text for hearing impaired users.") }
+                    var recognizedSpeechText by remember(isBanglaLanguage) { mutableStateOf(if (isBanglaLanguage) "নিচের মাইক্রোফোন বোতামে ট্যাপ করে মুখে কথা বলুন। ভয়েস স্বয়ংক্রিয়ভাবে টেক্সটে রূপান্তরিত হবে।" else "Tap the microphone button below and speak into your phone to convert voice to text for hearing impaired users.") }
 
                     val speechRecognizer = remember { SpeechRecognizer.createSpeechRecognizer(context) }
-                    val speechIntent = remember {
+                    val speechIntent = remember(isBanglaLanguage) {
                         Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                            putExtra(RecognizerIntent.EXTRA_LANGUAGE, if (isBanglaLanguage) "bn-BD" else "en-US")
                             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
                         }
                     }
 
-                    DisposableEffect(Unit) {
+                    DisposableEffect(isBanglaLanguage) {
                         val listener = object : RecognitionListener {
                             override fun onReadyForSpeech(params: Bundle?) { isListening = true }
                             override fun onBeginningOfSpeech() { isListening = true }
@@ -986,7 +986,7 @@ fun MainScreen(
                                         color = if (isListening) Color(0xFF10B981) else Color(0xFF312E81)
                                     ) {
                                         Text(
-                                            text = if (isListening) "🎙️ LISTENING LIVE" else "READY FOR SPEECH",
+                                            text = if (isListening) (if (isBanglaLanguage) "🎙️ শোনা হচ্ছে..." else "🎙️ LISTENING LIVE") else (if (isBanglaLanguage) "কথা শোনার জন্য তৈরি" else "READY FOR SPEECH"),
                                             color = Color.White,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 11.sp,
@@ -1052,9 +1052,9 @@ fun MainScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Column {
-                                    Text("Microphone Control", color = Color(0xFFA5B4FC), fontSize = 11.sp)
+                                    Text(if (isBanglaLanguage) "মাইক্রোফোন নিয়ন্ত্রণ" else "Microphone Control", color = Color(0xFFA5B4FC), fontSize = 11.sp)
                                     Text(
-                                        text = if (!hasAudioPermission) "Grant Mic Permission to Speak" else if (isListening) "Stop Speech Listening" else "Tap Mic to Start Talking",
+                                        text = if (!hasAudioPermission) (if (isBanglaLanguage) "মাইক পারমিশন দিন" else "Grant Mic Permission to Speak") else if (isListening) (if (isBanglaLanguage) "কথা শোনা বন্ধ করতে চাপুন" else "Stop Speech Listening") else (if (isBanglaLanguage) "কথা বলতে মাইক বাটনে চাপুন" else "Tap Mic to Start Talking"),
                                         color = if (!hasAudioPermission) Color(0xFFF87171) else Color.White,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 14.sp
@@ -1102,7 +1102,7 @@ fun MainScreen(
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
-                            placeholder = { Text("Search 36 ASL gesture signs...", color = Color(0xFF64748B), fontSize = 13.sp) },
+                            placeholder = { Text(if (isBanglaLanguage) "৩৬টি সাইন ল্যাঙ্গুয়েজ সংকেত খুঁজুন..." else "Search 36 ASL gesture signs...", color = Color(0xFF64748B), fontSize = 13.sp) },
                             leadingIcon = { Icon(Icons.Default.Clear, contentDescription = "Search", tint = Color(0xFF818CF8)) },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -1126,7 +1126,11 @@ fun MainScreen(
                                 .padding(bottom = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            val categories = listOf("ALL" to "All Signs (36)", "ALPHABET" to "Alphabets (A-Z)", "DIGIT" to "Digits (0-9)")
+                            val categories = listOf(
+                                "ALL" to (if (isBanglaLanguage) "সকল সংকেত (৩৬)" else "All Signs (36)"),
+                                "ALPHABET" to (if (isBanglaLanguage) "বর্ণমালা (A-Z)" else "Alphabets (A-Z)"),
+                                "DIGIT" to (if (isBanglaLanguage) "সংখ্যা (০-৯)" else "Digits (0-9)")
+                            )
                             categories.forEach { (catKey, catLabel) ->
                                 val isSelected = filterCategory == catKey
                                 Surface(
@@ -1292,8 +1296,8 @@ fun MainScreen(
                                     Icon(Icons.Default.Warning, contentDescription = "Emergency", tint = Color(0xFFF87171), modifier = Modifier.size(30.dp))
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column {
-                                        Text("Emergency Quick Assist", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                        Text("Saved in Phone Storage | Tap to Speak", color = Color(0xFFFCA5A5), fontSize = 10.sp)
+                                        Text(if (isBanglaLanguage) "জরুরি এসওএস সহায়তা" else "Emergency Quick Assist", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                        Text(if (isBanglaLanguage) "ফোনের লোকাল স্টোরেজে সংরক্ষিত | শুনতে চাপুন" else "Saved in Phone Storage | Tap to Speak", color = Color(0xFFFCA5A5), fontSize = 10.sp)
                                     }
                                 }
 
