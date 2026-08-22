@@ -43,11 +43,14 @@ import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -1207,22 +1210,34 @@ fun MainScreen(
                 }
 
                 "SOS" -> {
-                    // AI-Driven Emergency Quick Speech Phrases with Custom Phrase Add Ability
-                    var customPhrases by remember {
-                        mutableStateOf(
-                            listOf(
-                                "🚨 Emergency! I am mute/speech impaired. Please help me!",
-                                "🏥 I need medical assistance immediately. Call an ambulance!",
-                                "📍 I am lost and need directions to BUP Campus.",
-                                "🗣️ Please write down your words on paper or phone screen.",
-                                "📞 Please call my family emergency contact number.",
-                                "🚌 Which bus goes to Mirpur 12 / BUP?"
-                            )
-                        )
+                    // Persistent SharedPreferences Storage for SOS Phrases
+                    val sharedPrefs = remember { context.getSharedPreferences("sos_phrases_pref", Context.MODE_PRIVATE) }
+                    
+                    val defaultPhrases = listOf(
+                        "🚨 Emergency! I am mute/speech impaired. Please help me!",
+                        "🏥 I need medical assistance immediately. Call an ambulance!",
+                        "📍 I am lost and need directions to BUP Campus.",
+                        "🗣️ Please write down your words on paper or phone screen.",
+                        "📞 Please call my family emergency contact number.",
+                        "🚌 Which bus goes to Mirpur 12 / BUP?"
+                    )
+
+                    fun loadSavedPhrases(): List<String> {
+                        val savedSet = sharedPrefs.getStringSet("saved_sos_phrases", null)
+                        return if (savedSet != null) savedSet.toList() else defaultPhrases
                     }
+
+                    fun savePhrasesToStorage(phrases: List<String>) {
+                        sharedPrefs.edit().putStringSet("saved_sos_phrases", phrases.toSet()).apply()
+                    }
+
+                    var customPhrases by remember { mutableStateOf(loadSavedPhrases()) }
 
                     var showAddPhraseDialog by remember { mutableStateOf(false) }
                     var newPhraseText by remember { mutableStateOf("") }
+
+                    var editingIndex by remember { mutableStateOf<Int?>(null) }
+                    var editPhraseText by remember { mutableStateOf("") }
 
                     Column(modifier = Modifier.fillMaxSize()) {
                         Card(
@@ -1248,7 +1263,7 @@ fun MainScreen(
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column {
                                         Text("Emergency Quick Assist", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                        Text("Tap phrase to trigger high-volume TTS audio", color = Color(0xFFFCA5A5), fontSize = 10.sp)
+                                        Text("Saved in Phone Storage | Tap to Speak", color = Color(0xFFFCA5A5), fontSize = 10.sp)
                                     }
                                 }
 
@@ -1267,9 +1282,8 @@ fun MainScreen(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(customPhrases) { phrase ->
+                            itemsIndexed(customPhrases) { index, phrase ->
                                 Card(
-                                    onClick = { onSpeakText(phrase) },
                                     shape = RoundedCornerShape(16.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
@@ -1277,7 +1291,7 @@ fun MainScreen(
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(14.dp),
+                                            .padding(12.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
@@ -1286,16 +1300,41 @@ fun MainScreen(
                                             color = Color.White,
                                             fontSize = 12.sp,
                                             fontWeight = FontWeight.SemiBold,
-                                            modifier = Modifier.weight(1f)
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .clickable { onSpeakText(phrase) }
                                         )
-                                        Spacer(modifier = Modifier.width(10.dp))
-                                        Surface(
-                                            shape = CircleShape,
-                                            color = Color(0xFFDC2626),
-                                            modifier = Modifier.size(34.dp)
-                                        ) {
-                                            Box(contentAlignment = Alignment.Center) {
-                                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak SOS", tint = Color.White, modifier = Modifier.size(18.dp))
+
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            // Speak Audio Button
+                                            IconButton(
+                                                onClick = { onSpeakText(phrase) },
+                                                modifier = Modifier.size(32.dp)
+                                            ) {
+                                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak SOS", tint = Color(0xFF10B981))
+                                            }
+
+                                            // Edit Button
+                                            IconButton(
+                                                onClick = {
+                                                    editingIndex = index
+                                                    editPhraseText = phrase.replace("💬 ", "").replace("🚨 ", "").replace("🏥 ", "").replace("📍 ", "").replace("🗣️ ", "").replace("📞 ", "").replace("🚌 ", "")
+                                                },
+                                                modifier = Modifier.size(32.dp)
+                                            ) {
+                                                Icon(Icons.Default.Edit, contentDescription = "Edit Phrase", tint = Color(0xFF38BDF8))
+                                            }
+
+                                            // Delete Button
+                                            IconButton(
+                                                onClick = {
+                                                    val updated = customPhrases.toMutableList().apply { removeAt(index) }
+                                                    customPhrases = updated
+                                                    savePhrasesToStorage(updated)
+                                                },
+                                                modifier = Modifier.size(32.dp)
+                                            ) {
+                                                Icon(Icons.Default.Delete, contentDescription = "Delete Phrase", tint = Color(0xFFEF4444))
                                             }
                                         }
                                     }
@@ -1304,6 +1343,7 @@ fun MainScreen(
                         }
                     }
 
+                    // Add Phrase Dialog
                     if (showAddPhraseDialog) {
                         AlertDialog(
                             onDismissRequest = { showAddPhraseDialog = false },
@@ -1313,7 +1353,7 @@ fun MainScreen(
                             title = { Text("Add Custom SOS Phrase", fontWeight = FontWeight.Bold) },
                             text = {
                                 Column {
-                                    Text("Enter your custom emergency voice phrase below:", fontSize = 12.sp, color = Color(0xFF94A3B8))
+                                    Text("Enter custom emergency phrase to save permanently in your phone:", fontSize = 11.sp, color = Color(0xFF94A3B8))
                                     Spacer(modifier = Modifier.height(10.dp))
                                     OutlinedTextField(
                                         value = newPhraseText,
@@ -1334,18 +1374,67 @@ fun MainScreen(
                                 Button(
                                     onClick = {
                                         if (newPhraseText.isNotBlank()) {
-                                            customPhrases = customPhrases + "💬 " + newPhraseText.trim()
+                                            val updated = customPhrases + ("💬 " + newPhraseText.trim())
+                                            customPhrases = updated
+                                            savePhrasesToStorage(updated)
                                             newPhraseText = ""
                                             showAddPhraseDialog = false
                                         }
                                     },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626))
                                 ) {
-                                    Text("Add Phrase", fontWeight = FontWeight.Bold, color = Color.White)
+                                    Text("Save Permanently", fontWeight = FontWeight.Bold, color = Color.White)
                                 }
                             },
                             dismissButton = {
                                 TextButton(onClick = { showAddPhraseDialog = false }) {
+                                    Text("Cancel", color = Color(0xFF94A3B8))
+                                }
+                            }
+                        )
+                    }
+
+                    // Edit Phrase Dialog
+                    editingIndex?.let { index ->
+                        AlertDialog(
+                            onDismissRequest = { editingIndex = null },
+                            containerColor = Color(0xFF1E293B),
+                            titleContentColor = Color.White,
+                            textContentColor = Color(0xFF94A3B8),
+                            title = { Text("Edit Emergency Phrase", fontWeight = FontWeight.Bold) },
+                            text = {
+                                OutlinedTextField(
+                                    value = editPhraseText,
+                                    onValueChange = { editPhraseText = it },
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedContainerColor = Color(0xFF0F172A),
+                                        unfocusedContainerColor = Color(0xFF0F172A),
+                                        focusedTextColor = Color.White,
+                                        unfocusedTextColor = Color.White
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        if (editPhraseText.isNotBlank()) {
+                                            val updated = customPhrases.toMutableList().apply {
+                                                this[index] = "💬 " + editPhraseText.trim()
+                                            }
+                                            customPhrases = updated
+                                            savePhrasesToStorage(updated)
+                                            editingIndex = null
+                                        }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
+                                ) {
+                                    Text("Update", fontWeight = FontWeight.Bold, color = Color.White)
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { editingIndex = null }) {
                                     Text("Cancel", color = Color(0xFF94A3B8))
                                 }
                             }
