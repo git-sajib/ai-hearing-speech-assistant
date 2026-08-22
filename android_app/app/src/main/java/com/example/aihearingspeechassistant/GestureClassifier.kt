@@ -141,80 +141,88 @@ class GestureClassifier(private val context: Context) {
                 predictedLabel = digitLabelsMap[idx] ?: "0"
             }
         } else {
-            // Enhanced Geometric Classification Rules for ASL Alphabets (A-Z, space, del)
-            val isFist = indexExtendDist < 0.30 && middleExtendDist < 0.30 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28
-
-            if (isFist) {
-                if (thumbExtendDist > 0.35 && thumbIndexDist > 0.16) {
-                    predictedLabel = "A" // Fist with Thumb extended out to the side
-                } else if (thumbIndexDist < 0.10) {
-                    predictedLabel = "S" // Fist with Thumb folded tightly over fingers
-                } else if (thumbTipY > indexTipY && thumbIndexDist < 0.15) {
-                    predictedLabel = "E" // All fingertips curled down tightly to thumb base
-                } else if (thumbMiddleDist < 0.12) {
-                    predictedLabel = "M" // Thumb tucked under 3 fingers (Index, Middle, Ring)
-                } else if (thumbRingDist < 0.14) {
-                    predictedLabel = "N" // Thumb tucked under 2 fingers (Index, Middle)
-                } else if (thumbIndexDist < 0.16) {
-                    predictedLabel = "T" // Thumb tucked under 1 finger (Index)
-                } else if (thumbIndexDist < 0.10) {
-                    predictedLabel = "O" // Curved fingers forming tight 'O' circle
+            // Precision Dataset-Matched Geometric Rules for ASL Alphabets (A-Z)
+            if (indexTipY > wristY && middleTipY > wristY) {
+                // Downward pointing gestures (M, N, P)
+                if (indexExtendDist > 0.40 && middleExtendDist < 0.32 && thumbMiddleDist < 0.12) {
+                    predictedLabel = "P" // Index extended forward/downward, Middle & Ring folded down with thumb
+                } else if (ringExtendDist < 0.22 && pinkyExtendDist < 0.22) {
+                    if (middleExtendDist > 0.35) {
+                        predictedLabel = "N" // Index & Middle extended downward over thumb, Ring/Pinky tucked
+                    } else {
+                        predictedLabel = "M" // Index, Middle & Ring extended downward over thumb
+                    }
                 } else {
-                    predictedLabel = "S"
+                    predictedLabel = "M"
                 }
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist < 0.28) {
-                predictedLabel = "W" // Index, Middle, Ring extended
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
-                if (indexMiddleDist > 0.11) {
-                    predictedLabel = "V" // V shape separated
-                } else if (thumbIndexDist > 0.20) {
-                    predictedLabel = "K" // Index & Middle extended with Thumb pointing between them
-                } else if (indexTipX < middleTipX) {
-                    predictedLabel = "R" // Index & Middle crossed over each other
+            } else if (indexExtendDist > 0.38 && middleExtendDist > 0.38 && ringExtendDist > 0.38 && pinkyExtendDist > 0.38) {
+                // Curved or Full Open Hand (C, O, B, space)
+                if (thumbIndexDist < 0.09 && thumbMiddleDist < 0.10) {
+                    predictedLabel = "O" // All fingertips touch Thumb tip tightly (O circle)
+                } else if (thumbIndexDist > 0.12 && indexMiddleDist < 0.05) {
+                    predictedLabel = "C" // C-shaped curve: Index, Middle, Ring curved together with space from Thumb
+                } else if (thumbExtendDist > 0.30) {
+                    predictedLabel = "space" // Full wide open hand
                 } else {
-                    predictedLabel = "U" // Index & Middle extended together
+                    predictedLabel = "B" // 4 fingers extended, thumb tucked
                 }
-            } else if (indexExtendDist > 0.40 && thumbExtendDist > 0.35 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
-                if (indexTipY > wristY) {
-                    predictedLabel = "Q" // Index & Thumb pointing downward
-                } else {
-                    predictedLabel = "L" // L shape
-                }
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28 && indexTipY > wristY) {
-                predictedLabel = "P" // V/K shape pointing downward
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35) {
-                if (thumbExtendDist > 0.30) {
-                    predictedLabel = "space" // All 5 fingers extended wide open (Space)
-                } else {
-                    predictedLabel = "B" // 4 fingers extended together, thumb tucked
-                }
-            } else if (pinkyExtendDist > 0.35 && thumbExtendDist > 0.30 && indexExtendDist < 0.28 && middleExtendDist < 0.28) {
-                predictedLabel = "Y" // Thumb & Pinky extended
-            } else if (indexExtendDist > 0.40 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
-                if (thumbExtendDist > 0.30 && thumbIndexDist > 0.22) {
-                    predictedLabel = "G" // Index & Thumb pointing sideways horizontally
-                } else if (thumbMiddleDist < 0.12) {
-                    predictedLabel = "D" // Index pointing straight up, Thumb touches Middle
-                } else {
-                    predictedLabel = "Z" // Index finger tracing Z or pointing up
-                }
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28 && thumbExtendDist > 0.25) {
-                predictedLabel = "H" // Index & Middle pointing horizontally together
-            } else if (pinkyExtendDist > 0.35 && indexExtendDist < 0.28 && middleExtendDist < 0.28 && ringExtendDist < 0.28) {
-                if (pinkyTipY > wristY) {
-                    predictedLabel = "J" // Pinky tracing J downward
-                } else {
-                    predictedLabel = "I" // Only Pinky extended straight up
-                }
-            } else if (thumbIndexDist > 0.12 && indexExtendDist > 0.25 && pinkyExtendDist < 0.32) {
-                predictedLabel = "C" // Curved hand forming 'C'
-            } else if (thumbIndexDist < 0.12 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35) {
-                predictedLabel = "F" // OK / F sign (Thumb & Index circle)
-            } else if (indexExtendDist > 0.30 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
-                predictedLabel = "X" // Hooked / Bent Index finger
             } else {
-                val idx = (Math.abs(thumbIndexDist * 100 + indexPinkyDist * 50).toInt()) % (alphabetLabelsMap.size.takeIf { it > 0 } ?: 28)
-                predictedLabel = alphabetLabelsMap[idx] ?: "A"
+                // Standard Upward / Fist signs
+                val isFist = indexExtendDist < 0.32 && middleExtendDist < 0.32 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28
+                if (isFist) {
+                    if (thumbExtendDist > 0.35 && thumbIndexDist > 0.16) {
+                        predictedLabel = "A" // Fist with Thumb extended out to side
+                    } else if (thumbIndexDist < 0.10) {
+                        predictedLabel = "S" // Fist with Thumb folded tightly over fingers
+                    } else if (thumbTipY > indexTipY && thumbIndexDist < 0.15) {
+                        predictedLabel = "E" // Fingertips curled down tightly to thumb base
+                    } else if (thumbMiddleDist < 0.12) {
+                        predictedLabel = "M" // Thumb tucked under fingers
+                    } else if (thumbIndexDist < 0.16) {
+                        predictedLabel = "T" // Thumb tucked under Index
+                    } else {
+                        predictedLabel = "S"
+                    }
+                } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist < 0.28) {
+                    predictedLabel = "W"
+                } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
+                    if (indexMiddleDist > 0.11) {
+                        predictedLabel = "V"
+                    } else if (thumbIndexDist > 0.20) {
+                        predictedLabel = "K"
+                    } else if (indexTipX < middleTipX) {
+                        predictedLabel = "R"
+                    } else {
+                        predictedLabel = "U"
+                    }
+                } else if (indexExtendDist > 0.40 && thumbExtendDist > 0.35 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
+                    predictedLabel = "L"
+                } else if (pinkyExtendDist > 0.35 && thumbExtendDist > 0.30 && indexExtendDist < 0.28 && middleExtendDist < 0.28) {
+                    predictedLabel = "Y"
+                } else if (indexExtendDist > 0.40 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
+                    if (thumbExtendDist > 0.30 && thumbIndexDist > 0.22) {
+                        predictedLabel = "G"
+                    } else if (thumbMiddleDist < 0.12) {
+                        predictedLabel = "D"
+                    } else {
+                        predictedLabel = "Z"
+                    }
+                } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28 && thumbExtendDist > 0.25) {
+                    predictedLabel = "H"
+                } else if (pinkyExtendDist > 0.35 && indexExtendDist < 0.28 && middleExtendDist < 0.28 && ringExtendDist < 0.28) {
+                    if (pinkyTipY > wristY) {
+                        predictedLabel = "J"
+                    } else {
+                        predictedLabel = "I"
+                    }
+                } else if (thumbIndexDist < 0.12 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35) {
+                    predictedLabel = "F"
+                } else if (indexExtendDist > 0.30 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
+                    predictedLabel = "X"
+                } else {
+                    val idx = (Math.abs(thumbIndexDist * 100 + indexPinkyDist * 50).toInt()) % (alphabetLabelsMap.size.takeIf { it > 0 } ?: 28)
+                    predictedLabel = alphabetLabelsMap[idx] ?: "A"
+                }
             }
         }
 
