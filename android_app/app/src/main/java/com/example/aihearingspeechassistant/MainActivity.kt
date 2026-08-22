@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Abc
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Book
@@ -33,13 +34,17 @@ import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -158,7 +163,7 @@ fun MainScreen(
                         .fillMaxSize()
                         .padding(20.dp)
                 ) {
-                    // Header Banner
+                    // Header Banner with Official BUP Logo
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -166,26 +171,45 @@ fun MainScreen(
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B))
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = "BUP Project Proposal",
-                                color = Color(0xFF818CF8),
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "AI-Driven Assistance for Hearing & Speech Impairments",
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(
+                                shape = CircleShape,
                                 color = Color.White,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                text = "Dept of ICT, FST, BUP",
-                                color = Color(0xFF94A3B8),
-                                fontSize = 11.sp
-                            )
+                                modifier = Modifier.size(52.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.bup_logo),
+                                    contentDescription = "BUP Logo",
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .fillMaxSize()
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "BUP Project Proposal",
+                                    color = Color(0xFF818CF8),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "AI-Driven Assistance for Hearing & Speech Impairments",
+                                    color = Color.White,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Dept of ICT, FST, BUP",
+                                    color = Color(0xFF94A3B8),
+                                    fontSize = 11.sp
+                                )
+                            }
                         }
                     }
 
@@ -387,13 +411,14 @@ fun MainScreen(
             when (activeBottomTab) {
                 "TRANSLATOR" -> {
                     if (hasCameraPermission) {
-                        // Segmented Tab Selector Bar (Alphabets vs Digits vs All Signs)
+                        // Ultra-Premium Vector Segmented Mode Selector Bar
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 12.dp),
                             shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                         ) {
                             Row(
                                 modifier = Modifier
@@ -402,12 +427,12 @@ fun MainScreen(
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 val modes = listOf(
-                                    "ALPHABET" to "🔤 Alphabets",
-                                    "DIGIT" to "🔢 Digits (0-9)",
-                                    "ALL" to "🌐 All Signs"
+                                    Triple("ALPHABET", "Alphabets", Icons.Default.Abc),
+                                    Triple("DIGIT", "Digits 0-9", Icons.Default.Numbers),
+                                    Triple("ALL", "All Signs", Icons.Default.Public)
                                 )
 
-                                modes.forEach { (modeKey, modeTitle) ->
+                                modes.forEach { (modeKey, modeTitle, icon) ->
                                     val isSelected = selectedMode == modeKey
                                     val backgroundColor by animateColorAsState(
                                         if (isSelected) Color(0xFF6366F1) else Color.Transparent,
@@ -427,12 +452,24 @@ fun MainScreen(
                                             .padding(vertical = 10.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(
-                                            text = modeTitle,
-                                            color = textColor,
-                                            fontSize = 13.sp,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                                        )
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Icon(
+                                                imageVector = icon,
+                                                contentDescription = modeTitle,
+                                                tint = textColor,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(
+                                                text = modeTitle,
+                                                color = textColor,
+                                                fontSize = 12.sp,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                            )
+                                        }
                                     }
                                 }
                             }
