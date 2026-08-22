@@ -317,13 +317,15 @@ fun MainScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         val shortcuts = listOf(
-                            Triple(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", Icons.Default.CameraAlt, "TRANSLATOR"),
-                            Triple(if (isBanglaLanguage) "লিসেন" else "Listen", Icons.Default.Mic, "LISTEN"),
-                            Triple(if (isBanglaLanguage) "অভিধান" else "Dictionary", Icons.Default.Book, "DICTIONARY"),
-                            Triple(if (isBanglaLanguage) "অনুভূতি" else "Emotions", Icons.Default.EmojiEmotions, "EMOTIONS")
+                            Triple(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", Icons.Default.CameraAlt, "TRANSLATOR" to Color(0xFF818CF8)),
+                            Triple(if (isBanglaLanguage) "লিসেন" else "Listen", Icons.Default.Mic, "LISTEN" to Color(0xFF34D399)),
+                            Triple(if (isBanglaLanguage) "অভিধান" else "Dictionary", Icons.Default.Book, "DICTIONARY" to Color(0xFFA5B4FC)),
+                            Triple(if (isBanglaLanguage) "অনুভূতি" else "Emotions", Icons.Default.EmojiEmotions, "EMOTIONS" to Color(0xFFF472B6))
                         )
 
-                        shortcuts.forEach { (label, icon, tabKey) ->
+                        shortcuts.forEach { (label, icon, tabData) ->
+                            val (tabKey, accentColor) = tabData
+                            val isSelected = activeBottomTab == tabKey
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
@@ -335,17 +337,17 @@ fun MainScreen(
                             ) {
                                 Surface(
                                     shape = CircleShape,
-                                    color = Color(0xFF1E293B),
-                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(listOf(Color(0xFF6366F1), Color(0xFF38BDF8)))),
+                                    color = if (isSelected) accentColor.copy(alpha = 0.25f) else Color(0xFF1E293B),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) accentColor else Color(0xFF334155)),
                                     modifier = Modifier.size(54.dp),
-                                    shadowElevation = 6.dp
+                                    shadowElevation = if (isSelected) 8.dp else 2.dp
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(imageVector = icon, contentDescription = label, tint = Color(0xFF818CF8), modifier = Modifier.size(24.dp))
+                                        Icon(imageVector = icon, contentDescription = label, tint = if (isSelected) Color.White else accentColor, modifier = Modifier.size(24.dp))
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(6.dp))
-                                Text(label, color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(label, color = if (isSelected) accentColor else Color.White, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold)
                             }
                         }
                     }
@@ -587,18 +589,16 @@ fun MainScreen(
                     title = {
                         Column(modifier = Modifier.padding(start = 2.dp)) {
                             Text(
-                                if (isBanglaLanguage) "এআই শ্রবণ ও বাক সহকারী" else "AI Sign & Speech Assistant",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 13.sp,
-                                color = Color.White,
-                                maxLines = 1
+                                text = if (isBanglaLanguage) "এআই শ্রবণ ও বাক সহকারী" else "AI Sign & Speech Assistant",
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 12.sp,
+                                color = Color.White
                             )
                             Text(
-                                if (isBanglaLanguage) "বিইউপি এমআইসিটি-২০২৩ | সুপারভাইজার: ড. আহমেদুল কবীর" else "BUP MICT-2023 | Sup: Dr. Ahmedul Kabir",
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFFA5B4FC),
-                                maxLines = 1
+                                text = if (isBanglaLanguage) "বিইউপি এমআইসিটি-২০২৩ | সুপারভাইজার: ড. আহমেদুল কবীর" else "BUP MICT-2023 | Supervisor: Dr. Ahmedul Kabir",
+                                fontSize = 8.5.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFFA5B4FC)
                             )
                         }
                     },
@@ -805,11 +805,11 @@ fun MainScreen(
             when (activeBottomTab) {
                 "TRANSLATOR" -> {
                     if (hasCameraPermission) {
-                        // Ultra-Compact Dashboard Metric Counter Bar
+                        // Ultra-Compact Dashboard Metric Counter Bar with 3D Glassmorphism Badges
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 6.dp),
+                                .padding(bottom = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             val metrics = listOf(
@@ -819,16 +819,17 @@ fun MainScreen(
                             )
 
                             metrics.forEach { (value, label, accentColor) ->
-                                Card(
+                                Surface(
                                     modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(10.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                    shape = RoundedCornerShape(14.dp),
+                                    color = Color(0xFF1E293B).copy(alpha = 0.7f),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, accentColor.copy(alpha = 0.6f)),
+                                    shadowElevation = 4.dp
                                 ) {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(vertical = 5.dp, horizontal = 2.dp),
+                                            .padding(vertical = 6.dp, horizontal = 4.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
@@ -841,78 +842,54 @@ fun MainScreen(
                                             text = label,
                                             color = Color(0xFF94A3B8),
                                             fontSize = 8.sp,
-                                            fontWeight = FontWeight.Medium
+                                            fontWeight = FontWeight.Bold
                                         )
                                     }
                                 }
                             }
                         }
 
-                        // Compact Segmented Mode Selector Bar
-                        Card(
+                        // Compact Segmented Mode Selector Bar with 3D Glassmorphism Pills
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 8.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(3.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                val modes = listOf(
-                                    Triple("ALPHABET", if (isBanglaLanguage) "বর্ণমালা" else "Alphabets", Icons.Default.Abc),
-                                    Triple("DIGIT", if (isBanglaLanguage) "সংখ্যা ০-৯" else "Digits 0-9", Icons.Default.Numbers),
-                                    Triple("ALL", if (isBanglaLanguage) "সকল সংকেত" else "All Signs", Icons.Default.Public)
-                                )
+                            val modes = listOf(
+                                Triple("ALPHABET", if (isBanglaLanguage) "বর্ণমালা" else "Alphabets", Icons.Default.Abc),
+                                Triple("DIGIT", if (isBanglaLanguage) "সংখ্যা ০-৯" else "Digits 0-9", Icons.Default.Numbers),
+                                Triple("ALL", if (isBanglaLanguage) "সকল সংকেত" else "All Signs", Icons.Default.Public)
+                            )
 
-                                modes.forEach { (modeKey, modeTitle, icon) ->
-                                    val isSelected = selectedMode == modeKey
-                                    val textColor by animateColorAsState(
-                                        if (isSelected) Color.White else Color(0xFF94A3B8),
-                                        label = "tabText"
-                                    )
-
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .then(
-                                                if (isSelected) {
-                                                    Modifier.background(
-                                                        Brush.horizontalGradient(
-                                                            colors = listOf(Color(0xFF6366F1), Color(0xFF818CF8))
-                                                        )
-                                                    )
-                                                } else {
-                                                    Modifier.background(Color.Transparent)
-                                                }
-                                            )
-                                            .clickable { selectedMode = modeKey }
-                                            .padding(vertical = 6.dp),
-                                        contentAlignment = Alignment.Center
+                            modes.forEach { (modeKey, modeTitle, icon) ->
+                                val isSelected = selectedMode == modeKey
+                                Surface(
+                                    onClick = { selectedMode = modeKey },
+                                    shape = RoundedCornerShape(20.dp),
+                                    color = if (isSelected) Color(0xFF4F46E5) else Color(0xFF1E293B).copy(alpha = 0.7f),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color(0xFF818CF8) else Color(0xFF334155)),
+                                    modifier = Modifier.weight(1f),
+                                    shadowElevation = if (isSelected) 8.dp else 0.dp
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
                                     ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Icon(
-                                                imageVector = icon,
-                                                contentDescription = modeTitle,
-                                                tint = textColor,
-                                                modifier = Modifier.size(15.dp)
-                                            )
-                                            Spacer(modifier = Modifier.width(4.dp))
-                                            Text(
-                                                text = modeTitle,
-                                                color = textColor,
-                                                fontSize = 11.sp,
-                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                                            )
-                                        }
+                                        Icon(
+                                            imageVector = icon,
+                                            contentDescription = modeTitle,
+                                            tint = if (isSelected) Color.White else Color(0xFF94A3B8),
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = modeTitle,
+                                            color = if (isSelected) Color.White else Color(0xFF94A3B8),
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.ExtraBold
+                                        )
                                     }
                                 }
                             }
