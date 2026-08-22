@@ -580,25 +580,20 @@ fun MainScreen(
                         }
                     },
                     title = {
-                        Column(modifier = Modifier.padding(start = 4.dp)) {
+                        Column(modifier = Modifier.padding(start = 2.dp)) {
                             Text(
-                                if (isBanglaLanguage) "বাক ও শ্রবণপ্রতিবন্ধীদের এআই সহকারী" else "AI Assistance for Hearing & Speech Impairments",
+                                if (isBanglaLanguage) "এআই শ্রবণ ও বাক সহকারী" else "AI Sign & Speech Assistant",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
+                                fontSize = 13.sp,
                                 color = Color.White,
                                 maxLines = 1
                             )
-                            Spacer(modifier = Modifier.height(1.dp))
                             Text(
-                                if (isBanglaLanguage) "বিইউপি এমআইসিটি-২০২৩ | আইসিটি বিভাগ" else "BUP MICT-2023 | Dept of ICT",
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFFA5B4FC)
-                            )
-                            Text(
-                                if (isBanglaLanguage) "তত্ত্বাবধায়ক: ড. আহমেদুল কবীর" else "Supervisor: Dr. Ahmedul Kabir",
-                                fontSize = 10.sp,
-                                color = Color(0xFF38BDF8)
+                                if (isBanglaLanguage) "বিইউপি এমআইসিটি-২০২৩ | সুপারভাইজার: ড. আহমেদুল কবীর" else "BUP MICT-2023 | Sup: Dr. Ahmedul Kabir",
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFFA5B4FC),
+                                maxLines = 1
                             )
                         }
                     },
@@ -757,41 +752,42 @@ fun MainScreen(
             when (activeBottomTab) {
                 "TRANSLATOR" -> {
                     if (hasCameraPermission) {
-                        // Dashboard Metric Counter Bar (Inspired by Bdjobs Header Stats: Live Jobs, Companies, New Jobs)
+                        // Ultra-Compact Dashboard Metric Counter Bar
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                .padding(bottom = 6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             val metrics = listOf(
                                 Triple("36", if (isBanglaLanguage) "মোট সংকেত" else "Supported Signs", Color(0xFF818CF8)),
-                                Triple("99.9%", if (isBanglaLanguage) "মডেল নির্ভুলতা" else "Model Accuracy", Color(0xFF34D399)),
-                                Triple("12ms", if (isBanglaLanguage) "অন-ডিভাইস সময়" else "On-Device Latency", Color(0xFF38BDF8))
+                                Triple("99.9%", if (isBanglaLanguage) "নির্ভুলতা" else "Model Accuracy", Color(0xFF34D399)),
+                                Triple("12ms", if (isBanglaLanguage) "প্রসেসিং লেটেন্সি" else "On-Device Latency", Color(0xFF38BDF8))
                             )
+
                             metrics.forEach { (value, label, accentColor) ->
                                 Card(
                                     modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(14.dp),
+                                    shape = RoundedCornerShape(10.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                 ) {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(vertical = 8.dp, horizontal = 4.dp),
+                                            .padding(vertical = 5.dp, horizontal = 2.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
                                             text = value,
                                             color = accentColor,
-                                            fontSize = 15.sp,
+                                            fontSize = 13.sp,
                                             fontWeight = FontWeight.ExtraBold
                                         )
                                         Text(
                                             text = label,
                                             color = Color(0xFF94A3B8),
-                                            fontSize = 9.sp,
+                                            fontSize = 8.sp,
                                             fontWeight = FontWeight.Medium
                                         )
                                     }
@@ -799,19 +795,19 @@ fun MainScreen(
                             }
                         }
 
-                        // Ultra-Premium Vector Segmented Mode Selector Bar
+                        // Compact Segmented Mode Selector Bar
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 12.dp),
-                            shape = RoundedCornerShape(16.dp),
+                                .padding(bottom = 8.dp),
+                            shape = RoundedCornerShape(12.dp),
                             colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(4.dp),
+                                    .padding(3.dp),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 val modes = listOf(
@@ -830,7 +826,7 @@ fun MainScreen(
                                     Box(
                                         modifier = Modifier
                                             .weight(1f)
-                                            .clip(RoundedCornerShape(12.dp))
+                                            .clip(RoundedCornerShape(8.dp))
                                             .then(
                                                 if (isSelected) {
                                                     Modifier.background(
@@ -843,7 +839,7 @@ fun MainScreen(
                                                 }
                                             )
                                             .clickable { selectedMode = modeKey }
-                                            .padding(vertical = 10.dp),
+                                            .padding(vertical = 6.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Row(
@@ -854,13 +850,13 @@ fun MainScreen(
                                                 imageVector = icon,
                                                 contentDescription = modeTitle,
                                                 tint = textColor,
-                                                modifier = Modifier.size(18.dp)
+                                                modifier = Modifier.size(15.dp)
                                             )
-                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Spacer(modifier = Modifier.width(4.dp))
                                             Text(
                                                 text = modeTitle,
                                                 color = textColor,
-                                                fontSize = 12.sp,
+                                                fontSize = 11.sp,
                                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                                             )
                                         }
@@ -869,12 +865,12 @@ fun MainScreen(
                             }
                         }
 
-                        // Live Camera View with MediaPipe & Dual TFLite Models
+                        // Live Camera View with Optimized Proportions
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
-                                .clip(RoundedCornerShape(24.dp))
+                                .clip(RoundedCornerShape(18.dp))
                                 .background(Color.Black)
                         ) {
                             var lastAddedGesture by remember { mutableStateOf("") }
@@ -912,164 +908,157 @@ fun MainScreen(
                             Surface(
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
-                                    .padding(16.dp),
-                                shape = RoundedCornerShape(12.dp),
-                                color = Color(0xAA000000)
+                                    .padding(10.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xCC000000)
                             ) {
                                 Row(
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .size(10.dp)
+                                            .size(8.dp)
                                             .clip(CircleShape)
                                             .background(if (confidence > 0.8f) Color(0xFF10B981) else Color(0xFFF59E0B))
                                     )
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(6.dp))
                                     Text(
                                         text = "$currentGesture (${(confidence * 100).toInt()}%)",
                                         color = Color.White,
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp
+                                        fontSize = 12.sp
                                     )
                                 }
                             }
 
-                            // Overlay Badge for Live MSc Academic Latency & Facial Expression AI Stats
+                            // Overlay Badges for Performance & Facial Expression
                             Column(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
-                                    .padding(16.dp),
+                                    .padding(10.dp),
                                 horizontalAlignment = Alignment.End,
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Surface(
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = RoundedCornerShape(8.dp),
                                     color = Color(0xCC1E1B4B)
                                 ) {
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = "⚡ 30 FPS | 12ms",
-                                            color = Color(0xFF38BDF8),
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 11.sp
-                                        )
-                                    }
+                                    Text(
+                                        text = "⚡ 30 FPS | 12ms",
+                                        color = Color(0xFF38BDF8),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 9.sp,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                                    )
                                 }
 
                                 Surface(
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = RoundedCornerShape(8.dp),
                                     color = Color(0xCC831843)
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Icon(Icons.Default.Face, contentDescription = "Facial AI", tint = Color(0xFFF472B6), modifier = Modifier.size(12.dp))
-                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Icon(Icons.Default.Face, contentDescription = "Facial AI", tint = Color(0xFFF472B6), modifier = Modifier.size(10.dp))
+                                        Spacer(modifier = Modifier.width(3.dp))
                                         Text(
-                                            text = if (isBanglaLanguage) "মুখের ভাব: হাসিখুশি (AI active)" else "Face: Happy (AI active)",
+                                            text = if (isBanglaLanguage) "মুখের ভাব: হাসিখুশি" else "Face: Happy AI",
                                             color = Color.White,
                                             fontWeight = FontWeight.Bold,
-                                            fontSize = 9.sp
+                                            fontSize = 8.sp
                                         )
                                     }
                                 }
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        // Real-time Text Translation Output Card
+                        // Compact Text Translation Output Card
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(140.dp),
-                            shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                                .height(115.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(16.dp),
+                                    .padding(horizontal = 14.dp, vertical = 10.dp),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
                                     text = if (isBanglaLanguage) "অনুবাদিত টেক্সট আউটপুট:" else "Translated Text Output:",
                                     color = Color(0xFF94A3B8),
-                                    fontSize = 12.sp,
+                                    fontSize = 11.sp,
                                     fontWeight = FontWeight.Medium
                                 )
 
-                                // Accumulated Sentence & Current Gesture View
                                 Text(
                                     text = if (translatedSentence.isNotEmpty()) translatedSentence else when {
-                                        currentGesture == "Detecting..." -> if (isBanglaLanguage) "ক্যামেরার সামনে হাত উঁচিয়ে সংকেত প্রদর্শন করুন..." else "Show hand sign to camera..."
-                                        currentGesture == "nothing" -> if (isBanglaLanguage) "ক্যামেরার সামনে হাত উঁচিয়ে সংকেত প্রদর্শন করুন..." else "Show hand sign to camera..."
-                                        selectedMode == "DIGIT" -> if (isBanglaLanguage) "শনাক্তকৃত সংখ্যা: $currentGesture" else "Detected Digit: $currentGesture"
-                                        selectedMode == "ALPHABET" -> if (isBanglaLanguage) "শনাক্তকৃত বর্ণ: $currentGesture" else "Detected Alphabet: $currentGesture"
-                                        else -> if (isBanglaLanguage) "শনাক্তকৃত সংকেত: $currentGesture" else "Detected Sign: $currentGesture"
+                                        currentGesture == "Detecting..." -> if (isBanglaLanguage) "ক্যামেরায় হাত দিয়ে সংকেত দেখান..." else "Show hand sign to camera..."
+                                        currentGesture == "nothing" -> if (isBanglaLanguage) "ক্যামেরায় হাত দিয়ে সংকেত দেখান..." else "Show hand sign to camera..."
+                                        selectedMode == "DIGIT" -> if (isBanglaLanguage) "সংখ্যা: $currentGesture" else "Digit: $currentGesture"
+                                        selectedMode == "ALPHABET" -> if (isBanglaLanguage) "বর্ণ: $currentGesture" else "Alphabet: $currentGesture"
+                                        else -> if (isBanglaLanguage) "সংকেত: $currentGesture" else "Sign: $currentGesture"
                                     },
                                     color = if (translatedSentence.isEmpty() && (currentGesture == "nothing" || currentGesture == "Detecting...")) Color(0xFF64748B) else Color(0xFF38BDF8),
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontSize = 17.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 2
                                 )
 
-                                // Action Buttons: Backspace, Clear & Speak Text (3D Elevated Style)
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.End,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    // 3D Elevated Backspace Button
                                     Surface(
                                         onClick = {
                                             if (translatedSentence.isNotEmpty()) {
                                                 translatedSentence = translatedSentence.dropLast(1)
                                             }
                                         },
-                                        shape = RoundedCornerShape(12.dp),
+                                        shape = RoundedCornerShape(10.dp),
                                         color = Color(0xFF334155),
-                                        shadowElevation = 6.dp,
-                                        modifier = Modifier.size(40.dp)
+                                        shadowElevation = 4.dp,
+                                        modifier = Modifier.size(34.dp)
                                     ) {
                                         Box(contentAlignment = Alignment.Center) {
                                             Icon(
                                                 Icons.Default.Backspace,
                                                 contentDescription = "Delete Last",
                                                 tint = Color.White,
-                                                modifier = Modifier.size(20.dp)
+                                                modifier = Modifier.size(16.dp)
                                             )
                                         }
                                     }
 
-                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Spacer(modifier = Modifier.width(8.dp))
 
-                                    // 3D Elevated Clear All Button
                                     Surface(
                                         onClick = { translatedSentence = "" },
-                                        shape = RoundedCornerShape(12.dp),
+                                        shape = RoundedCornerShape(10.dp),
                                         color = Color(0xFF991B1B),
-                                        shadowElevation = 6.dp,
-                                        modifier = Modifier.size(40.dp)
+                                        shadowElevation = 4.dp,
+                                        modifier = Modifier.size(34.dp)
                                     ) {
                                         Box(contentAlignment = Alignment.Center) {
                                             Icon(
                                                 Icons.Default.Clear,
                                                 contentDescription = "Clear All",
                                                 tint = Color.White,
-                                                modifier = Modifier.size(20.dp)
+                                                modifier = Modifier.size(16.dp)
                                             )
                                         }
                                     }
 
-                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Spacer(modifier = Modifier.width(8.dp))
 
-                                    // 3D Gradient Speak Button
                                     Button(
                                         onClick = { onSpeakText(translatedSentence) },
                                         enabled = translatedSentence.isNotEmpty() && isTtsReady,
