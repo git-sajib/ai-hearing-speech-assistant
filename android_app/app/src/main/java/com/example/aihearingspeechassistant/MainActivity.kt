@@ -270,17 +270,65 @@ fun MainScreen(
                         }
                     }
 
-                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 8.dp))
+                    // bKash-Inspired Circular Quick Feature Grid Shortcuts in Drawer
+                    Text(
+                        text = "QUICK NAVIGATION SHORTCUTS",
+                        color = Color(0xFF64748B),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        val shortcuts = listOf(
+                            Triple("Sign AI", Icons.Default.CameraAlt, "TRANSLATOR"),
+                            Triple("Listen", Icons.Default.Mic, "LISTEN"),
+                            Triple("Dictionary", Icons.Default.Book, "DICTIONARY")
+                        )
+
+                        shortcuts.forEach { (label, icon, tabKey) ->
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .clickable {
+                                        activeBottomTab = tabKey
+                                        scope.launch { drawerState.close() }
+                                    }
+                                    .padding(4.dp)
+                            ) {
+                                Surface(
+                                    shape = CircleShape,
+                                    color = Color(0xFF1E293B),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(listOf(Color(0xFF6366F1), Color(0xFF38BDF8)))),
+                                    modifier = Modifier.size(54.dp),
+                                    shadowElevation = 6.dp
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(imageVector = icon, contentDescription = label, tint = Color(0xFF818CF8), modifier = Modifier.size(24.dp))
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(label, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+
+                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 10.dp))
 
                     Text(
                         text = "PROJECT TEAM",
                         color = Color(0xFF64748B),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 6.dp)
+                        modifier = Modifier.padding(vertical = 4.dp)
                     )
 
-                    // Team Members List
+                    // Team Members List with Circular Gradient Avatars
                     val teamMembers = listOf(
                         "Samiul Islam" to "Roll: 23549908006 | Reg: 109901230006",
                         "Ahnaf Sayed" to "Roll: 23549908020 | Reg: 109901230020",
@@ -291,49 +339,50 @@ fun MainScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 6.dp),
+                                .padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(CircleShape)
-                                    .background(Color(0xFF312E81)),
-                                contentAlignment = Alignment.Center
+                            Surface(
+                                shape = CircleShape,
+                                color = Color(0xFF312E81),
+                                modifier = Modifier.size(36.dp),
+                                shadowElevation = 4.dp
                             ) {
-                                Text(
-                                    text = name.first().toString(),
-                                    color = Color(0xFFA5B4FC),
-                                    fontWeight = FontWeight.Bold
-                                )
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(
+                                        text = name.first().toString(),
+                                        color = Color(0xFF38BDF8),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
-                                Text(name, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
-                                Text(info, color = Color(0xFF94A3B8), fontSize = 10.sp)
+                                Text(name, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                                Text(info, color = Color(0xFF94A3B8), fontSize = 9.sp)
                             }
                         }
                     }
 
-                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 12.dp))
+                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(
                         text = "SUPERVISOR",
                         color = Color(0xFF64748B),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 4.dp)
+                        modifier = Modifier.padding(vertical = 2.dp)
                     )
                     Text(
                         text = "Dr. Ahmedul Kabir",
                         color = Color(0xFF38BDF8),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                        fontSize = 13.sp
                     )
                     Text(
                         text = "Affiliation: University of Dhaka",
                         color = Color(0xFF94A3B8),
-                        fontSize = 11.sp
+                        fontSize = 10.sp
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -993,56 +1042,105 @@ fun MainScreen(
                 }
 
                 "DICTIONARY" -> {
-                    // Interactive Sign Language Reference Dictionary Grid View (Full Alphabets A-Z & Digits 0-9)
+                    // bKash-Inspired Interactive Sign Dictionary with Search Filter Bar & 3D Circular Avatar Cards
+                    var searchQuery by remember { mutableStateOf("") }
+                    var filterCategory by remember { mutableStateOf("ALL") } // ALL, ALPHABET, DIGIT
+
                     Column(modifier = Modifier.fillMaxSize()) {
-                        Text(
-                            text = "ASL Sign Reference (36 Supported Gestures)",
-                            color = Color.White,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 12.dp)
+                        // Search Bar
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = { Text("Search 36 ASL gesture signs...", color = Color(0xFF64748B), fontSize = 13.sp) },
+                            leadingIcon = { Icon(Icons.Default.Clear, contentDescription = "Search", tint = Color(0xFF818CF8)) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = Color(0xFF1E293B),
+                                unfocusedContainerColor = Color(0xFF1E293B),
+                                focusedBorderColor = Color(0xFF6366F1),
+                                unfocusedBorderColor = Color(0xFF334155),
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White
+                            ),
+                            singleLine = true
                         )
+
+                        // Filter Category Chips
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            val categories = listOf("ALL" to "All Signs (36)", "ALPHABET" to "Alphabets (A-Z)", "DIGIT" to "Digits (0-9)")
+                            categories.forEach { (catKey, catLabel) ->
+                                val isSelected = filterCategory == catKey
+                                Surface(
+                                    onClick = { filterCategory = catKey },
+                                    shape = RoundedCornerShape(20.dp),
+                                    color = if (isSelected) Color(0xFF4F46E5) else Color(0xFF1E293B),
+                                    border = if (isSelected) null else androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF334155)),
+                                    shadowElevation = if (isSelected) 4.dp else 0.dp
+                                ) {
+                                    Text(
+                                        text = catLabel,
+                                        color = if (isSelected) Color.White else Color(0xFF94A3B8),
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                    )
+                                }
+                            }
+                        }
 
                         val dictionaryItems = listOf(
                             // Alphabets A-Z
-                            "A" to "🔤 Fist, thumb straight on side",
-                            "B" to "🔤 4 fingers up, thumb tucked",
-                            "C" to "🔤 Curved open hand C shape",
-                            "D" to "🔤 Index up, thumb touches middle",
-                            "E" to "🔤 Fingertips curled to thumb",
-                            "F" to "🔤 Index & thumb circle, 3 up",
-                            "G" to "🔤 Index & thumb point left",
-                            "H" to "🔤 Index & middle point left",
-                            "I" to "🔤 Pinky finger extended up",
-                            "J" to "🔤 Pinky traces J in air",
-                            "K" to "🔤 Index up, middle forward",
-                            "L" to "🔤 L shape with index & thumb",
-                            "M" to "🔤 Thumb under 3 fingers",
-                            "N" to "🔤 Thumb under 2 fingers",
-                            "O" to "🔤 All fingers touch thumb O",
-                            "P" to "🔤 K gesture pointed down",
-                            "Q" to "🔤 G gesture pointed down",
-                            "R" to "🔤 Index & middle crossed",
-                            "S" to "🔤 Fist with thumb over fingers",
-                            "T" to "🔤 Thumb tucked under index",
-                            "U" to "🔤 Index & middle together up",
-                            "V" to "🔤 V sign 2 fingers extended",
-                            "W" to "🔤 3 fingers extended up",
-                            "X" to "🔤 Index finger hooked/curled",
-                            "Y" to "🔤 Thumb & pinky extended",
-                            "Z" to "🔤 Index traces Z in air",
+                            Triple("A", "ALPHABET", "🔤 Fist, thumb straight on side"),
+                            Triple("B", "ALPHABET", "🔤 4 fingers up, thumb tucked"),
+                            Triple("C", "ALPHABET", "🔤 Curved open hand C shape"),
+                            Triple("D", "ALPHABET", "🔤 Index up, thumb touches middle"),
+                            Triple("E", "ALPHABET", "🔤 Fingertips curled to thumb"),
+                            Triple("F", "ALPHABET", "🔤 Index & thumb circle, 3 up"),
+                            Triple("G", "ALPHABET", "🔤 Index & thumb point left"),
+                            Triple("H", "ALPHABET", "🔤 Index & middle point left"),
+                            Triple("I", "ALPHABET", "🔤 Pinky finger extended up"),
+                            Triple("J", "ALPHABET", "🔤 Pinky traces J in air"),
+                            Triple("K", "ALPHABET", "🔤 Index up, middle forward"),
+                            Triple("L", "ALPHABET", "🔤 L shape with index & thumb"),
+                            Triple("M", "ALPHABET", "🔤 Thumb under 3 fingers"),
+                            Triple("N", "ALPHABET", "🔤 Thumb under 2 fingers"),
+                            Triple("O", "ALPHABET", "🔤 All fingers touch thumb O"),
+                            Triple("P", "ALPHABET", "🔤 K gesture pointed down"),
+                            Triple("Q", "ALPHABET", "🔤 G gesture pointed down"),
+                            Triple("R", "ALPHABET", "🔤 Index & middle crossed"),
+                            Triple("S", "ALPHABET", "🔤 Fist with thumb over fingers"),
+                            Triple("T", "ALPHABET", "🔤 Thumb tucked under index"),
+                            Triple("U", "ALPHABET", "🔤 Index & middle together up"),
+                            Triple("V", "ALPHABET", "🔤 V sign 2 fingers extended"),
+                            Triple("W", "ALPHABET", "🔤 3 fingers extended up"),
+                            Triple("X", "ALPHABET", "🔤 Index finger hooked/curled"),
+                            Triple("Y", "ALPHABET", "🔤 Thumb & pinky extended"),
+                            Triple("Z", "ALPHABET", "🔤 Index traces Z in air"),
                             // Digits 0-9
-                            "0" to "🔢 Curved O digit shape",
-                            "1" to "🔢 Index finger extended up",
-                            "2" to "🔢 Index & middle extended",
-                            "3" to "🔢 Thumb, index, middle out",
-                            "4" to "🔢 4 fingers up, thumb in",
-                            "5" to "🔢 Open hand 5 fingers spread",
-                            "6" to "🔢 Pinky touches thumb tip",
-                            "7" to "🔢 Ring finger touches thumb",
-                            "8" to "🔢 Middle finger touches thumb",
-                            "9" to "🔢 Index touches thumb tip"
+                            Triple("0", "DIGIT", "🔢 Curved O digit shape"),
+                            Triple("1", "DIGIT", "🔢 Index finger extended up"),
+                            Triple("2", "DIGIT", "🔢 Index & middle extended"),
+                            Triple("3", "DIGIT", "🔢 Thumb, index, middle out"),
+                            Triple("4", "DIGIT", "🔢 4 fingers up, thumb in"),
+                            Triple("5", "DIGIT", "🔢 Open hand 5 fingers spread"),
+                            Triple("6", "DIGIT", "🔢 Pinky touches thumb tip"),
+                            Triple("7", "DIGIT", "🔢 Ring finger touches thumb"),
+                            Triple("8", "DIGIT", "🔢 Middle finger touches thumb"),
+                            Triple("9", "DIGIT", "🔢 Index touches thumb tip")
                         )
+
+                        val filteredItems = dictionaryItems.filter { (label, category, desc) ->
+                            (filterCategory == "ALL" || category == filterCategory) &&
+                            (searchQuery.isEmpty() || label.contains(searchQuery, ignoreCase = true) || desc.contains(searchQuery, ignoreCase = true))
+                        }
 
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
@@ -1050,34 +1148,38 @@ fun MainScreen(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(dictionaryItems) { (label, desc) ->
+                            items(filteredItems) { (label, category, desc) ->
                                 Card(
-                                    shape = RoundedCornerShape(16.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+                                    shape = RoundedCornerShape(18.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                                 ) {
                                     Column(
-                                        modifier = Modifier.padding(16.dp),
+                                        modifier = Modifier.padding(14.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(48.dp)
-                                                .clip(CircleShape)
-                                                .background(Color(0xFF312E81)),
-                                            contentAlignment = Alignment.Center
+                                        Surface(
+                                            shape = CircleShape,
+                                            color = Color(0xFF1E1B4B),
+                                            border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(listOf(Color(0xFF6366F1), Color(0xFF38BDF8)))),
+                                            modifier = Modifier.size(52.dp),
+                                            shadowElevation = 6.dp
                                         ) {
-                                            Text(
-                                                text = label,
-                                                color = Color(0xFF38BDF8),
-                                                fontSize = 22.sp,
-                                                fontWeight = FontWeight.Bold
-                                            )
+                                            Box(contentAlignment = Alignment.Center) {
+                                                Text(
+                                                    text = label,
+                                                    color = Color(0xFF38BDF8),
+                                                    fontSize = 22.sp,
+                                                    fontWeight = FontWeight.ExtraBold
+                                                )
+                                            }
                                         }
-                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Spacer(modifier = Modifier.height(10.dp))
                                         Text(
                                             text = desc,
                                             color = Color(0xFF94A3B8),
-                                            fontSize = 11.sp
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Medium
                                         )
                                     }
                                 }
