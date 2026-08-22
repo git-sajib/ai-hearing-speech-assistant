@@ -102,25 +102,30 @@ class GestureClassifier(private val context: Context) {
         val thumbRingDist = Math.hypot((ringTipX - thumbTipX).toDouble(), (ringTipY - thumbTipY).toDouble())
         val thumbMiddleDist = Math.hypot((middleTipX - thumbTipX).toDouble(), (middleTipY - thumbTipY).toDouble())
 
+        val thumbExtendDist = Math.hypot((thumbTipX - wristX).toDouble(), (thumbTipY - wristY).toDouble())
+
         var predictedLabel = "0"
         var confidence = 0.98f
 
         if (mode == "DIGIT") {
             // Precision Geometric Rules for Sign-Language-Digits (0-9)
-            if (indexExtendDist < 0.25 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
+            if (indexExtendDist < 0.28 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
+                // Digit 0: All fingers curled into a fist/circle
                 predictedLabel = "0"
-            } else if (indexExtendDist > 0.35 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
+            } else if (indexExtendDist > 0.30 && middleExtendDist < 0.28 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
                 predictedLabel = "1"
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
+            } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist < 0.28 && pinkyExtendDist < 0.28) {
                 predictedLabel = "2"
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist < 0.25) {
+            } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist < 0.28) {
                 predictedLabel = "3"
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35 && thumbIndexDist < 0.25) {
+            } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist > 0.30 && thumbExtendDist < 0.28) {
+                // Digit 4: 4 fingers extended, Thumb tucked across palm
                 predictedLabel = "4"
-            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35 && thumbIndexDist > 0.30) {
+            } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist > 0.30 && thumbExtendDist >= 0.28) {
+                // Digit 5: All 5 fingers extended open hand
                 predictedLabel = "5"
             } else if (thumbPinkyDist < 0.18 && indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30) {
-                // Digit 6: Thumb touches Pinky tip, Index/Middle/Ring extended
+                // Digit 6: Thumb touches Pinky tip
                 predictedLabel = "6"
             } else if (thumbRingDist < 0.18 && indexExtendDist > 0.30 && middleExtendDist > 0.30 && pinkyExtendDist > 0.30) {
                 // Digit 7: Thumb touches Ring tip
@@ -129,7 +134,7 @@ class GestureClassifier(private val context: Context) {
                 // Digit 8: Thumb touches Middle tip
                 predictedLabel = "8"
             } else if (thumbIndexDist < 0.18 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist > 0.30) {
-                // Digit 9: Thumb touches Index tip, Middle/Ring/Pinky extended
+                // Digit 9: Thumb touches Index tip
                 predictedLabel = "9"
             } else {
                 val idx = (Math.abs(thumbIndexDist * 100 + indexPinkyDist * 50).toInt()) % (digitLabelsMap.size.takeIf { it > 0 } ?: 10)
