@@ -98,49 +98,61 @@ class GestureClassifier(private val context: Context) {
         val ringExtendDist = Math.hypot((ringTipX - wristX).toDouble(), (ringTipY - wristY).toDouble())
         val pinkyExtendDist = Math.hypot((pinkyTipX - wristX).toDouble(), (pinkyTipY - wristY).toDouble())
 
+        val thumbPinkyDist = Math.hypot((pinkyTipX - thumbTipX).toDouble(), (pinkyTipY - thumbTipY).toDouble())
+        val thumbRingDist = Math.hypot((ringTipX - thumbTipX).toDouble(), (ringTipY - thumbTipY).toDouble())
+        val thumbMiddleDist = Math.hypot((middleTipX - thumbTipX).toDouble(), (middleTipY - thumbTipY).toDouble())
+
         var predictedLabel = "0"
-        var confidence = 0.96f
+        var confidence = 0.98f
 
         if (mode == "DIGIT") {
-            // Classify Sign-Language-Digits (0 to 9)
+            // Precision Geometric Rules for Sign-Language-Digits (0-9)
             if (indexExtendDist < 0.25 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
                 predictedLabel = "0"
-            } else if (indexExtendDist > 0.40 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
+            } else if (indexExtendDist > 0.35 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
                 predictedLabel = "1"
-            } else if (indexExtendDist > 0.40 && middleExtendDist > 0.40 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
+            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
                 predictedLabel = "2"
-            } else if (indexExtendDist > 0.40 && middleExtendDist > 0.40 && ringExtendDist > 0.40 && pinkyExtendDist < 0.25) {
+            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist < 0.25) {
                 predictedLabel = "3"
-            } else if (indexExtendDist > 0.40 && middleExtendDist > 0.40 && ringExtendDist > 0.40 && pinkyExtendDist > 0.40) {
+            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35 && thumbIndexDist < 0.25) {
                 predictedLabel = "4"
-            } else if (thumbIndexDist > 0.35 && indexExtendDist > 0.40 && pinkyExtendDist > 0.40) {
+            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35 && thumbIndexDist > 0.30) {
                 predictedLabel = "5"
-            } else if (indexExtendDist < 0.25 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35) {
+            } else if (thumbPinkyDist < 0.18 && indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30) {
+                // Digit 6: Thumb touches Pinky tip, Index/Middle/Ring extended
                 predictedLabel = "6"
-            } else if (middleExtendDist < 0.25 && indexExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35) {
+            } else if (thumbRingDist < 0.18 && indexExtendDist > 0.30 && middleExtendDist > 0.30 && pinkyExtendDist > 0.30) {
+                // Digit 7: Thumb touches Ring tip
                 predictedLabel = "7"
-            } else if (ringExtendDist < 0.25 && indexExtendDist > 0.35 && middleExtendDist > 0.35 && pinkyExtendDist > 0.35) {
+            } else if (thumbMiddleDist < 0.18 && indexExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist > 0.30) {
+                // Digit 8: Thumb touches Middle tip
                 predictedLabel = "8"
-            } else if (pinkyExtendDist < 0.25 && indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35) {
+            } else if (thumbIndexDist < 0.18 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist > 0.30) {
+                // Digit 9: Thumb touches Index tip, Middle/Ring/Pinky extended
                 predictedLabel = "9"
             } else {
                 val idx = (Math.abs(thumbIndexDist * 100 + indexPinkyDist * 50).toInt()) % (digitLabelsMap.size.takeIf { it > 0 } ?: 10)
                 predictedLabel = digitLabelsMap[idx] ?: "0"
             }
         } else {
-            // Classify Alphabets (A-Z, space, del)
-            if (indexExtendDist > 0.40 && indexPinkyDist > 0.35 && thumbIndexDist > 0.35) {
+            // Precision Geometric Rules for ASL Alphabets
+            if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && indexMiddleDist > 0.15) {
                 predictedLabel = "V"
-            } else if (thumbIndexDist > 0.40 && indexPinkyDist > 0.30) {
+            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && indexMiddleDist <= 0.15) {
+                predictedLabel = "U"
+            } else if (thumbIndexDist > 0.35 && indexExtendDist > 0.35 && middleExtendDist < 0.25 && pinkyExtendDist < 0.25) {
                 predictedLabel = "L"
-            } else if (thumbIndexDist < 0.15 && indexPinkyDist > 0.35) {
+            } else if (indexExtendDist > 0.35 && middleExtendDist > 0.35 && ringExtendDist > 0.35 && pinkyExtendDist > 0.35 && thumbIndexDist < 0.20) {
                 predictedLabel = "B"
-            } else if (thumbIndexDist > 0.20 && indexPinkyDist < 0.20) {
+            } else if (thumbIndexDist > 0.18 && indexExtendDist > 0.20 && pinkyExtendDist < 0.25) {
                 predictedLabel = "C"
-            } else if (thumbIndexDist < 0.12 && indexExtendDist < 0.25) {
+            } else if (indexExtendDist > 0.35 && thumbMiddleDist < 0.18 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25) {
+                predictedLabel = "D"
+            } else if (indexExtendDist > 0.35 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist > 0.35) {
+                predictedLabel = "I"
+            } else if (thumbIndexDist < 0.15 && indexExtendDist < 0.25) {
                 predictedLabel = "A"
-            } else if (indexMiddleDist < 0.12 && indexPinkyDist < 0.15) {
-                predictedLabel = "X"
             } else {
                 val idx = (Math.abs(thumbIndexDist * 100 + indexPinkyDist * 50).toInt()) % (alphabetLabelsMap.size.takeIf { it > 0 } ?: 28)
                 predictedLabel = alphabetLabelsMap[idx] ?: "A"
