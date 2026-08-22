@@ -166,22 +166,6 @@ fun MainAppScreen(
                         onGestureDetected = { gesture, conf ->
                             currentGesture = gesture
                             confidence = conf
-
-                            // Smart Sentence Buffer Building
-                            if (conf > 0.85f && gesture != "nothing" && gesture != "Unknown") {
-                                if (gesture == "space") {
-                                    if (translatedSentence.isNotEmpty() && !translatedSentence.endsWith(" ")) {
-                                        translatedSentence += " "
-                                    }
-                                } else if (gesture == "del") {
-                                    if (translatedSentence.isNotEmpty()) {
-                                        translatedSentence = translatedSentence.dropLast(1)
-                                    }
-                                } else if (gesture != lastAddedChar) {
-                                    translatedSentence += gesture
-                                    lastAddedChar = gesture
-                                }
-                            }
                         }
                     )
 
