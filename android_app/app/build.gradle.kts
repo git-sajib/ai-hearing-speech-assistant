@@ -58,9 +58,8 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$cameraVersion")
     implementation("androidx.camera:camera-view:$cameraVersion")
 
-    // TensorFlow Lite    // MediaPipe Tasks Vision (Includes TFLite Task Engine)
+    // MediaPipe Tasks Vision (Bundles official TFLite C++ / Java runtime)
     implementation("com.google.mediapipe:tasks-vision:0.10.14")
-    implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.4")
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

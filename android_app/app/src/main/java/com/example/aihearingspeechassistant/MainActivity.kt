@@ -164,8 +164,10 @@ fun MainAppScreen(
                     CameraXInferenceView(
                         gestureClassifier = gestureClassifier,
                         onGestureDetected = { gesture, conf ->
-                            currentGesture = gesture
-                            confidence = conf
+                            if (conf >= 0.70f && gesture != "Unknown") {
+                                currentGesture = gesture
+                                confidence = conf
+                            }
                         }
                     )
 
@@ -222,11 +224,10 @@ fun MainAppScreen(
                         )
 
                         Text(
-                            text = if (translatedSentence.isEmpty()) "Start making hand gestures..." else translatedSentence,
-                            color = if (translatedSentence.isEmpty()) Color(0xFF64748B) else Color.White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.verticalScroll(rememberScrollState())
+                            text = if (currentGesture == "nothing" || currentGesture == "Detecting...") "Show hand sign to camera..." else "Detected Alphabet: $currentGesture",
+                            color = if (currentGesture == "nothing" || currentGesture == "Detecting...") Color(0xFF64748B) else Color(0xFF38BDF8),
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
                         )
 
                         // Action Buttons: Speak Text & Clear
