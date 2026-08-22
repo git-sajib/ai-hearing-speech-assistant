@@ -603,44 +603,64 @@ fun MainScreen(
                         }
                     },
                     actions = {
-                        // Dark / High-Contrast Light Theme Toggle Button
-                        Surface(
-                            onClick = { isDarkTheme = !isDarkTheme },
-                            shape = CircleShape,
-                            color = if (isDarkTheme) Color(0xFF312E81) else Color(0xFFF1F5F9),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0xFF818CF8) else Color(0xFF64748B)),
-                            modifier = Modifier.padding(end = 6.dp).size(34.dp)
+                        Row(
+                            modifier = Modifier.padding(end = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = if (isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
-                                    contentDescription = "Theme Toggle",
-                                    tint = if (isDarkTheme) Color(0xFFFDE047) else Color(0xFF0F172A),
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-                        }
-
-                        // Language Toggle Switcher Button [EN / BN]
-                        Surface(
-                            onClick = { isBanglaLanguage = !isBanglaLanguage },
-                            shape = RoundedCornerShape(20.dp),
-                            color = if (isBanglaLanguage) Color(0xFF047857) else Color(0xFF4338CA),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.6f)),
-                            modifier = Modifier.padding(end = 8.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                            // Ultra-Premium Theme Pill Capsule Switch
+                            Surface(
+                                onClick = { isDarkTheme = !isDarkTheme },
+                                shape = RoundedCornerShape(20.dp),
+                                color = if (isDarkTheme) Color(0xFF1E1B4B) else Color(0xFFE2E8F0),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(
+                                    if (isDarkTheme) listOf(Color(0xFF818CF8), Color(0xFF6366F1)) else listOf(Color(0xFF38BDF8), Color(0xFF0284C7))
+                                )),
+                                shadowElevation = 6.dp
                             ) {
-                                Icon(Icons.Default.Language, contentDescription = "Language", tint = Color.White, modifier = Modifier.size(16.dp))
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    if (isBanglaLanguage) "🇧🇩 বাংলা" else "🇬🇧 EN",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 11.sp,
-                                    color = Color.White
-                                )
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = if (isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
+                                        contentDescription = "Theme Toggle",
+                                        tint = if (isDarkTheme) Color(0xFFFDE047) else Color(0xFF0F172A),
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = if (isDarkTheme) "DARK" else "LIGHT",
+                                        fontWeight = FontWeight.ExtraBold,
+                                        fontSize = 10.sp,
+                                        color = if (isDarkTheme) Color.White else Color(0xFF0F172A)
+                                    )
+                                }
+                            }
+
+                            // Ultra-Premium Language Segmented Pill Switch [EN / BN]
+                            Surface(
+                                onClick = { isBanglaLanguage = !isBanglaLanguage },
+                                shape = RoundedCornerShape(20.dp),
+                                color = if (isBanglaLanguage) Color(0xFF065F46) else Color(0xFF312E81),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(
+                                    if (isBanglaLanguage) listOf(Color(0xFF34D399), Color(0xFF10B981)) else listOf(Color(0xFFA5B4FC), Color(0xFF6366F1))
+                                )),
+                                shadowElevation = 6.dp
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(Icons.Default.Language, contentDescription = "Language", tint = Color.White, modifier = Modifier.size(14.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = if (isBanglaLanguage) "🇧🇩 বাংলা" else "🇬🇧 EN",
+                                        fontWeight = FontWeight.ExtraBold,
+                                        fontSize = 10.sp,
+                                        color = Color.White
+                                    )
+                                }
                             }
                         }
                     },
@@ -651,10 +671,10 @@ fun MainScreen(
             },
             bottomBar = {
                 NavigationBar(
-                    containerColor = Color(0xFF0F172A),
-                    contentColor = Color.White,
+                    containerColor = if (isDarkTheme) Color(0xFF0F172A) else Color(0xFFFFFFFF),
+                    contentColor = if (isDarkTheme) Color.White else Color(0xFF0F172A),
                     tonalElevation = 16.dp,
-                    modifier = Modifier.border(1.dp, Color(0x33818CF8), RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    modifier = Modifier.border(1.dp, if (isDarkTheme) Color(0x33818CF8) else Color(0xFFCBD5E1), RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                 ) {
                     NavigationBarItem(
                         selected = activeBottomTab == "TRANSLATOR",
