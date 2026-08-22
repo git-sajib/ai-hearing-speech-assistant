@@ -295,6 +295,7 @@ fun CameraXInferenceView(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val previewView = remember { PreviewView(context) }
+    val overlayView = remember { HandOverlayView(context) }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
     LaunchedEffect(Unit) {
@@ -353,12 +354,23 @@ fun CameraXInferenceView(
 
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks)
                             onGestureDetected(gesture, confidence)
+                            
+                            // Send 21 hand landmarks to overlay view for visual skeleton drawing
+                            ContextCompat.getMainExecutor(context).execute {
+                                overlayView.updateLandmarks(handLandmarks)
+                            }
                         } else {
                             onGestureDetected("nothing", 1.0f)
+                            ContextCompat.getMainExecutor(context).execute {
+                                overlayView.clear()
+                            }
                         }
                     } catch (e: Exception) {
                         Log.e("CameraXInference", "Error analyzing landmarks: ${e.message}")
                         onGestureDetected("nothing", 1.0f)
+                        ContextCompat.getMainExecutor(context).execute {
+                            overlayView.clear()
+                        }
                     }
                 }
                 imageProxy.close()
@@ -380,8 +392,14 @@ fun CameraXInferenceView(
         }, ContextCompat.getMainExecutor(context))
     }
 
-    AndroidView(
-        factory = { previewView },
-        modifier = Modifier.fillMaxSize()
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        AndroidView(
+            factory = { previewView },
+            modifier = Modifier.fillMaxSize()
+        )
+        AndroidView(
+            factory = { overlayView },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
