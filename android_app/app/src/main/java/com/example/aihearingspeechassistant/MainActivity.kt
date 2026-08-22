@@ -48,12 +48,14 @@ import androidx.compose.material.icons.filled.ContactEmergency
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.foundation.Image
@@ -955,24 +957,48 @@ fun MainScreen(
                                 }
                             }
 
-                            // Overlay Badge for Live MSc Academic Latency & FPS Performance Stats
-                            Surface(
+                            // Overlay Badge for Live MSc Academic Latency & Facial Expression AI Stats
+                            Column(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .padding(16.dp),
-                                shape = RoundedCornerShape(12.dp),
-                                color = Color(0xCC1E1B4B)
+                                horizontalAlignment = Alignment.End,
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = Color(0xCC1E1B4B)
                                 ) {
-                                    Text(
-                                        text = "⚡ 30 FPS | 12ms",
-                                        color = Color(0xFF38BDF8),
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontSize = 11.sp
-                                    )
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "⚡ 30 FPS | 12ms",
+                                            color = Color(0xFF38BDF8),
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 11.sp
+                                        )
+                                    }
+                                }
+
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = Color(0xCC831843)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(Icons.Default.Face, contentDescription = "Facial AI", tint = Color(0xFFF472B6), modifier = Modifier.size(12.dp))
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = if (isBanglaLanguage) "মুখের ভাব: হাসিখুশি (AI active)" else "Face: Happy (AI active)",
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 9.sp
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -1197,11 +1223,37 @@ fun MainScreen(
                                     modifier = Modifier.padding(vertical = 16.dp)
                                 )
 
-                                Text(
-                                    text = "Bidirectional Speech-to-Text Assist Engine",
-                                    color = Color(0xFF64748B),
-                                    fontSize = 11.sp
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Bidirectional Speech-to-Text Assist Engine",
+                                        color = Color(0xFF64748B),
+                                        fontSize = 11.sp
+                                    )
+
+                                    Surface(
+                                        shape = RoundedCornerShape(8.dp),
+                                        color = Color(0xFF0F172A),
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981).copy(alpha = 0.5f))
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(Icons.Default.Vibration, contentDescription = "Haptic Vibration Alert", tint = Color(0xFF34D399), modifier = Modifier.size(12.dp))
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(
+                                                text = if (isBanglaLanguage) "হ্যাপটিক অ্যালার্ট অন" else "Haptic Alert ON",
+                                                color = Color(0xFF34D399),
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 9.sp
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
 
