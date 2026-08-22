@@ -143,6 +143,13 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 }
 
+data class MetricCardData(
+    val value: String,
+    val label: String,
+    val bgGradient: List<Color>,
+    val accentColor: Color
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -595,10 +602,16 @@ fun MainScreen(
                                 color = Color.White
                             )
                             Text(
-                                text = if (isBanglaLanguage) "বিইউপি এমআইসিটি-২০২৩ | সুপারভাইজার: ড. আহমেদুল কবীর" else "BUP MICT-2023 | Supervisor: Dr. Ahmedul Kabir",
+                                text = if (isBanglaLanguage) "বাংলাদেশ ইউনিভার্সিটি অব প্রফেশনালস (এমআইসিটি-২০২৩)" else "BUP MICT-2023",
                                 fontSize = 8.5.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color(0xFFA5B4FC)
+                            )
+                            Text(
+                                text = if (isBanglaLanguage) "সুপারভাইজার: ড. আহমেদুল কবীর" else "Supervisor: Dr. Ahmedul Kabir",
+                                fontSize = 8.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF38BDF8)
                             )
                         }
                     },
@@ -805,44 +818,41 @@ fun MainScreen(
             when (activeBottomTab) {
                 "TRANSLATOR" -> {
                     if (hasCameraPermission) {
-                        // Ultra-Compact Dashboard Metric Counter Bar with 3D Glassmorphism Badges
+                        // Distinct Neon Capsule Glow Dashboard Metric Counter Bar
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                .padding(bottom = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             val metrics = listOf(
-                                Triple("36", if (isBanglaLanguage) "মোট সংকেত" else "Supported Signs", Color(0xFF818CF8)),
-                                Triple("99.9%", if (isBanglaLanguage) "নির্ভুলতা" else "Model Accuracy", Color(0xFF34D399)),
-                                Triple("12ms", if (isBanglaLanguage) "প্রসেসিং লেটেন্সি" else "On-Device Latency", Color(0xFF38BDF8))
+                                MetricCardData("36", if (isBanglaLanguage) "মোট সংকেত" else "Supported Signs", listOf(Color(0xFF4F46E5), Color(0xFF312E81)), Color(0xFFA5B4FC)),
+                                MetricCardData("99.9%", if (isBanglaLanguage) "নির্ভুলতা" else "Model Accuracy", listOf(Color(0xFF065F46), Color(0xFF022C22)), Color(0xFF34D399)),
+                                MetricCardData("12ms", if (isBanglaLanguage) "প্রসেসিং লেটেন্সি" else "On-Device Latency", listOf(Color(0xFF0C4A6E), Color(0xFF082F49)), Color(0xFF38BDF8))
                             )
 
-                            metrics.forEach { (value, label, accentColor) ->
-                                Surface(
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(14.dp),
-                                    color = Color(0xFF1E293B).copy(alpha = 0.7f),
-                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, accentColor.copy(alpha = 0.6f)),
-                                    shadowElevation = 4.dp
+                            metrics.forEach { (value, label, bgGradient, accentColor) ->
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(Brush.verticalGradient(bgGradient))
+                                        .border(1.dp, accentColor.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                        .padding(vertical = 6.dp, horizontal = 2.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 6.dp, horizontal = 4.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Text(
                                             text = value,
                                             color = accentColor,
-                                            fontSize = 13.sp,
-                                            fontWeight = FontWeight.ExtraBold
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Black
                                         )
                                         Text(
                                             text = label,
-                                            color = Color(0xFF94A3B8),
+                                            color = Color.White.copy(alpha = 0.85f),
                                             fontSize = 8.sp,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.SemiBold
                                         )
                                     }
                                 }
