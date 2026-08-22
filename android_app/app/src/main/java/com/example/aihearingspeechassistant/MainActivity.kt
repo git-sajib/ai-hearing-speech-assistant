@@ -45,6 +45,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EmojiEmotions
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.foundation.Image
@@ -176,7 +180,8 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var showProjectDetailsDialog by remember { mutableStateOf(false) }
 
-    var activeBottomTab by remember { mutableStateOf("TRANSLATOR") } // Tabs: TRANSLATOR, LISTEN, DICTIONARY
+    var activeBottomTab by remember { mutableStateOf("TRANSLATOR") } // Tabs: TRANSLATOR, LISTEN, DICTIONARY, EMOTIONS, QUIZ, SOS
+    var isBanglaLanguage by remember { mutableStateOf(false) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -296,7 +301,8 @@ fun MainScreen(
                         val shortcuts = listOf(
                             Triple("Sign AI", Icons.Default.CameraAlt, "TRANSLATOR"),
                             Triple("Listen", Icons.Default.Mic, "LISTEN"),
-                            Triple("Dictionary", Icons.Default.Book, "DICTIONARY")
+                            Triple("Dictionary", Icons.Default.Book, "DICTIONARY"),
+                            Triple("Emotions", Icons.Default.EmojiEmotions, "EMOTIONS")
                         )
 
                         shortcuts.forEach { (label, icon, tabKey) ->
@@ -461,27 +467,25 @@ fun MainScreen(
                         }
                     },
                     actions = {
+                        // Language Toggle Switcher Button [EN / BN]
                         Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = Color(0xFF312E81),
-                            modifier = Modifier.padding(end = 12.dp)
+                            onClick = { isBanglaLanguage = !isBanglaLanguage },
+                            shape = RoundedCornerShape(20.dp),
+                            color = if (isBanglaLanguage) Color(0xFF047857) else Color(0xFF4338CA),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.6f)),
+                            modifier = Modifier.padding(end = 8.dp)
                         ) {
                             Row(
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(8.dp)
-                                        .clip(CircleShape)
-                                        .background(Color(0xFF10B981))
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
+                                Icon(Icons.Default.Language, contentDescription = "Language", tint = Color.White, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "On-Device AI",
-                                    color = Color.White,
+                                    if (isBanglaLanguage) "🇧🇩 বাংলা" else "🇬🇧 EN",
+                                    fontWeight = FontWeight.Bold,
                                     fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold
+                                    color = Color.White
                                 )
                             }
                         }
@@ -500,8 +504,8 @@ fun MainScreen(
                     NavigationBarItem(
                         selected = activeBottomTab == "TRANSLATOR",
                         onClick = { activeBottomTab = "TRANSLATOR" },
-                        icon = { Icon(Icons.Default.CameraAlt, contentDescription = "Translator") },
-                        label = { Text("Sign AI", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        icon = { Icon(Icons.Default.CameraAlt, contentDescription = "Sign AI") },
+                        label = { Text(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
@@ -513,8 +517,8 @@ fun MainScreen(
                     NavigationBarItem(
                         selected = activeBottomTab == "LISTEN",
                         onClick = { activeBottomTab = "LISTEN" },
-                        icon = { Icon(Icons.Default.Mic, contentDescription = "Listen Mode") },
-                        label = { Text("Listen Mode", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        icon = { Icon(Icons.Default.Mic, contentDescription = "Listen") },
+                        label = { Text(if (isBanglaLanguage) "লিসেন" else "Listen", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
@@ -527,7 +531,7 @@ fun MainScreen(
                         selected = activeBottomTab == "DICTIONARY",
                         onClick = { activeBottomTab = "DICTIONARY" },
                         icon = { Icon(Icons.Default.Book, contentDescription = "Dictionary") },
-                        label = { Text("Dictionary", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "অভিধান" else "Dictionary", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
@@ -537,10 +541,36 @@ fun MainScreen(
                         )
                     )
                     NavigationBarItem(
+                        selected = activeBottomTab == "EMOTIONS",
+                        onClick = { activeBottomTab = "EMOTIONS" },
+                        icon = { Icon(Icons.Default.EmojiEmotions, contentDescription = "Emotions & Needs") },
+                        label = { Text(if (isBanglaLanguage) "অনুভূতি" else "Emotions", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = Color(0xFFEC4899),
+                            indicatorColor = Color(0xFFDB2777),
+                            unselectedIconColor = Color(0xFF64748B),
+                            unselectedTextColor = Color(0xFF64748B)
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = activeBottomTab == "QUIZ",
+                        onClick = { activeBottomTab = "QUIZ" },
+                        icon = { Icon(Icons.Default.Quiz, contentDescription = "Sign Quiz Game") },
+                        label = { Text(if (isBanglaLanguage) "কুইজ" else "AI Quiz", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = Color(0xFFF59E0B),
+                            indicatorColor = Color(0xFFD97706),
+                            unselectedIconColor = Color(0xFF64748B),
+                            unselectedTextColor = Color(0xFF64748B)
+                        )
+                    )
+                    NavigationBarItem(
                         selected = activeBottomTab == "SOS",
                         onClick = { activeBottomTab = "SOS" },
                         icon = { Icon(Icons.Default.Warning, contentDescription = "Emergency SOS") },
-                        label = { Text("SOS Mode", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text(if (isBanglaLanguage) "এসওএস" else "SOS", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFFF87171),
@@ -1463,6 +1493,217 @@ fun MainScreen(
                                 }
                             }
                         )
+                    }
+                }
+
+                "EMOTIONS" -> {
+                    // Empathetic Emotions & Daily Needs Hub
+                    var selectedEmotionCategory by remember { mutableStateOf("LOVE") }
+
+                    val emotionCategories = listOf(
+                        Triple("LOVE", if (isBanglaLanguage) "💖 অনুভূতি ও ভালোবাসা" else "💖 Love & Emotion", Color(0xFFEC4899)),
+                        Triple("NEEDS", if (isBanglaLanguage) "🍲 দৈনন্দিন চাহিদা" else "🍲 Daily Needs", Color(0xFF10B981)),
+                        Triple("WISHES", if (isBanglaLanguage) "🎉 শুভেচ্ছা ও অভিবাদন" else "🎉 Greetings & Wishes", Color(0xFFF59E0B))
+                    )
+
+                    val emotionPhrases = mapOf(
+                        "LOVE" to listOf(
+                            Pair("💖 " + (if (isBanglaLanguage) "আমি আপনাকে অনেক ভালোবাসি।" else "I love you very much."), Color(0xFFF472B6)),
+                            Pair("🙏 " + (if (isBanglaLanguage) "আপনার সাহায্যের জন্য আমি চিরকৃতজ্ঞ।" else "I am deeply grateful for your support."), Color(0xFFFB7185)),
+                            Pair("😊 " + (if (isBanglaLanguage) "আপনাকে পাশে পেয়ে আমার খুব আনন্দ লাগছে।" else "Having you by my side brings me so much joy."), Color(0xFFE879F9)),
+                            Pair("🤗 " + (if (isBanglaLanguage) "মন খারাপ করবেন না, সব ঠিক হয়ে যাবে।" else "Don't worry, everything will be alright."), Color(0xFFC084FC)),
+                            Pair("🥺 " + (if (isBanglaLanguage) "আমার খুব কষ্ট হচ্ছে, একটু সময় দিতে পারবেন?" else "I am feeling upset, can you give me some time?"), Color(0xFFA78BFA))
+                        ),
+                        "NEEDS" to listOf(
+                            Pair("🍲 " + (if (isBanglaLanguage) "আমার খুব ক্ষুধা পেয়েছে, কিছু খাওয়ার আছে?" else "I am hungry, do you have something to eat?"), Color(0xFF34D399)),
+                            Pair("💧 " + (if (isBanglaLanguage) "আমার খুব তৃষ্ণা পেয়েছে, একটু পানি দিবেন?" else "I am thirsty, can I get some water please?"), Color(0xFF38BDF8)),
+                            Pair("🥱 " + (if (isBanglaLanguage) "আমি খুব ক্লান্ত, একটু বিশ্রাম নিতে চাই।" else "I am very tired, I need to rest for a bit."), Color(0xFF818CF8)),
+                            Pair("🚽 " + (if (isBanglaLanguage) "ওয়াশরুম কোথায় একটু দেখিয়ে দিবেন?" else "Could you please show me where the washroom is?"), Color(0xFFA855F7))
+                        ),
+                        "WISHES" to listOf(
+                            Pair("🎂 " + (if (isBanglaLanguage) "শুভ জন্মদিন! তোমার জীবন সুখে ভরে উঠুক।" else "Happy Birthday! May your life be filled with happiness."), Color(0xFFFBBF24)),
+                            Pair("🌟 " + (if (isBanglaLanguage) "অনেক শুভেচ্ছা ও অভিনন্দন!" else "Warmest congratulations and best wishes!"), Color(0xFFF59E0B)),
+                            Pair("👋 " + (if (isBanglaLanguage) "শুভ সকাল! আপনার দিনটি অনেক ভালো কাটুক।" else "Good Morning! Have a wonderful day ahead."), Color(0xFF38BDF8))
+                        )
+                    )
+
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // Category Selector Pills
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            emotionCategories.forEach { (catKey, catLabel, catColor) ->
+                                Surface(
+                                    onClick = { selectedEmotionCategory = catKey },
+                                    shape = RoundedCornerShape(14.dp),
+                                    color = if (selectedEmotionCategory == catKey) catColor else Color(0xFF1E293B),
+                                    modifier = Modifier.weight(1f),
+                                    shadowElevation = if (selectedEmotionCategory == catKey) 6.dp else 2.dp
+                                ) {
+                                    Box(modifier = Modifier.padding(vertical = 10.dp), contentAlignment = Alignment.Center) {
+                                        Text(catLabel, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                        }
+
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(emotionPhrases[selectedEmotionCategory] ?: emptyList()) { (phraseText, accentColor) ->
+                                Card(
+                                    onClick = { onSpeakText(phraseText) },
+                                    shape = RoundedCornerShape(18.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, accentColor.copy(alpha = 0.5f)),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            phraseText,
+                                            color = Color.White,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                        Surface(
+                                            shape = CircleShape,
+                                            color = accentColor,
+                                            modifier = Modifier.size(36.dp)
+                                        ) {
+                                            Box(contentAlignment = Alignment.Center) {
+                                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak Emotion", tint = Color.White, modifier = Modifier.size(18.dp))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                "QUIZ" -> {
+                    // AI Interactive Gamified Sign Language Quiz Game
+                    val targetQuizSigns = remember { listOf("A", "B", "C", "1", "2", "3", "5", "L", "V", "Y") }
+                    var quizScore by remember { mutableStateOf(0) }
+                    var currentQuizIndex by remember { mutableStateOf(0) }
+                    var quizStreak by remember { mutableStateOf(0) }
+
+                    val targetSign = targetQuizSigns[currentQuizIndex % targetQuizSigns.size]
+                    val isMatchDetected = currentGesture.replace("Label: ", "").uppercase().contains(targetSign)
+
+                    LaunchedEffect(isMatchDetected) {
+                        if (isMatchDetected && currentGesture != "Detecting...") {
+                            quizScore += 10
+                            quizStreak += 1
+                            kotlinx.coroutines.delay(1200)
+                            currentQuizIndex = (currentQuizIndex + 1) % targetQuizSigns.size
+                        }
+                    }
+
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // Score Header
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp),
+                            shape = RoundedCornerShape(18.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B)),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF59E0B))
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(14.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.Quiz, contentDescription = "Quiz", tint = Color(0xFFF59E0B), modifier = Modifier.size(28.dp))
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Column {
+                                        Text(if (isBanglaLanguage) "এআই কুইজ শিখন গেম" else "AI Sign Practice Game", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                        Text(if (isBanglaLanguage) "ক্যামেরায় সংকেত দেখিয়ে পয়েন্ট অর্জন করুন" else "Show target sign to camera to win points", color = Color(0xFFFCD34D), fontSize = 10.sp)
+                                    }
+                                }
+
+                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFD97706)) {
+                                        Text("Score: $quizScore", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                                    }
+                                }
+                            }
+                        }
+
+                        // Target Sign Challenge Card
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                            border = androidx.compose.foundation.BorderStroke(2.dp, if (isMatchDetected) Color(0xFF10B981) else Color(0xFF6366F1))
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    if (isBanglaLanguage) "ক্যামেরার সামনে নিচের সংকেতটি প্রদর্শন করুন:" else "SHOW THIS ASL SIGN TO CAMERA:",
+                                    color = Color(0xFF94A3B8),
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                Surface(
+                                    shape = CircleShape,
+                                    color = if (isMatchDetected) Color(0xFF065F46) else Color(0xFF312E81),
+                                    border = androidx.compose.foundation.BorderStroke(3.dp, if (isMatchDetected) Color(0xFF10B981) else Color(0xFF818CF8)),
+                                    modifier = Modifier.size(90.dp),
+                                    shadowElevation = 8.dp
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text(targetSign, color = Color.White, fontSize = 42.sp, fontWeight = FontWeight.Black)
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(14.dp))
+
+                                Text(
+                                    if (isMatchDetected) (if (isBanglaLanguage) "🎉 দারুণ! সঠিক সংকেত শনাক্ত হয়েছে!" else "🎉 PERFECT! MATCH DETECTED!")
+                                    else (if (isBanglaLanguage) "ক্যামেরায় হাত উঁচিয়ে ধরুন..." else "Position hand clearly in camera view..."),
+                                    color = if (isMatchDetected) Color(0xFF34D399) else Color(0xFF38BDF8),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                Spacer(modifier = Modifier.height(14.dp))
+
+                                Button(
+                                    onClick = { currentQuizIndex = (currentQuizIndex + 1) % targetQuizSigns.size },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text(if (isBanglaLanguage) "পরবর্তী সংকেত ➡️" else "Next Challenge ➡️", color = Color.White, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                        }
                     }
                 }
             }
