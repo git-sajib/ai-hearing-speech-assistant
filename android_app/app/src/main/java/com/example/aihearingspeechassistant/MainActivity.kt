@@ -211,6 +211,9 @@ fun MainScreen(
                         .clip(RoundedCornerShape(24.dp))
                         .background(Color.Black)
                 ) {
+                    var lastAddedGesture by remember { mutableStateOf("") }
+                    var lastGestureTime by remember { mutableLongStateOf(0L) }
+
                     CameraXInferenceView(
                         gestureClassifier = gestureClassifier,
                         selectedMode = selectedMode,
@@ -218,6 +221,23 @@ fun MainScreen(
                             if (conf >= 0.65f && gesture != "Unknown") {
                                 currentGesture = gesture
                                 confidence = conf
+
+                                val currentTime = System.currentTimeMillis()
+                                if (gesture != "nothing" && gesture != "Detecting...") {
+                                    if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 1500) {
+                                        if (gesture == "space") {
+                                            translatedSentence += " "
+                                        } else if (gesture == "del") {
+                                            if (translatedSentence.isNotEmpty()) {
+                                                translatedSentence = translatedSentence.dropLast(1)
+                                            }
+                                        } else {
+                                            translatedSentence += gesture
+                                        }
+                                        lastAddedGesture = gesture
+                                        lastGestureTime = currentTime
+                                    }
+                                }
                             }
                         }
                     )
@@ -274,16 +294,17 @@ fun MainScreen(
                             fontWeight = FontWeight.Medium
                         )
 
+                        // Accumulated Sentence & Current Gesture View
                         Text(
-                            text = when {
+                            text = if (translatedSentence.isNotEmpty()) translatedSentence else when {
                                 currentGesture == "Detecting..." -> "Show hand sign to camera..."
                                 currentGesture == "nothing" -> "Show hand sign to camera..."
                                 selectedMode == "DIGIT" -> "Detected Digit: $currentGesture"
                                 selectedMode == "ALPHABET" -> "Detected Alphabet: $currentGesture"
                                 else -> "Detected Sign: $currentGesture"
                             },
-                            color = if (currentGesture == "nothing" || currentGesture == "Detecting...") Color(0xFF64748B) else Color(0xFF38BDF8),
-                            fontSize = 22.sp,
+                            color = if (translatedSentence.isEmpty() && (currentGesture == "nothing" || currentGesture == "Detecting...")) Color(0xFF64748B) else Color(0xFF38BDF8),
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
 
