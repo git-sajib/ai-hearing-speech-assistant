@@ -189,7 +189,7 @@ fun MainScreen(
                         }
                     }
 
-                    // Modern Gradient Banner with Large Official BUP Emblem Crest Logo
+                    // Modern Gradient Banner with Round Official BUP Emblem Crest Logo
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -213,20 +213,20 @@ fun MainScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Surface(
-                                shape = RoundedCornerShape(16.dp),
+                                shape = CircleShape,
                                 color = Color.White,
-                                modifier = Modifier.size(110.dp),
-                                shadowElevation = 10.dp
+                                modifier = Modifier.size(72.dp),
+                                shadowElevation = 8.dp
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.bup_logo),
-                                    contentDescription = "Official BUP Emblem Crest Logo",
+                                    contentDescription = "Round Official BUP Emblem Crest Logo",
                                     modifier = Modifier
-                                        .padding(6.dp)
+                                        .padding(4.dp)
                                         .fillMaxSize()
                                 )
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
                             Text(
                                 text = "BANGLADESH UNIVERSITY OF PROFESSIONALS",
                                 color = Color(0xFFA5B4FC),
@@ -340,12 +340,28 @@ fun MainScreen(
             topBar = {
                 TopAppBar(
                     navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu Drawer", tint = Color.White)
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } },
+                            modifier = Modifier.padding(start = 8.dp)
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color.White,
+                                modifier = Modifier.size(36.dp),
+                                shadowElevation = 4.dp
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.bup_logo),
+                                    contentDescription = "Open Drawer BUP Logo",
+                                    modifier = Modifier
+                                        .padding(2.dp)
+                                        .fillMaxSize()
+                                )
+                            }
                         }
                     },
                     title = {
-                        Column {
+                        Column(modifier = Modifier.padding(start = 4.dp)) {
                             Text(
                                 "AI-Driven Assistance System",
                                 fontWeight = FontWeight.Bold,
