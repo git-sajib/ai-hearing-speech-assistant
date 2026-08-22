@@ -50,6 +50,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Settings
@@ -1711,9 +1712,10 @@ fun MainScreen(
                     var selectedEmotionCategory by remember { mutableStateOf("LOVE") }
 
                     val emotionCategories = listOf(
-                        Triple("LOVE", if (isBanglaLanguage) "ভালোবাসা ও আবেগ" else "Love & Emotion", Color(0xFFEC4899)),
-                        Triple("NEEDS", if (isBanglaLanguage) "দৈনন্দিন চাহিদা" else "Daily Needs", Color(0xFF10B981)),
-                        Triple("WISHES", if (isBanglaLanguage) "শুভেচ্ছা ও অভিবাদন" else "Greetings & Wishes", Color(0xFFF59E0B))
+                        Triple("LOVE", if (isBanglaLanguage) "ভালোবাসা" else "Love", Color(0xFFEC4899)),
+                        Triple("NEEDS", if (isBanglaLanguage) "চাহিদা" else "Needs", Color(0xFF10B981)),
+                        Triple("WISHES", if (isBanglaLanguage) "শুভেচ্ছা" else "Wishes", Color(0xFFF59E0B)),
+                        Triple("MEDICAL", if (isBanglaLanguage) "স্বাস্থ্য" else "Medical", Color(0xFFEF4444))
                     )
 
                     val emotionPhrases = mapOf(
@@ -1734,6 +1736,12 @@ fun MainScreen(
                             Triple("🎂", if (isBanglaLanguage) "শুভ জন্মদিন! তোমার জীবন সুখে ভরে উঠুক।" else "Happy Birthday! May your life be filled with happiness.", Color(0xFFFBBF24)),
                             Triple("🌟", if (isBanglaLanguage) "অনেক শুভেচ্ছা ও অভিনন্দন!" else "Warmest congratulations and best wishes!", Color(0xFFF59E0B)),
                             Triple("👋", if (isBanglaLanguage) "শুভ সকাল! আপনার দিনটি অনেক ভালো কাটুক।" else "Good Morning! Have a wonderful day ahead.", Color(0xFF38BDF8))
+                        ),
+                        "MEDICAL" to listOf(
+                            Triple("💊", if (isBanglaLanguage) "আমার ঔষধ খাওয়ার সময় হয়েছে।" else "It is time for my medicine.", Color(0xFFF87171)),
+                            Triple("🩺", if (isBanglaLanguage) "আমার খুব শারীরিক অসুস্থতা বোধ হচ্ছে, ডাক্তার ডাকা প্রয়োজন।" else "I am feeling sick, I need to see a doctor.", Color(0xFFEF4444)),
+                            Triple("🩹", if (isBanglaLanguage) "আমার শরীরে তীব্র ব্যথা করছে।" else "I am experiencing severe physical pain.", Color(0xFFDC2626)),
+                            Triple("🚑", if (isBanglaLanguage) "দয়া করে দ্রুত একজন ডাক্তার বা অ্যাম্বুলেন্স ডাকুন।" else "Please call a doctor or an ambulance immediately.", Color(0xFFB91C1C))
                         )
                     )
 
