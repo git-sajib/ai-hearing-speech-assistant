@@ -1177,10 +1177,15 @@ fun MainScreen(
                                         )
                                     }
 
-                                    IconButton(onClick = {
-                                        recognizedSpeechText = "Tap the microphone button below and speak into your phone..."
-                                    }) {
-                                        Icon(Icons.Default.Clear, contentDescription = "Clear Speech", tint = Color(0xFF94A3B8))
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        IconButton(onClick = { onSpeakText(recognizedSpeechText) }) {
+                                            Icon(Icons.Default.VolumeUp, contentDescription = "Speak Text Back", tint = Color(0xFF38BDF8))
+                                        }
+                                        IconButton(onClick = {
+                                            recognizedSpeechText = if (isBanglaLanguage) "নিচের মাইক্রোফোন বোতামে ট্যাপ করে মুখে কথা বলুন।" else "Tap the microphone button below and speak into your phone..."
+                                        }) {
+                                            Icon(Icons.Default.Clear, contentDescription = "Clear Speech", tint = Color(0xFF94A3B8))
+                                        }
                                     }
                                 }
 
