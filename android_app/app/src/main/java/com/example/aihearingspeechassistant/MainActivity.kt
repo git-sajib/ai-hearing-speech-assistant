@@ -598,79 +598,53 @@ fun MainScreen(
                             Text(
                                 text = if (isBanglaLanguage) "এআই শ্রবণ ও বাক সহকারী" else "AI Sign & Speech Assistant",
                                 fontWeight = FontWeight.ExtraBold,
-                                fontSize = 12.sp,
-                                color = Color.White
-                            )
-                            Text(
-                                text = if (isBanglaLanguage) "বাংলাদেশ ইউনিভার্সিটি অব প্রফেশনালস (এমআইসিটি-২০২৩)" else "BUP MICT-2023",
-                                fontSize = 8.5.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFFA5B4FC)
-                            )
-                            Text(
-                                text = if (isBanglaLanguage) "সুপারভাইজার: ড. আহমেদুল কবীর" else "Supervisor: Dr. Ahmedul Kabir",
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFF38BDF8)
+                                fontSize = 13.sp,
+                                color = Color.White,
+                                maxLines = 1
                             )
                         }
                     },
                     actions = {
                         Row(
                             modifier = Modifier.padding(end = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Ultra-Premium Theme Pill Capsule Switch
+                            // Icon-only Dark / Light Theme Toggle Circle Button (No Text)
                             Surface(
                                 onClick = { isDarkTheme = !isDarkTheme },
-                                shape = RoundedCornerShape(20.dp),
-                                color = if (isDarkTheme) Color(0xFF1E1B4B) else Color(0xFFE2E8F0),
-                                border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(
-                                    if (isDarkTheme) listOf(Color(0xFF818CF8), Color(0xFF6366F1)) else listOf(Color(0xFF38BDF8), Color(0xFF0284C7))
-                                )),
-                                shadowElevation = 6.dp
+                                shape = CircleShape,
+                                color = if (isDarkTheme) Color(0xFF312E81) else Color(0xFFE2E8F0),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isDarkTheme) Color(0xFF818CF8) else Color(0xFF0284C7)),
+                                shadowElevation = 6.dp,
+                                modifier = Modifier.size(34.dp)
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
+                                Box(contentAlignment = Alignment.Center) {
                                     Icon(
                                         imageVector = if (isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
                                         contentDescription = "Theme Toggle",
                                         tint = if (isDarkTheme) Color(0xFFFDE047) else Color(0xFF0F172A),
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = if (isDarkTheme) "DARK" else "LIGHT",
-                                        fontWeight = FontWeight.ExtraBold,
-                                        fontSize = 10.sp,
-                                        color = if (isDarkTheme) Color.White else Color(0xFF0F172A)
+                                        modifier = Modifier.size(18.dp)
                                     )
                                 }
                             }
 
-                            // Ultra-Premium Language Segmented Pill Switch [EN / BN]
+                            // Flag + Code Language Segmented Pill Switch [🇧🇩 BN / 🇬🇧 EN] (No Globe Icon)
                             Surface(
                                 onClick = { isBanglaLanguage = !isBanglaLanguage },
                                 shape = RoundedCornerShape(20.dp),
                                 color = if (isBanglaLanguage) Color(0xFF065F46) else Color(0xFF312E81),
-                                border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(
-                                    if (isBanglaLanguage) listOf(Color(0xFF34D399), Color(0xFF10B981)) else listOf(Color(0xFFA5B4FC), Color(0xFF6366F1))
-                                )),
+                                border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isBanglaLanguage) Color(0xFF34D399) else Color(0xFFA5B4FC)),
                                 shadowElevation = 6.dp
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                Box(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(Icons.Default.Language, contentDescription = "Language", tint = Color.White, modifier = Modifier.size(14.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
                                     Text(
-                                        text = if (isBanglaLanguage) "🇧🇩 বাংলা" else "🇬🇧 EN",
+                                        text = if (isBanglaLanguage) "🇧🇩 BN" else "🇬🇧 EN",
                                         fontWeight = FontWeight.ExtraBold,
-                                        fontSize = 10.sp,
+                                        fontSize = 11.sp,
                                         color = Color.White
                                     )
                                 }
