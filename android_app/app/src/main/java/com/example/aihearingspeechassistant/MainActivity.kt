@@ -503,85 +503,134 @@ fun MainScreen(
             },
             bottomBar = {
                 NavigationBar(
-                    containerColor = Color(0xFF1E1B4B),
+                    containerColor = Color(0xFF0F172A),
                     contentColor = Color.White,
-                    tonalElevation = 12.dp
+                    tonalElevation = 16.dp,
+                    modifier = Modifier.border(1.dp, Color(0x33818CF8), RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                 ) {
                     NavigationBarItem(
                         selected = activeBottomTab == "TRANSLATOR",
                         onClick = { activeBottomTab = "TRANSLATOR" },
-                        icon = { Icon(Icons.Default.CameraAlt, contentDescription = "Sign AI") },
+                        icon = {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (activeBottomTab == "TRANSLATOR") Color(0xFF6366F1) else Color.Transparent,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.CameraAlt, contentDescription = "Sign AI", tint = if (activeBottomTab == "TRANSLATOR") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                }
+                            }
+                        },
                         label = { Text(if (isBanglaLanguage) "সাইন এআই" else "Sign AI", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
-                            indicatorColor = Color(0xFF6366F1),
-                            unselectedIconColor = Color(0xFF64748B),
+                            indicatorColor = Color.Transparent,
                             unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                     NavigationBarItem(
                         selected = activeBottomTab == "LISTEN",
                         onClick = { activeBottomTab = "LISTEN" },
-                        icon = { Icon(Icons.Default.Mic, contentDescription = "Listen") },
+                        icon = {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (activeBottomTab == "LISTEN") Color(0xFF10B981) else Color.Transparent,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.Mic, contentDescription = "Listen", tint = if (activeBottomTab == "LISTEN") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                }
+                            }
+                        },
                         label = { Text(if (isBanglaLanguage) "লিসেন" else "Listen", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
-                            selectedTextColor = Color(0xFF818CF8),
-                            indicatorColor = Color(0xFF6366F1),
-                            unselectedIconColor = Color(0xFF64748B),
+                            selectedTextColor = Color(0xFF34D399),
+                            indicatorColor = Color.Transparent,
                             unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                     NavigationBarItem(
                         selected = activeBottomTab == "DICTIONARY",
                         onClick = { activeBottomTab = "DICTIONARY" },
-                        icon = { Icon(Icons.Default.Book, contentDescription = "Dictionary") },
+                        icon = {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (activeBottomTab == "DICTIONARY") Color(0xFF818CF8) else Color.Transparent,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.Book, contentDescription = "Dictionary", tint = if (activeBottomTab == "DICTIONARY") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                }
+                            }
+                        },
                         label = { Text(if (isBanglaLanguage) "অভিধান" else "Dictionary", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
-                            selectedTextColor = Color(0xFF818CF8),
-                            indicatorColor = Color(0xFF6366F1),
-                            unselectedIconColor = Color(0xFF64748B),
+                            selectedTextColor = Color(0xFFA5B4FC),
+                            indicatorColor = Color.Transparent,
                             unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                     NavigationBarItem(
                         selected = activeBottomTab == "EMOTIONS",
                         onClick = { activeBottomTab = "EMOTIONS" },
-                        icon = { Icon(Icons.Default.EmojiEmotions, contentDescription = "Emotions & Needs") },
+                        icon = {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (activeBottomTab == "EMOTIONS") Color(0xFFDB2777) else Color.Transparent,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.EmojiEmotions, contentDescription = "Emotions & Needs", tint = if (activeBottomTab == "EMOTIONS") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                }
+                            }
+                        },
                         label = { Text(if (isBanglaLanguage) "অনুভূতি" else "Emotions", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
-                            selectedTextColor = Color(0xFFEC4899),
-                            indicatorColor = Color(0xFFDB2777),
-                            unselectedIconColor = Color(0xFF64748B),
+                            selectedTextColor = Color(0xFFF472B6),
+                            indicatorColor = Color.Transparent,
                             unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                     NavigationBarItem(
                         selected = activeBottomTab == "QUIZ",
                         onClick = { activeBottomTab = "QUIZ" },
-                        icon = { Icon(Icons.Default.Quiz, contentDescription = "Sign Quiz Game") },
+                        icon = {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (activeBottomTab == "QUIZ") Color(0xFFD97706) else Color.Transparent,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.Quiz, contentDescription = "Sign Quiz Game", tint = if (activeBottomTab == "QUIZ") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                }
+                            }
+                        },
                         label = { Text(if (isBanglaLanguage) "কুইজ" else "AI Quiz", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
-                            selectedTextColor = Color(0xFFF59E0B),
-                            indicatorColor = Color(0xFFD97706),
-                            unselectedIconColor = Color(0xFF64748B),
+                            selectedTextColor = Color(0xFFFBBF24),
+                            indicatorColor = Color.Transparent,
                             unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                     NavigationBarItem(
                         selected = activeBottomTab == "SOS",
                         onClick = { activeBottomTab = "SOS" },
-                        icon = { Icon(Icons.Default.Warning, contentDescription = "Emergency SOS") },
+                        icon = {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (activeBottomTab == "SOS") Color(0xFFDC2626) else Color.Transparent,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.Warning, contentDescription = "Emergency SOS", tint = if (activeBottomTab == "SOS") Color.White else Color(0xFF64748B), modifier = Modifier.size(18.dp))
+                                }
+                            }
+                        },
                         label = { Text(if (isBanglaLanguage) "এসওএস" else "SOS", fontSize = 9.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFFF87171),
-                            indicatorColor = Color(0xFFDC2626),
-                            unselectedIconColor = Color(0xFF64748B),
+                            indicatorColor = Color.Transparent,
                             unselectedTextColor = Color(0xFF64748B)
                         )
                     )
