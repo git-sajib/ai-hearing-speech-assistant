@@ -24,11 +24,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -127,57 +132,196 @@ fun MainScreen(
     var confidence by remember { mutableStateOf(0.0f) }
     var translatedSentence by remember { mutableStateOf("") }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            "AI Assistive Communication System",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 17.sp,
-                            color = Color.White
-                        )
-                        Text(
-                            "MSc Thesis | Real-Time TFLite Inference (99.96%)",
-                            fontSize = 11.sp,
-                            color = Color(0xFFA5B4FC)
-                        )
-                    }
-                },
-                actions = {
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = Color(0xFF312E81),
-                        modifier = Modifier.padding(end = 12.dp)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    var showProjectDetailsDialog by remember { mutableStateOf(false) }
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                drawerContainerColor = Color(0xFF0F172A),
+                drawerContentColor = Color.White,
+                modifier = Modifier.width(320.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp)
+                ) {
+                    // Header Banner
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B))
                     ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = "BUP Thesis Proposal",
+                                color = Color(0xFF818CF8),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "AI-Driven Assistance for Hearing & Speech Impairments",
+                                color = Color.White,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "Dept of ICT, FST, BUP",
+                                color = Color(0xFF94A3B8),
+                                fontSize = 11.sp
+                            )
+                        }
+                    }
+
+                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 8.dp))
+
+                    Text(
+                        text = "RESEARCH TEAM",
+                        color = Color(0xFF64748B),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    )
+
+                    // Team Members List
+                    val teamMembers = listOf(
+                        "Samiul Islam" to "Roll: 23549908006 | Reg: 109901230006",
+                        "Ahnaf Sayed" to "Roll: 23549908020 | Reg: 109901230020",
+                        "Abu Saeed Sabuj" to "Roll: 23549908023 | Reg: 109901230023"
+                    )
+
+                    teamMembers.forEach { (name, info) ->
                         Row(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(8.dp)
+                                    .size(36.dp)
                                     .clip(CircleShape)
-                                    .background(Color(0xFF10B981))
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "On-Device AI",
-                                color = Color.White,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                                    .background(Color(0xFF312E81)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = name.first().toString(),
+                                    color = Color(0xFFA5B4FC),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(name, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
+                                Text(info, color = Color(0xFF94A3B8), fontSize = 10.sp)
+                            }
                         }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1E1B4B)
+
+                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 12.dp))
+
+                    Text(
+                        text = "SUPERVISOR",
+                        color = Color(0xFF64748B),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                    Text(
+                        text = "Dr. Ahmedul Kabir",
+                        color = Color(0xFF38BDF8),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = "Affiliation: University of Dhaka",
+                        color = Color(0xFF94A3B8),
+                        fontSize = 11.sp
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Project Details Action Button
+                    Button(
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            showProjectDetailsDialog = true
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(Icons.Default.Info, contentDescription = null, tint = Color.White)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Proposal & Architecture Details", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    navigationIcon = {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            Icon(Icons.Default.Menu, contentDescription = "Menu Drawer", tint = Color.White)
+                        }
+                    },
+                    title = {
+                        Column {
+                            Text(
+                                "AI-Driven Assistance System",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp,
+                                color = Color.White
+                            )
+                            Text(
+                                "BUP MICT-2023 | Supervisor: Dr. Ahmedul Kabir",
+                                fontSize = 11.sp,
+                                color = Color(0xFFA5B4FC)
+                            )
+                        }
+                    },
+                    actions = {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color(0xFF312E81),
+                            modifier = Modifier.padding(end = 12.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(Color(0xFF10B981))
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "On-Device AI",
+                                    color = Color.White,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFF1E1B4B)
+                    )
                 )
-            )
-        },
-        containerColor = Color(0xFF0F172A)
-    ) { innerPadding ->
+            },
+            containerColor = Color(0xFF0F172A)
+        ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -415,6 +559,44 @@ fun MainScreen(
                 }
             }
         }
+    }
+}
+
+    // Thesis Proposal Details AlertDialog
+    if (showProjectDetailsDialog) {
+        AlertDialog(
+            onDismissRequest = { showProjectDetailsDialog = false },
+            containerColor = Color(0xFF1E293B),
+            titleContentColor = Color.White,
+            textContentColor = Color(0xFF94A3B8),
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.School, contentDescription = null, tint = Color(0xFF818CF8))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Thesis Proposal Info", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                }
+            },
+            text = {
+                Column {
+                    Text("Title:", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 12.sp)
+                    Text("AI-Driven Assistance for Hearing & Speech Impairments", color = Color(0xFF38BDF8), fontSize = 12.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Institution:", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 12.sp)
+                    Text("Bangladesh University of Professionals (BUP)\nFaculty of Science and Technology (FST)\nDept of ICT | MICT-2023", fontSize = 11.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Supervisor:", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 12.sp)
+                    Text("Dr. Ahmedul Kabir (University of Dhaka)", fontSize = 11.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("AI Architecture:", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 12.sp)
+                    Text("MediaPipe Hands + Dual 256-128-64 MLP TFLite Neural Nets (99.96% Accuracy)", fontSize = 11.sp)
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showProjectDetailsDialog = false }) {
+                    Text("Close", color = Color(0xFF818CF8), fontWeight = FontWeight.Bold)
+                }
+            }
+        )
     }
 }
 
