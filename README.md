@@ -16,10 +16,10 @@ An intelligent, real-time, on-device mobile application designed to bridge the c
 [ Android CameraX Preview ]
            │
            ▼
-[ Google MediaPipe Tasks API ] ─── (Extract 3D Hand & Face Landmarks)
+[ Google MediaPipe Tasks API ] ─── (Extract 3D Hand Landmarks)
            │
            ▼
-[ TensorFlow Lite Engine ]    ─── (On-Device Model Inference & Classification)
+[ TensorFlow Lite Engine ]    ─── (On-Device Model Inference & Classification - 98.43% Accuracy)
            │
            ▼
 [ Android Native TTS ]        ─── (Real-Time Text & Voice Synthesis Output)
@@ -32,7 +32,7 @@ An intelligent, real-time, on-device mobile application designed to bridge the c
 - **Mobile Application**: Android Native (Kotlin + Jetpack Compose)
 - **Camera Processing**: Android CameraX API
 - **Feature Extraction**: Google MediaPipe (Hands & Face Mesh)
-- **Machine Learning Runtime**: TensorFlow Lite (TFLite) with GPU Delegate
+- **Machine Learning Runtime**: TensorFlow Lite (TFLite) Engine
 - **Speech Synthesis**: Android Native `TextToSpeech` (TTS) Engine
 - **ML Training Stack**: Python 3.11, TensorFlow 2.x, PyTorch, OpenCV, NumPy, Scikit-Learn
 
@@ -42,43 +42,33 @@ An intelligent, real-time, on-device mobile application designed to bridge the c
 
 ```directory
 ai-hearing-speech-assistant/
-├── ml_models/               # Python scripts, data preprocessing, MediaPipe pipelines & TFLite model training
-│   └── test_pipeline.py     # Sanity check script for MediaPipe tracking
-├── android_app/             # Android application source code (Kotlin / Jetpack Compose)
-├── .gitignore               # Excludes large binaries, virtualenvs, and IDE configurations
-└── README.md                # Project documentation and roadmap
+├── ml_models/               # Python scripts, feature extraction & TFLite model training
+│   ├── extract_landmarks.py # Extract 3D Hand Landmarks via MediaPipe
+│   ├── train_model.py       # Deep neural network training script (98.43% test accuracy)
+│   ├── gesture_model.tflite # Mobile optimized TFLite binary model (27 KB)
+│   └── labels.json          # Gesture index to sign label mapping
+├── android_app/             # Complete Android project (Kotlin / Jetpack Compose)
+│   └── app/src/main/assets/ # Embedded TFLite model & MediaPipe vision binaries
+├── .gitignore               # Excludes large raw datasets, virtualenvs, and IDE configurations
+├── LICENSE                  # Official MIT License
+└── README.md                # Project documentation and guide
 ```
 
 ---
 
-## 🎯 Key Datasets Used
+## 🎯 Models & Datasets Used
 
-1. **[Google Isolated Sign Language Recognition (GISLR)](https://www.kaggle.com/competitions/asl-signs)**: Hand landmarks and 3D gesture trajectory dataset for sign language recognition.
+1. **[Google Isolated Sign Language Recognition (GISLR) / ASL Alphabet](https://www.kaggle.com/datasets/grassknoted/asl-alphabet)**: Hand landmarks and 3D gesture trajectory dataset for sign language recognition.
 2. **[FER-2013 Facial Expression Dataset](https://www.kaggle.com/datasets/msambare/fer2013)**: Benchmark dataset for facial expression and emotion classification.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Mobile Deployment & Wi-Fi Debugging
 
-### Prerequisites
-
-- Python 3.11+ installed
-- Android Studio (Ladybug or newer)
-- Android device or Emulator running Android 8.0 (API 26) or higher
-
-### Local Setup & Pipeline Verification
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/git-sajib/ai-hearing-speech-assistant.git
-   cd ai-hearing-speech-assistant
-   ```
-
-2. Test the MediaPipe Pipeline:
-   ```bash
-   cd ml_models
-   python test_pipeline.py
-   ```
+1. Open `android_app` in Android Studio.
+2. Enable **Wireless Debugging** on your Android smartphone (Developer Options $\rightarrow$ Wireless Debugging).
+3. Connect via QR Code in Android Studio.
+4. Click **Run / Play ($\triangleright$)** to deploy the app to your device.
 
 ---
 
