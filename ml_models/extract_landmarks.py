@@ -27,8 +27,8 @@ def extract_landmarks():
 
     print(f"Found {len(classes)} strictly A-Z Alphabet classes: {classes}", flush=True)
 
-    # 100 high quality samples per class for ultra fast processing
-    SAMPLES_PER_CLASS = 100
+    # Extract 500 high-quality images per class across all 26 A-Z classes for rock solid dataset generalization
+    SAMPLES_PER_CLASS = 500
 
     for label in classes:
         class_dir = os.path.join(dataset_dir, label)
