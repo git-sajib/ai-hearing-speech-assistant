@@ -1370,7 +1370,7 @@ fun MainScreen(
                             singleLine = true
                         )
 
-                        // Filter Category Chips
+                        // Filter Category Chips with 3D Glassmorphism Glow
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -1387,16 +1387,16 @@ fun MainScreen(
                                 Surface(
                                     onClick = { filterCategory = catKey },
                                     shape = RoundedCornerShape(20.dp),
-                                    color = if (isSelected) Color(0xFF4F46E5) else Color(0xFF1E293B),
-                                    border = if (isSelected) null else androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF334155)),
-                                    shadowElevation = if (isSelected) 4.dp else 0.dp
+                                    color = if (isSelected) Color(0xFF4F46E5) else Color(0xFF1E293B).copy(alpha = 0.7f),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color(0xFF818CF8) else Color(0xFF334155)),
+                                    shadowElevation = if (isSelected) 8.dp else 0.dp
                                 ) {
                                     Text(
                                         text = catLabel,
                                         color = if (isSelected) Color.White else Color(0xFF94A3B8),
                                         fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                        fontWeight = FontWeight.ExtraBold,
+                                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
                                     )
                                 }
                             }
@@ -1865,7 +1865,7 @@ fun MainScreen(
                     )
 
                     Column(modifier = Modifier.fillMaxSize()) {
-                        // Category Selector Pills with 3D Elevated Glow
+                        // Category Selector Pills with 3D Glassmorphism Glowing Vector Badges
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -1876,14 +1876,19 @@ fun MainScreen(
                                 val isSelected = selectedEmotionCategory == catKey
                                 Surface(
                                     onClick = { selectedEmotionCategory = catKey },
-                                    shape = RoundedCornerShape(16.dp),
-                                    color = if (isSelected) catColor else Color(0xFF1E293B),
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color.White.copy(alpha = 0.5f) else Color(0xFF334155)),
+                                    shape = RoundedCornerShape(20.dp),
+                                    color = if (isSelected) catColor else Color(0xFF1E293B).copy(alpha = 0.7f),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color.White else Color(0xFF334155)),
                                     modifier = Modifier.weight(1f),
-                                    shadowElevation = if (isSelected) 8.dp else 2.dp
+                                    shadowElevation = if (isSelected) 8.dp else 0.dp
                                 ) {
                                     Box(modifier = Modifier.padding(vertical = 10.dp), contentAlignment = Alignment.Center) {
-                                        Text(catLabel, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                        Text(
+                                            text = catLabel,
+                                            color = Color.White,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.ExtraBold
+                                        )
                                     }
                                 }
                             }
@@ -1908,12 +1913,13 @@ fun MainScreen(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        // Visual Emoji Circular Badge Tile
+                                        // Visual 3D Vector Glassmorphism Circular Badge Tile
                                         Surface(
                                             shape = CircleShape,
-                                            color = accentColor.copy(alpha = 0.15f),
-                                            border = androidx.compose.foundation.BorderStroke(1.dp, accentColor),
-                                            modifier = Modifier.size(42.dp)
+                                            color = accentColor.copy(alpha = 0.2f),
+                                            border = androidx.compose.foundation.BorderStroke(1.5.dp, accentColor),
+                                            modifier = Modifier.size(44.dp),
+                                            shadowElevation = 4.dp
                                         ) {
                                             Box(contentAlignment = Alignment.Center) {
                                                 Text(emoji, fontSize = 20.sp)
@@ -1932,12 +1938,13 @@ fun MainScreen(
 
                                         Spacer(modifier = Modifier.width(10.dp))
 
-                                        // 3D Action Play Button Tile
+                                        // 3D Glassmorphic Action Play Button Tile
                                         Surface(
                                             shape = CircleShape,
                                             color = accentColor,
-                                            modifier = Modifier.size(36.dp),
-                                            shadowElevation = 4.dp
+                                            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.6f)),
+                                            modifier = Modifier.size(38.dp),
+                                            shadowElevation = 6.dp
                                         ) {
                                             Box(contentAlignment = Alignment.Center) {
                                                 Icon(Icons.Default.VolumeUp, contentDescription = "Speak Emotion", tint = Color.White, modifier = Modifier.size(18.dp))
