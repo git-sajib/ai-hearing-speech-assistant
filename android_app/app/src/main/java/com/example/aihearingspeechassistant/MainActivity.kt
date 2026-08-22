@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.ContactEmergency
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -1482,13 +1483,37 @@ fun MainScreen(
                                     }
                                 }
 
-                                FloatingActionButton(
-                                    onClick = { showAddPhraseDialog = true },
-                                    containerColor = Color(0xFFDC2626),
-                                    contentColor = Color.White,
-                                    modifier = Modifier.size(42.dp)
-                                ) {
-                                    Icon(Icons.Default.Add, contentDescription = "Add Custom SOS Phrase")
+                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    // One-Tap Direct Guardian Call Hotline Button
+                                    val profilePrefs = remember { context.getSharedPreferences("user_profile_pref", Context.MODE_PRIVATE) }
+                                    val guardianPhone = profilePrefs.getString("guardian_phone", "01700000000") ?: "01700000000"
+
+                                    FloatingActionButton(
+                                        onClick = {
+                                            try {
+                                                val intent = android.content.Intent(android.content.Intent.ACTION_DIAL).apply {
+                                                    data = android.net.Uri.parse("tel:$guardianPhone")
+                                                }
+                                                context.startActivity(intent)
+                                            } catch (e: Exception) {
+                                                Log.e("SOSCall", "Call error: ${e.message}")
+                                            }
+                                        },
+                                        containerColor = Color(0xFF16A34A),
+                                        contentColor = Color.White,
+                                        modifier = Modifier.size(42.dp)
+                                    ) {
+                                        Icon(Icons.Default.Call, contentDescription = "Call Emergency Guardian Hotline")
+                                    }
+
+                                    FloatingActionButton(
+                                        onClick = { showAddPhraseDialog = true },
+                                        containerColor = Color(0xFFDC2626),
+                                        contentColor = Color.White,
+                                        modifier = Modifier.size(42.dp)
+                                    ) {
+                                        Icon(Icons.Default.Add, contentDescription = "Add Custom SOS Phrase")
+                                    }
                                 }
                             }
                         }
