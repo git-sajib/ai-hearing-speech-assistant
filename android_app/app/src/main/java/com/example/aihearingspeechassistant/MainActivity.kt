@@ -421,8 +421,9 @@ fun MainScreen(
             },
             bottomBar = {
                 NavigationBar(
-                    containerColor = Color(0xFF1E293B),
-                    contentColor = Color.White
+                    containerColor = Color(0xFF1E1B4B),
+                    contentColor = Color.White,
+                    tonalElevation = 12.dp
                 ) {
                     NavigationBarItem(
                         selected = activeBottomTab == "TRANSLATOR",
@@ -432,9 +433,9 @@ fun MainScreen(
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
-                            indicatorColor = Color(0xFF4F46E5),
-                            unselectedIconColor = Color(0xFF94A3B8),
-                            unselectedTextColor = Color(0xFF94A3B8)
+                            indicatorColor = Color(0xFF6366F1),
+                            unselectedIconColor = Color(0xFF64748B),
+                            unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                     NavigationBarItem(
@@ -445,9 +446,9 @@ fun MainScreen(
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
-                            indicatorColor = Color(0xFF4F46E5),
-                            unselectedIconColor = Color(0xFF94A3B8),
-                            unselectedTextColor = Color(0xFF94A3B8)
+                            indicatorColor = Color(0xFF6366F1),
+                            unselectedIconColor = Color(0xFF64748B),
+                            unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                     NavigationBarItem(
@@ -458,9 +459,9 @@ fun MainScreen(
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
-                            indicatorColor = Color(0xFF4F46E5),
-                            unselectedIconColor = Color(0xFF94A3B8),
-                            unselectedTextColor = Color(0xFF94A3B8)
+                            indicatorColor = Color(0xFF6366F1),
+                            unselectedIconColor = Color(0xFF64748B),
+                            unselectedTextColor = Color(0xFF64748B)
                         )
                     )
                 }
