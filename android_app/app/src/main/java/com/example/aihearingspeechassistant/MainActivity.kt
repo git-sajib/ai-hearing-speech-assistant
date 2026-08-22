@@ -790,35 +790,61 @@ fun MainScreen(
                 }
 
                 "DICTIONARY" -> {
-                    // Interactive Sign Language Reference Dictionary Grid View
+                    // Interactive Sign Language Reference Dictionary Grid View (Full Alphabets A-Z & Digits 0-9)
                     Column(modifier = Modifier.fillMaxSize()) {
                         Text(
-                            text = "ASL Reference Dictionary (28 Signs)",
+                            text = "ASL Sign Reference (36 Supported Gestures)",
                             color = Color.White,
-                            fontSize = 18.sp,
+                            fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
 
                         val dictionaryItems = listOf(
-                            "A" to "Fist with thumb on side",
-                            "B" to "4 fingers extended, thumb tucked",
-                            "C" to "Curved open C shape",
-                            "D" to "Index up, thumb touches middle",
-                            "E" to "Fingertips curled tightly to thumb",
-                            "F" to "Thumb & index circle, 3 extended",
-                            "G" to "Index & thumb pointing sideways",
-                            "H" to "Index & middle sideways",
-                            "I" to "Pinky finger extended",
-                            "L" to "L shape with index & thumb",
-                            "V" to "V shape 2 fingers extended",
-                            "W" to "3 fingers extended"
+                            // Alphabets A-Z
+                            "A" to "🔤 Fist, thumb straight on side",
+                            "B" to "🔤 4 fingers up, thumb tucked",
+                            "C" to "🔤 Curved open hand C shape",
+                            "D" to "🔤 Index up, thumb touches middle",
+                            "E" to "🔤 Fingertips curled to thumb",
+                            "F" to "🔤 Index & thumb circle, 3 up",
+                            "G" to "🔤 Index & thumb point left",
+                            "H" to "🔤 Index & middle point left",
+                            "I" to "🔤 Pinky finger extended up",
+                            "J" to "🔤 Pinky traces J in air",
+                            "K" to "🔤 Index up, middle forward",
+                            "L" to "🔤 L shape with index & thumb",
+                            "M" to "🔤 Thumb under 3 fingers",
+                            "N" to "🔤 Thumb under 2 fingers",
+                            "O" to "🔤 All fingers touch thumb O",
+                            "P" to "🔤 K gesture pointed down",
+                            "Q" to "🔤 G gesture pointed down",
+                            "R" to "🔤 Index & middle crossed",
+                            "S" to "🔤 Fist with thumb over fingers",
+                            "T" to "🔤 Thumb tucked under index",
+                            "U" to "🔤 Index & middle together up",
+                            "V" to "🔤 V sign 2 fingers extended",
+                            "W" to "🔤 3 fingers extended up",
+                            "X" to "🔤 Index finger hooked/curled",
+                            "Y" to "🔤 Thumb & pinky extended",
+                            "Z" to "🔤 Index traces Z in air",
+                            // Digits 0-9
+                            "0" to "🔢 Curved O digit shape",
+                            "1" to "🔢 Index finger extended up",
+                            "2" to "🔢 Index & middle extended",
+                            "3" to "🔢 Thumb, index, middle out",
+                            "4" to "🔢 4 fingers up, thumb in",
+                            "5" to "🔢 Open hand 5 fingers spread",
+                            "6" to "🔢 Pinky touches thumb tip",
+                            "7" to "🔢 Ring finger touches thumb",
+                            "8" to "🔢 Middle finger touches thumb",
+                            "9" to "🔢 Index touches thumb tip"
                         )
 
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
                             items(dictionaryItems) { (label, desc) ->
