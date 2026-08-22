@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.VolumeUp
@@ -497,7 +498,7 @@ fun MainScreen(
                         selected = activeBottomTab == "TRANSLATOR",
                         onClick = { activeBottomTab = "TRANSLATOR" },
                         icon = { Icon(Icons.Default.CameraAlt, contentDescription = "Translator") },
-                        label = { Text("Sign Translator", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text("Sign AI", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
@@ -510,7 +511,7 @@ fun MainScreen(
                         selected = activeBottomTab == "LISTEN",
                         onClick = { activeBottomTab = "LISTEN" },
                         icon = { Icon(Icons.Default.Mic, contentDescription = "Listen Mode") },
-                        label = { Text("Listen Mode", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text("Listen Mode", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
@@ -523,7 +524,7 @@ fun MainScreen(
                         selected = activeBottomTab == "DICTIONARY",
                         onClick = { activeBottomTab = "DICTIONARY" },
                         icon = { Icon(Icons.Default.Book, contentDescription = "Dictionary") },
-                        label = { Text("Sign Dictionary", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text("Dictionary", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFF818CF8),
@@ -536,7 +537,7 @@ fun MainScreen(
                         selected = activeBottomTab == "SOS",
                         onClick = { activeBottomTab = "SOS" },
                         icon = { Icon(Icons.Default.Warning, contentDescription = "Emergency SOS") },
-                        label = { Text("Emergency SOS", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
+                        label = { Text("SOS Mode", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = Color(0xFFF87171),
@@ -1206,7 +1207,23 @@ fun MainScreen(
                 }
 
                 "SOS" -> {
-                    // AI-Driven Emergency Quick Speech Phrases for Speech Impaired Users
+                    // AI-Driven Emergency Quick Speech Phrases with Custom Phrase Add Ability
+                    var customPhrases by remember {
+                        mutableStateOf(
+                            listOf(
+                                "🚨 Emergency! I am mute/speech impaired. Please help me!",
+                                "🏥 I need medical assistance immediately. Call an ambulance!",
+                                "📍 I am lost and need directions to BUP Campus.",
+                                "🗣️ Please write down your words on paper or phone screen.",
+                                "📞 Please call my family emergency contact number.",
+                                "🚌 Which bus goes to Mirpur 12 / BUP?"
+                            )
+                        )
+                    }
+
+                    var showAddPhraseDialog by remember { mutableStateOf(false) }
+                    var newPhraseText by remember { mutableStateOf("") }
+
                     Column(modifier = Modifier.fillMaxSize()) {
                         Card(
                             modifier = Modifier
@@ -1217,32 +1234,40 @@ fun MainScreen(
                             border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEF4444))
                         ) {
                             Row(
-                                modifier = Modifier.padding(14.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Icon(Icons.Default.Warning, contentDescription = "Emergency", tint = Color(0xFFF87171), modifier = Modifier.size(32.dp))
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Column {
-                                    Text("Emergency Quick Assist", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                                    Text("Tap any phrase to instantly trigger high-volume Text-to-Speech audio", color = Color(0xFFFCA5A5), fontSize = 11.sp)
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Icon(Icons.Default.Warning, contentDescription = "Emergency", tint = Color(0xFFF87171), modifier = Modifier.size(30.dp))
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Column {
+                                        Text("Emergency Quick Assist", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                        Text("Tap phrase to trigger high-volume TTS audio", color = Color(0xFFFCA5A5), fontSize = 10.sp)
+                                    }
+                                }
+
+                                FloatingActionButton(
+                                    onClick = { showAddPhraseDialog = true },
+                                    containerColor = Color(0xFFDC2626),
+                                    contentColor = Color.White,
+                                    modifier = Modifier.size(42.dp)
+                                ) {
+                                    Icon(Icons.Default.Add, contentDescription = "Add Custom SOS Phrase")
                                 }
                             }
                         }
-
-                        val sosPhrases = listOf(
-                            "🚨 Emergency! I am mute/speech impaired. Please help me!",
-                            "🏥 I need medical assistance immediately. Call an ambulance!",
-                            "📍 I am lost and need directions to BUP Campus.",
-                            "🗣️ Please write down your words on paper or phone screen.",
-                            "📞 Please call my family emergency contact number.",
-                            "🚌 Which bus goes to Mirpur 12 / BUP?"
-                        )
 
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(sosPhrases) { phrase ->
+                            items(customPhrases) { phrase ->
                                 Card(
                                     onClick = { onSpeakText(phrase) },
                                     shape = RoundedCornerShape(16.dp),
@@ -1252,14 +1277,14 @@ fun MainScreen(
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(16.dp),
+                                            .padding(14.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(
                                             text = phrase,
                                             color = Color.White,
-                                            fontSize = 13.sp,
+                                            fontSize = 12.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier.weight(1f)
                                         )
@@ -1267,16 +1292,64 @@ fun MainScreen(
                                         Surface(
                                             shape = CircleShape,
                                             color = Color(0xFFDC2626),
-                                            modifier = Modifier.size(36.dp)
+                                            modifier = Modifier.size(34.dp)
                                         ) {
                                             Box(contentAlignment = Alignment.Center) {
-                                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak SOS", tint = Color.White, modifier = Modifier.size(20.dp))
+                                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak SOS", tint = Color.White, modifier = Modifier.size(18.dp))
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+                    }
+
+                    if (showAddPhraseDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showAddPhraseDialog = false },
+                            containerColor = Color(0xFF1E293B),
+                            titleContentColor = Color.White,
+                            textContentColor = Color(0xFF94A3B8),
+                            title = { Text("Add Custom SOS Phrase", fontWeight = FontWeight.Bold) },
+                            text = {
+                                Column {
+                                    Text("Enter your custom emergency voice phrase below:", fontSize = 12.sp, color = Color(0xFF94A3B8))
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    OutlinedTextField(
+                                        value = newPhraseText,
+                                        onValueChange = { newPhraseText = it },
+                                        placeholder = { Text("e.g. Please call my brother at 017...", fontSize = 12.sp, color = Color(0xFF64748B)) },
+                                        shape = RoundedCornerShape(12.dp),
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedContainerColor = Color(0xFF0F172A),
+                                            unfocusedContainerColor = Color(0xFF0F172A),
+                                            focusedTextColor = Color.White,
+                                            unfocusedTextColor = Color.White
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        if (newPhraseText.isNotBlank()) {
+                                            customPhrases = customPhrases + "💬 " + newPhraseText.trim()
+                                            newPhraseText = ""
+                                            showAddPhraseDialog = false
+                                        }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626))
+                                ) {
+                                    Text("Add Phrase", fontWeight = FontWeight.Bold, color = Color.White)
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showAddPhraseDialog = false }) {
+                                    Text("Cancel", color = Color(0xFF94A3B8))
+                                }
+                            }
+                        )
                     }
                 }
             }
