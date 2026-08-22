@@ -212,8 +212,8 @@ fun MainScreen(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
-                drawerContainerColor = Color(0xFF0F172A),
-                drawerContentColor = Color.White,
+                drawerContainerColor = if (isDarkTheme) Color(0xFF0F172A) else Color(0xFFF8FAFC),
+                drawerContentColor = if (isDarkTheme) Color.White else Color(0xFF0F172A),
                 modifier = Modifier.width(320.dp)
             ) {
                 Column(
@@ -344,22 +344,22 @@ fun MainScreen(
                             ) {
                                 Surface(
                                     shape = CircleShape,
-                                    color = if (isSelected) accentColor.copy(alpha = 0.25f) else Color(0xFF1E293B),
-                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) accentColor else Color(0xFF334155)),
+                                    color = if (isSelected) accentColor.copy(alpha = 0.25f) else (if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFE2E8F0)),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) accentColor else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                     modifier = Modifier.size(54.dp),
                                     shadowElevation = if (isSelected) 8.dp else 2.dp
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(imageVector = icon, contentDescription = label, tint = if (isSelected) Color.White else accentColor, modifier = Modifier.size(24.dp))
+                                        Icon(imageVector = icon, contentDescription = label, tint = if (isSelected) (if (isDarkTheme) Color.White else accentColor) else accentColor, modifier = Modifier.size(24.dp))
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(6.dp))
-                                Text(label, color = if (isSelected) accentColor else Color.White, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold)
+                                Text(label, color = if (isSelected) accentColor else (if (isDarkTheme) Color.White else Color(0xFF0F172A)), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold)
                             }
                         }
                     }
 
-                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 10.dp))
+                    HorizontalDivider(color = if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1), modifier = Modifier.padding(vertical = 10.dp))
 
                     // Persistent User Profile & Guardian Emergency Contact
                     val profilePrefs = remember { context.getSharedPreferences("user_profile_pref", Context.MODE_PRIVATE) }
@@ -374,7 +374,7 @@ fun MainScreen(
                     ) {
                         Text(
                             text = if (isBanglaLanguage) "ব্যবহারকারীর প্রোফাইল ও অভিভাবক" else "USER PROFILE & GUARDIAN",
-                            color = Color(0xFF64748B),
+                            color = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -382,7 +382,7 @@ fun MainScreen(
                             onClick = { showProfileDialog = true },
                             modifier = Modifier.size(28.dp)
                         ) {
-                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile", tint = Color(0xFF38BDF8), modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile", tint = Color(0xFF0284C7), modifier = Modifier.size(16.dp))
                         }
                     }
 
@@ -391,8 +391,8 @@ fun MainScreen(
                             .fillMaxWidth()
                             .padding(vertical = 6.dp),
                         shape = RoundedCornerShape(14.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF6366F1).copy(alpha = 0.4f))
+                        colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0xFF6366F1).copy(alpha = 0.4f) else Color(0xFF0284C7).copy(alpha = 0.4f))
                     ) {
                         Row(
                             modifier = Modifier
@@ -411,11 +411,11 @@ fun MainScreen(
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
-                                Text(userName, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Text(userName, color = if (isDarkTheme) Color.White else Color(0xFF0F172A), fontWeight = FontWeight.Bold, fontSize = 12.sp)
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.ContactEmergency, contentDescription = "Guardian", tint = Color(0xFFF87171), modifier = Modifier.size(12.dp))
+                                    Icon(Icons.Default.ContactEmergency, contentDescription = "Guardian", tint = Color(0xFFDC2626), modifier = Modifier.size(12.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Emergency: $guardianPhone", color = Color(0xFFFCA5A5), fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                                    Text("Emergency: $guardianPhone", color = if (isDarkTheme) Color(0xFFFCA5A5) else Color(0xFF991B1B), fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
                                 }
                             }
                         }
@@ -1006,13 +1006,14 @@ fun MainScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Compact Text Translation Output Card
+                        // Compact Text Translation Output Card with Light/Dark Theme Adaptation
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(115.dp),
                             shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                            colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0x33818CF8) else Color(0xFFCBD5E1)),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
                             Column(
@@ -1023,7 +1024,7 @@ fun MainScreen(
                             ) {
                                 Text(
                                     text = if (isBanglaLanguage) "অনুবাদিত টেক্সট আউটপুট:" else "Translated Text Output:",
-                                    color = Color(0xFF94A3B8),
+                                    color = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF64748B),
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -1036,7 +1037,7 @@ fun MainScreen(
                                         selectedMode == "ALPHABET" -> if (isBanglaLanguage) "বর্ণ: $currentGesture" else "Alphabet: $currentGesture"
                                         else -> if (isBanglaLanguage) "সংকেত: $currentGesture" else "Sign: $currentGesture"
                                     },
-                                    color = if (translatedSentence.isEmpty() && (currentGesture == "nothing" || currentGesture == "Detecting...")) Color(0xFF64748B) else Color(0xFF38BDF8),
+                                    color = if (translatedSentence.isEmpty() && (currentGesture == "nothing" || currentGesture == "Detecting...")) (if (isDarkTheme) Color(0xFF64748B) else Color(0xFF94A3B8)) else (if (isDarkTheme) Color(0xFF38BDF8) else Color(0xFF0284C7)),
                                     fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 2
@@ -1173,7 +1174,8 @@ fun MainScreen(
                                 .fillMaxWidth()
                                 .weight(1f),
                             shape = RoundedCornerShape(24.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                            colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0x33818CF8) else Color(0xFFCBD5E1)),
                             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                         ) {
                             Column(
@@ -1215,7 +1217,7 @@ fun MainScreen(
 
                                 Text(
                                     text = recognizedSpeechText,
-                                    color = if (isListening) Color(0xFF38BDF8) else Color.White,
+                                    color = if (isListening) Color(0xFF0284C7) else (if (isDarkTheme) Color.White else Color(0xFF0F172A)),
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(vertical = 16.dp)
@@ -1279,7 +1281,7 @@ fun MainScreen(
                                     }
                                 },
                             shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = if (isListening) Color(0xFF312E81) else Color(0xFF1E1B4B)),
+                            colors = CardDefaults.cardColors(containerColor = if (isListening) Color(0xFF312E81) else (if (isDarkTheme) Color(0xFF1E1B4B) else Color(0xFF0284C7))),
                             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                         ) {
                             Row(
@@ -1448,8 +1450,8 @@ fun MainScreen(
                                         onSpeakText(pronounceText)
                                     },
                                     shape = RoundedCornerShape(20.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF6366F1).copy(alpha = 0.4f)),
+                                    colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0xFF6366F1).copy(alpha = 0.4f) else Color(0xFF0284C7).copy(alpha = 0.4f)),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                                 ) {
                                     Column(
@@ -1463,7 +1465,7 @@ fun MainScreen(
                                         ) {
                                             Surface(
                                                 shape = CircleShape,
-                                                color = Color(0xFF312E81),
+                                                color = if (isDarkTheme) Color(0xFF312E81) else Color(0xFFE0F2FE),
                                                 border = androidx.compose.foundation.BorderStroke(1.5.dp, Brush.horizontalGradient(listOf(Color(0xFF6366F1), Color(0xFF38BDF8)))),
                                                 modifier = Modifier.size(46.dp),
                                                 shadowElevation = 6.dp
@@ -1471,7 +1473,7 @@ fun MainScreen(
                                                 Box(contentAlignment = Alignment.Center) {
                                                     Text(
                                                         text = label,
-                                                        color = Color(0xFF38BDF8),
+                                                        color = if (isDarkTheme) Color(0xFF38BDF8) else Color(0xFF0284C7),
                                                         fontSize = 20.sp,
                                                         fontWeight = FontWeight.ExtraBold
                                                     )
@@ -1494,9 +1496,9 @@ fun MainScreen(
 
                                         Text(
                                             text = desc,
-                                            color = Color(0xFFCBD5E1),
+                                            color = if (isDarkTheme) Color(0xFFCBD5E1) else Color(0xFF334155),
                                             fontSize = 10.sp,
-                                            fontWeight = FontWeight.Medium,
+                                            fontWeight = FontWeight.SemiBold,
                                             maxLines = 2,
                                             modifier = Modifier.fillMaxWidth()
                                         )
@@ -1632,9 +1634,9 @@ fun MainScreen(
                             itemsIndexed(customPhrases) { index, phrase ->
                                 Card(
                                     shape = RoundedCornerShape(18.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                                    colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                                    modifier = Modifier.border(1.dp, Color(0x33818CF8), RoundedCornerShape(18.dp))
+                                    modifier = Modifier.border(1.dp, if (isDarkTheme) Color(0x33818CF8) else Color(0xFFCBD5E1), RoundedCornerShape(18.dp))
                                 ) {
                                     Row(
                                         modifier = Modifier
@@ -1645,7 +1647,7 @@ fun MainScreen(
                                     ) {
                                         Text(
                                             text = phrase,
-                                            color = Color.White,
+                                            color = if (isDarkTheme) Color.White else Color(0xFF0F172A),
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier
@@ -1889,7 +1891,7 @@ fun MainScreen(
                                 Card(
                                     onClick = { onSpeakText(phraseText) },
                                     shape = RoundedCornerShape(20.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                                    colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
                                     border = androidx.compose.foundation.BorderStroke(1.dp, accentColor.copy(alpha = 0.4f)),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                                 ) {
@@ -1917,7 +1919,7 @@ fun MainScreen(
 
                                         Text(
                                             phraseText,
-                                            color = Color.White,
+                                            color = if (isDarkTheme) Color.White else Color(0xFF0F172A),
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier.weight(1f)
