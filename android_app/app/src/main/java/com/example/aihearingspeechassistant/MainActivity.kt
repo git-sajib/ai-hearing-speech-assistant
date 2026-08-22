@@ -224,7 +224,7 @@ fun MainScreen(
 
                                 val currentTime = System.currentTimeMillis()
                                 if (gesture != "nothing" && gesture != "Detecting...") {
-                                    if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 1500) {
+                                    if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 2200) {
                                         if (gesture == "space") {
                                             translatedSentence += " "
                                         } else if (gesture == "del") {
@@ -439,16 +439,17 @@ fun CameraXInferenceView(
                             
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
                             
-                            // Add prediction to 10-frame sliding window (~0.3s) for fast instant detection
+                            // Add prediction to 25-frame sliding window (~0.8s) for ultra-stable steady gesture detection
                             synchronized(predictionWindow) {
                                 predictionWindow.add(gesture)
-                                if (predictionWindow.size > 10) {
+                                if (predictionWindow.size > 25) {
                                     predictionWindow.removeAt(0)
                                 }
                                 
-                                val mostFrequentGesture = predictionWindow.groupingBy { it }
-                                    .eachCount()
-                                    .maxByOrNull { it.value }?.key ?: gesture
+                                // Require gesture to be stable across at least 15 frames (>60% majority) to lock in prediction
+                                val counts = predictionWindow.groupingBy { it }.eachCount()
+                                val topGesture = counts.maxByOrNull { it.value }
+                                val mostFrequentGesture = if (topGesture != null && topGesture.value >= 14) topGesture.key else "Detecting..."
 
                                 ContextCompat.getMainExecutor(context).execute {
                                     onGestureDetected(mostFrequentGesture, confidence)
