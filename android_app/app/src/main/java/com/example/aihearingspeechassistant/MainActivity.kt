@@ -43,12 +43,15 @@ import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.ContactEmergency
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Quiz
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.foundation.Image
@@ -339,6 +342,129 @@ fun MainScreen(
                     }
 
                     HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 10.dp))
+
+                    // Persistent User Profile & Guardian Emergency Contact
+                    val profilePrefs = remember { context.getSharedPreferences("user_profile_pref", Context.MODE_PRIVATE) }
+                    var userName by remember { mutableStateOf(profilePrefs.getString("user_name", "Samiul Islam") ?: "Samiul Islam") }
+                    var guardianPhone by remember { mutableStateOf(profilePrefs.getString("guardian_phone", "01700000000") ?: "01700000000") }
+                    var showProfileDialog by remember { mutableStateOf(false) }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (isBanglaLanguage) "ব্যবহারকারীর প্রোফাইল ও অভিভাবক" else "USER PROFILE & GUARDIAN",
+                            color = Color(0xFF64748B),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        IconButton(
+                            onClick = { showProfileDialog = true },
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile", tint = Color(0xFF38BDF8), modifier = Modifier.size(16.dp))
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF6366F1).copy(alpha = 0.4f))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color(0xFF4F46E5),
+                                modifier = Modifier.size(38.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.Person, contentDescription = "User", tint = Color.White, modifier = Modifier.size(20.dp))
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(userName, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.ContactEmergency, contentDescription = "Guardian", tint = Color(0xFFF87171), modifier = Modifier.size(12.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Emergency: $guardianPhone", color = Color(0xFFFCA5A5), fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                                }
+                            }
+                        }
+                    }
+
+                    if (showProfileDialog) {
+                        var tempName by remember { mutableStateOf(userName) }
+                        var tempPhone by remember { mutableStateOf(guardianPhone) }
+
+                        AlertDialog(
+                            onDismissRequest = { showProfileDialog = false },
+                            containerColor = Color(0xFF1E293B),
+                            titleContentColor = Color.White,
+                            title = { Text(if (isBanglaLanguage) "প্রোফাইল তথ্য সংশোধন" else "Edit User & Guardian Profile", fontWeight = FontWeight.Bold) },
+                            text = {
+                                Column {
+                                    Text(if (isBanglaLanguage) "ব্যবহারকারীর নাম:" else "User Name:", fontSize = 11.sp, color = Color(0xFF94A3B8))
+                                    OutlinedTextField(
+                                        value = tempName,
+                                        onValueChange = { tempName = it },
+                                        shape = RoundedCornerShape(10.dp),
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedContainerColor = Color(0xFF0F172A),
+                                            unfocusedContainerColor = Color(0xFF0F172A),
+                                            focusedTextColor = Color.White,
+                                            unfocusedTextColor = Color.White
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Text(if (isBanglaLanguage) "জরুরি অভিভাবকের ফোন নম্বর:" else "Emergency Guardian Phone:", fontSize = 11.sp, color = Color(0xFF94A3B8))
+                                    OutlinedTextField(
+                                        value = tempPhone,
+                                        onValueChange = { tempPhone = it },
+                                        shape = RoundedCornerShape(10.dp),
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedContainerColor = Color(0xFF0F172A),
+                                            unfocusedContainerColor = Color(0xFF0F172A),
+                                            focusedTextColor = Color.White,
+                                            unfocusedTextColor = Color.White
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        userName = tempName.trim()
+                                        guardianPhone = tempPhone.trim()
+                                        profilePrefs.edit().putString("user_name", userName).putString("guardian_phone", guardianPhone).apply()
+                                        showProfileDialog = false
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
+                                ) {
+                                    Text("Save Profile", fontWeight = FontWeight.Bold, color = Color.White)
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showProfileDialog = false }) {
+                                    Text("Cancel", color = Color(0xFF94A3B8))
+                                }
+                            }
+                        )
+                    }
+
+                    HorizontalDivider(color = Color(0xFF334155), modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(
                         text = if (isBanglaLanguage) "প্রজেক্ট টিম ও গবেষকবৃন্দ" else "PROJECT TEAM",
