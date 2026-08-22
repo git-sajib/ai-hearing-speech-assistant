@@ -65,10 +65,9 @@ ai-hearing-speech-assistant/
 
 ## 🚀 Mobile Deployment & Wi-Fi Debugging
 
-1. Open `android_app` in Android Studio.
-2. Enable **Wireless Debugging** on your Android smartphone (Developer Options $\rightarrow$ Wireless Debugging).
-3. Connect via QR Code in Android Studio.
-4. Click **Run / Play ($\triangleright$)** to deploy the app to your device.
+1. Open `android_app` project directory.
+2. Connect mobile device via fixed Wi-Fi port (`192.168.0.109:5555`).
+3. App builds and deploys directly to device over local network without requiring Android Studio UI.
 
 ---
 
