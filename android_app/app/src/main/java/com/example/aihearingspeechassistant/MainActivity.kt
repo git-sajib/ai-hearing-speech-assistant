@@ -1279,62 +1279,86 @@ fun MainScreen(
                         }
 
                         LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
                             itemsIndexed(customPhrases) { index, phrase ->
                                 Card(
-                                    shape = RoundedCornerShape(16.dp),
+                                    shape = RoundedCornerShape(18.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                                    modifier = Modifier.border(1.dp, Color(0x33818CF8), RoundedCornerShape(18.dp))
                                 ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(12.dp),
+                                            .padding(14.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(
                                             text = phrase,
                                             color = Color.White,
-                                            fontSize = 12.sp,
+                                            fontSize = 13.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier
                                                 .weight(1f)
                                                 .clickable { onSpeakText(phrase) }
                                         )
 
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            // Speak Audio Button
-                                            IconButton(
+                                        Spacer(modifier = Modifier.width(10.dp))
+
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                        ) {
+                                            // 3D Elevated Emerald Audio Play Button Surface
+                                            Surface(
                                                 onClick = { onSpeakText(phrase) },
-                                                modifier = Modifier.size(32.dp)
+                                                shape = CircleShape,
+                                                color = Color(0xFF065F46),
+                                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981)),
+                                                modifier = Modifier.size(36.dp),
+                                                shadowElevation = 4.dp
                                             ) {
-                                                Icon(Icons.Default.VolumeUp, contentDescription = "Speak SOS", tint = Color(0xFF10B981))
+                                                Box(contentAlignment = Alignment.Center) {
+                                                    Icon(Icons.Default.VolumeUp, contentDescription = "Speak SOS", tint = Color(0xFF34D399), modifier = Modifier.size(18.dp))
+                                                }
                                             }
 
-                                            // Edit Button
-                                            IconButton(
+                                            // 3D Elevated Sky Blue Edit Button Surface
+                                            Surface(
                                                 onClick = {
                                                     editingIndex = index
                                                     editPhraseText = phrase.replace("💬 ", "").replace("🚨 ", "").replace("🏥 ", "").replace("📍 ", "").replace("🗣️ ", "").replace("📞 ", "").replace("🚌 ", "")
                                                 },
-                                                modifier = Modifier.size(32.dp)
+                                                shape = CircleShape,
+                                                color = Color(0xFF0C4A6E),
+                                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF38BDF8)),
+                                                modifier = Modifier.size(36.dp),
+                                                shadowElevation = 4.dp
                                             ) {
-                                                Icon(Icons.Default.Edit, contentDescription = "Edit Phrase", tint = Color(0xFF38BDF8))
+                                                Box(contentAlignment = Alignment.Center) {
+                                                    Icon(Icons.Default.Edit, contentDescription = "Edit Phrase", tint = Color(0xFF38BDF8), modifier = Modifier.size(18.dp))
+                                                }
                                             }
 
-                                            // Delete Button
-                                            IconButton(
+                                            // 3D Elevated Rose Red Delete Button Surface
+                                            Surface(
                                                 onClick = {
                                                     val updated = customPhrases.toMutableList().apply { removeAt(index) }
                                                     customPhrases = updated
                                                     savePhrasesToStorage(updated)
                                                 },
-                                                modifier = Modifier.size(32.dp)
+                                                shape = CircleShape,
+                                                color = Color(0xFF7F1D1D),
+                                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEF4444)),
+                                                modifier = Modifier.size(36.dp),
+                                                shadowElevation = 4.dp
                                             ) {
-                                                Icon(Icons.Default.Delete, contentDescription = "Delete Phrase", tint = Color(0xFFEF4444))
+                                                Box(contentAlignment = Alignment.Center) {
+                                                    Icon(Icons.Default.Delete, contentDescription = "Delete Phrase", tint = Color(0xFFF87171), modifier = Modifier.size(18.dp))
+                                                }
                                             }
                                         }
                                     }
