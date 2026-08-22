@@ -131,16 +131,31 @@ fun MainScreen(
         )
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { granted ->
-            hasCameraPermission = granted
+    var hasAudioPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val permissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            hasCameraPermission = permissions[Manifest.permission.CAMERA] ?: false
+            hasAudioPermission = permissions[Manifest.permission.RECORD_AUDIO] ?: false
         }
     )
 
     LaunchedEffect(Unit) {
-        if (!hasCameraPermission) {
-            launcher.launch(Manifest.permission.CAMERA)
+        if (!hasCameraPermission || !hasAudioPermission) {
+            permissionsLauncher.launch(
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO
+                )
+            )
         }
     }
 
@@ -907,9 +922,26 @@ fun MainScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(90.dp),
+                                .height(90.dp)
+                                .clickable {
+                                    if (!hasAudioPermission) {
+                                        permissionsLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
+                                    } else {
+                                        try {
+                                            if (isListening) {
+                                                speechRecognizer.stopListening()
+                                                isListening = false
+                                            } else {
+                                                speechRecognizer.startListening(speechIntent)
+                                                isListening = true
+                                            }
+                                        } catch (e: Exception) {
+                                            Log.e("ListenMode", "SpeechRecognizer error: ${e.localizedMessage}")
+                                        }
+                                    }
+                                },
                             shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B)),
+                            colors = CardDefaults.cardColors(containerColor = if (isListening) Color(0xFF312E81) else Color(0xFF1E1B4B)),
                             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                         ) {
                             Row(
@@ -922,8 +954,8 @@ fun MainScreen(
                                 Column {
                                     Text("Microphone Control", color = Color(0xFFA5B4FC), fontSize = 11.sp)
                                     Text(
-                                        text = if (isListening) "Stop Speech Listening" else "Tap Mic to Start Talking",
-                                        color = Color.White,
+                                        text = if (!hasAudioPermission) "Grant Mic Permission to Speak" else if (isListening) "Stop Speech Listening" else "Tap Mic to Start Talking",
+                                        color = if (!hasAudioPermission) Color(0xFFF87171) else Color.White,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 14.sp
                                     )
@@ -931,12 +963,20 @@ fun MainScreen(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        if (isListening) {
-                                            speechRecognizer.stopListening()
-                                            isListening = false
+                                        if (!hasAudioPermission) {
+                                            permissionsLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
                                         } else {
-                                            speechRecognizer.startListening(speechIntent)
-                                            isListening = true
+                                            try {
+                                                if (isListening) {
+                                                    speechRecognizer.stopListening()
+                                                    isListening = false
+                                                } else {
+                                                    speechRecognizer.startListening(speechIntent)
+                                                    isListening = true
+                                                }
+                                            } catch (e: Exception) {
+                                                Log.e("ListenMode", "SpeechRecognizer error: ${e.localizedMessage}")
+                                            }
                                         }
                                     },
                                     containerColor = if (isListening) Color(0xFFEF4444) else Color(0xFF4F46E5),
