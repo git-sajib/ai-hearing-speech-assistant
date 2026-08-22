@@ -45,12 +45,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.ContactEmergency
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
@@ -195,8 +197,9 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var showProjectDetailsDialog by remember { mutableStateOf(false) }
 
-    var activeBottomTab by remember { mutableStateOf("TRANSLATOR") } // Tabs: TRANSLATOR, LISTEN, DICTIONARY, EMOTIONS, QUIZ, SOS
+    var activeBottomTab by remember { mutableStateOf("TRANSLATOR") } // Tabs: TRANSLATOR, LISTEN, DICTIONARY, EMOTIONS, SOS
     var isBanglaLanguage by remember { mutableStateOf(false) }
+    var isDarkTheme by remember { mutableStateOf(true) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -600,6 +603,24 @@ fun MainScreen(
                         }
                     },
                     actions = {
+                        // Dark / High-Contrast Light Theme Toggle Button
+                        Surface(
+                            onClick = { isDarkTheme = !isDarkTheme },
+                            shape = CircleShape,
+                            color = if (isDarkTheme) Color(0xFF312E81) else Color(0xFFF1F5F9),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0xFF818CF8) else Color(0xFF64748B)),
+                            modifier = Modifier.padding(end = 6.dp).size(34.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = if (isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
+                                    contentDescription = "Theme Toggle",
+                                    tint = if (isDarkTheme) Color(0xFFFDE047) else Color(0xFF0F172A),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+
                         // Language Toggle Switcher Button [EN / BN]
                         Surface(
                             onClick = { isBanglaLanguage = !isBanglaLanguage },
@@ -624,7 +645,7 @@ fun MainScreen(
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF1E1B4B)
+                        containerColor = if (isDarkTheme) Color(0xFF1E1B4B) else Color(0xFF0284C7)
                     )
                 )
             },
@@ -742,7 +763,7 @@ fun MainScreen(
                     )
                 }
             },
-            containerColor = Color(0xFF0F172A)
+            containerColor = if (isDarkTheme) Color(0xFF0F172A) else Color(0xFFF8FAFC)
         ) { innerPadding ->
         Column(
             modifier = Modifier
