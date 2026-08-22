@@ -932,44 +932,34 @@ fun MainScreen(
                                 }
                             }
 
-                            // Overlay Badges for Performance & Facial Expression
-                            Column(
+                            // Dynamic Facial Emotion AI Overlay Badge
+                            val detectedEmotionText = when {
+                                currentGesture.contains("Love", ignoreCase = true) || currentGesture.contains("Y", ignoreCase = true) || currentGesture.contains("V", ignoreCase = true) -> if (isBanglaLanguage) "হাসিখুশি (Happy 😊)" else "Happy 😊"
+                                currentGesture.contains("Help", ignoreCase = true) || currentGesture.contains("Emergency", ignoreCase = true) -> if (isBanglaLanguage) "চিন্তিত (Concerned 😟)" else "Concerned 😟"
+                                currentGesture == "nothing" || currentGesture == "Detecting..." -> if (isBanglaLanguage) "স্বাভাবিক (Neutral 😐)" else "Neutral 😐"
+                                else -> if (isBanglaLanguage) "মনোযোগী (Focused 🧐)" else "Focused 🧐"
+                            }
+
+                            Surface(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .padding(10.dp),
-                                horizontalAlignment = Alignment.End,
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xCC831843),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF472B6).copy(alpha = 0.6f))
                             ) {
-                                Surface(
-                                    shape = RoundedCornerShape(8.dp),
-                                    color = Color(0xCC1E1B4B)
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
+                                    Icon(Icons.Default.Face, contentDescription = "Facial AI", tint = Color(0xFFF472B6), modifier = Modifier.size(13.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
                                     Text(
-                                        text = "⚡ 30 FPS | 12ms",
-                                        color = Color(0xFF38BDF8),
+                                        text = if (isBanglaLanguage) "মুখের ভাব: $detectedEmotionText" else "Face: $detectedEmotionText",
+                                        color = Color.White,
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 9.sp,
-                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                                        fontSize = 10.sp
                                     )
-                                }
-
-                                Surface(
-                                    shape = RoundedCornerShape(8.dp),
-                                    color = Color(0xCC831843)
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(Icons.Default.Face, contentDescription = "Facial AI", tint = Color(0xFFF472B6), modifier = Modifier.size(10.dp))
-                                        Spacer(modifier = Modifier.width(3.dp))
-                                        Text(
-                                            text = if (isBanglaLanguage) "মুখের ভাব: হাসিখুশি" else "Face: Happy AI",
-                                            color = Color.White,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 8.sp
-                                        )
-                                    }
                                 }
                             }
                         }
