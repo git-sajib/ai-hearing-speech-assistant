@@ -2086,10 +2086,15 @@ fun CameraXInferenceView(
                                 val mouthOpenRatio = if (faceWidth > 0) mouthOpenDist / faceWidth else 0.0
                                 val eyebrowRatio = if (faceWidth > 0) eyebrowDist / faceWidth else 0.0
 
+                                // Calculate lip curvature (upward curvature for true smile)
+                                val lipCenterY = (upperLip.y() + lowerLip.y()) / 2.0f
+                                val lipCornersY = (leftLip.y() + rightLip.y()) / 2.0f
+                                val lipSmileCurvature = lipCenterY - lipCornersY // Positive when lip corners pull upwards
+
                                 detectedFaceEmotion = when {
-                                    smileRatio > 0.435 -> "Happy 😊"
-                                    mouthOpenRatio > 0.18 -> "Surprised 😲"
-                                    eyebrowRatio < 0.22 -> "Angry 😡"
+                                    smileRatio > 0.49 && lipSmileCurvature > 0.008 -> "Happy 😊"
+                                    mouthOpenRatio > 0.22 -> "Surprised 😲"
+                                    eyebrowRatio < 0.19 -> "Angry 😡"
                                     else -> "Neutral 😐"
                                 }
                             }
