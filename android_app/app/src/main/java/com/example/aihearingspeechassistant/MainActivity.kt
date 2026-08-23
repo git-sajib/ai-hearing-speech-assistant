@@ -984,6 +984,11 @@ fun MainScreen(
                                             // Strict Gesture Latch: Add letter only ONCE per physical sign hold.
                                             if (!hasCommittedCurrentGesture || gesture != lastAddedGesture) {
                                                 if (gesture == "space") {
+                                                    // Auto-Speak word when Space sign is made
+                                                    val lastWord = translatedSentence.trim().split(" ").lastOrNull() ?: ""
+                                                    if (lastWord.isNotEmpty()) {
+                                                        onSpeakText(lastWord)
+                                                    }
                                                     translatedSentence += " "
                                                 } else if (gesture == "del") {
                                                     if (translatedSentence.isNotEmpty()) {
@@ -996,10 +1001,23 @@ fun MainScreen(
                                                 hasCommittedCurrentGesture = true
                                             }
                                         } else {
+                                            // Auto-Speak when hand is lowered / sign finished!
+                                            if (hasCommittedCurrentGesture) {
+                                                val lastWord = translatedSentence.trim().split(" ").lastOrNull() ?: ""
+                                                if (lastWord.isNotEmpty()) {
+                                                    onSpeakText(lastWord)
+                                                }
+                                            }
                                             hasCommittedCurrentGesture = false
                                             lastAddedGesture = ""
                                         }
                                     } else {
+                                        if (hasCommittedCurrentGesture) {
+                                            val lastWord = translatedSentence.trim().split(" ").lastOrNull() ?: ""
+                                            if (lastWord.isNotEmpty()) {
+                                                onSpeakText(lastWord)
+                                            }
+                                        }
                                         hasCommittedCurrentGesture = false
                                         lastAddedGesture = ""
                                     }
