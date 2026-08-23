@@ -90,6 +90,8 @@ import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
+import com.google.mediapipe.tasks.vision.facelandmarker.FaceLandmarker
+import com.google.mediapipe.tasks.vision.facelandmarker.FaceLandmarkerResult
 import java.util.Locale
 import java.util.concurrent.Executors
 
@@ -1996,35 +1998,81 @@ fun CameraXInferenceView(
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
-            // Initialize MediaPipe Tasks HandLandmarker
-            val baseOptions = BaseOptions.builder()
+            // Initialize MediaPipe Tasks HandLandmarker & FaceLandmarker
+            val handBaseOptions = BaseOptions.builder()
                 .setModelAssetPath("hand_landmarker.task")
                 .build()
 
-            val options = HandLandmarker.HandLandmarkerOptions.builder()
-                .setBaseOptions(baseOptions)
+            val handOptions = HandLandmarker.HandLandmarkerOptions.builder()
+                .setBaseOptions(handBaseOptions)
                 .setMinHandDetectionConfidence(0.5f)
                 .setMinTrackingConfidence(0.5f)
                 .setNumHands(1)
                 .setRunningMode(RunningMode.IMAGE)
                 .build()
 
+            val faceBaseOptions = BaseOptions.builder()
+                .setModelAssetPath("face_landmarker.task")
+                .build()
+
+            val faceOptions = FaceLandmarker.FaceLandmarkerOptions.builder()
+                .setBaseOptions(faceBaseOptions)
+                .setMinFaceDetectionConfidence(0.5f)
+                .setMinTrackingConfidence(0.5f)
+                .setNumFaces(1)
+                .setRunningMode(RunningMode.IMAGE)
+                .build()
+
             var handLandmarker: HandLandmarker? = null
+            var faceLandmarker: FaceLandmarker? = null
             try {
-                handLandmarker = HandLandmarker.createFromOptions(context, options)
+                handLandmarker = HandLandmarker.createFromOptions(context, handOptions)
+                faceLandmarker = FaceLandmarker.createFromOptions(context, faceOptions)
             } catch (e: Exception) {
                 Log.e("CameraXInference", "MediaPipe task load error: ${e.message}")
             }
 
             imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
                 val bitmap = imageProxy.toBitmap()
-                if (bitmap != null && handLandmarker != null) {
+                if (bitmap != null) {
                     val mpImage = BitmapImageBuilder(bitmap).build()
-                    val result: HandLandmarkerResult? = handLandmarker.detect(mpImage)
+                    val handResult: HandLandmarkerResult? = handLandmarker?.detect(mpImage)
+                    val faceResult: FaceLandmarkerResult? = faceLandmarker?.detect(mpImage)
 
                     try {
-                        if (result != null && result.landmarks().isNotEmpty() && result.landmarks()[0].size >= 21) {
-                            val handLandmarks = result.landmarks()[0]
+                        var isRealFaceSmile = false
+                        var currentDetectedFaceLandmarks = emptyList<com.google.mediapipe.tasks.components.containers.NormalizedLandmark>()
+
+                        if (faceResult != null && faceResult.faceLandmarks().isNotEmpty()) {
+                            val faceLms = faceResult.faceLandmarks()[0]
+                            currentDetectedFaceLandmarks = faceLms
+
+                            // MediaPipe 468 Face Mesh Landmarks:
+                            // Landmark #61: Left Lip Corner | Landmark #291: Right Lip Corner
+                            // Landmark #61 & #291 Mouth Spread Distance vs Facial Width (#133 & #362)
+                            if (faceLms.size > 362) {
+                                val leftLip = faceLms[61]
+                                val rightLip = faceLms[291]
+                                val leftEyeOuter = faceLms[133]
+                                val rightEyeOuter = faceLms[362]
+
+                                val lipWidth = kotlin.math.sqrt(
+                                    ((rightLip.x() - leftLip.x()) * (rightLip.x() - leftLip.x()) +
+                                     (rightLip.y() - leftLip.y()) * (rightLip.y() - leftLip.y())).toDouble()
+                                )
+
+                                val faceWidth = kotlin.math.sqrt(
+                                    ((rightEyeOuter.x() - leftEyeOuter.x()) * (rightEyeOuter.x() - leftEyeOuter.x()) +
+                                     (rightEyeOuter.y() - leftEyeOuter.y()) * (rightEyeOuter.y() - leftEyeOuter.y())).toDouble()
+                                )
+
+                                val smileRatio = if (faceWidth > 0) lipWidth / faceWidth else 0.0
+                                isRealFaceSmile = smileRatio > 0.44
+                            }
+                        }
+
+                        if (handResult != null && handResult.landmarks().isNotEmpty() && handResult.landmarks()[0].size >= 21) {
+                            val handLandmarks = handResult.landmarks()[0]
                             val wrist = handLandmarks[0]
                             val floatLandmarks = FloatArray(63)
 
@@ -2038,20 +2086,9 @@ fun CameraXInferenceView(
                             }
 
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                            
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
                             
-                            // Real-time Facial Landmark Euclidean Geometric Distance Analysis for Smile Detection
-                            val thumbTip = handLandmarks[4]
-                            val indexTip = handLandmarks[8]
-                            val pinkyTip = handLandmarks[20]
-                            
-                            val lipCornerSpread = kotlin.math.sqrt(
-                                ((pinkyTip.x() - thumbTip.x()) * (pinkyTip.x() - thumbTip.x()) +
-                                 (pinkyTip.y() - thumbTip.y()) * (pinkyTip.y() - thumbTip.y())).toDouble()
-                            ).toFloat()
-
-                            val isSmiling = lipCornerSpread > 0.42f || gesture.contains("Love", ignoreCase = true) || gesture.contains("Y", ignoreCase = true) || gesture.contains("V", ignoreCase = true)
+                            val isSmiling = isRealFaceSmile || gesture.contains("Love", ignoreCase = true) || gesture.contains("Y", ignoreCase = true) || gesture.contains("V", ignoreCase = true)
                             val isConcerned = gesture.contains("Help", ignoreCase = true) || gesture.contains("Emergency", ignoreCase = true)
                             val isFocused = gesture.isNotEmpty() && gesture != "nothing" && gesture != "Detecting..."
 
@@ -2080,18 +2117,19 @@ fun CameraXInferenceView(
                                 }
                             }
                             
-                            // Send 21 hand landmarks and rotation to overlay view for exact screen alignment
+                            // Send 21 hand landmarks, face mesh landmarks, and rotation to overlay view for exact screen alignment
                             ContextCompat.getMainExecutor(context).execute {
-                                overlayView.updateLandmarks(handLandmarks, rotationDegrees)
+                                overlayView.updateLandmarks(handLandmarks, rotationDegrees, currentDetectedFaceLandmarks)
                             }
                         } else {
                             synchronized(predictionWindow) {
                                 predictionWindow.clear()
                             }
+                            val fallbackEmotion = if (isRealFaceSmile) "Happy 😊" else "Neutral 😐"
                             ContextCompat.getMainExecutor(context).execute {
                                 onGestureDetected("nothing", 1.0f)
-                                onEmotionDetected("Neutral 😐")
-                                overlayView.clear()
+                                onEmotionDetected(fallbackEmotion)
+                                overlayView.updateLandmarks(emptyList(), imageProxy.imageInfo.rotationDegrees, currentDetectedFaceLandmarks)
                             }
                         }
                     } catch (e: Exception) {

@@ -65,20 +65,37 @@ class HandOverlayView @JvmOverloads constructor(
 
     private val fingerTips = setOf(4, 8, 12, 16, 20)
 
-    fun updateLandmarks(newLandmarks: List<NormalizedLandmark>, rotation: Int = 270) {
+    private var faceLandmarks: List<NormalizedLandmark> = emptyList()
+
+    // Face Landmark Paint for Cyberpunk Glowing Emerald Face Mesh
+    private val facePointPaint = Paint().apply {
+        color = Color.parseColor("#FFD700") // Glowing Gold / Amber Accent for Face Oval & Lip Mesh
+        style = Paint.Style.FILL
+        isAntiAlias = true
+    }
+
+    private val faceGlowPaint = Paint().apply {
+        color = Color.parseColor("#80FFD700")
+        style = Paint.Style.FILL
+        isAntiAlias = true
+    }
+
+    fun updateLandmarks(newLandmarks: List<NormalizedLandmark>, rotation: Int = 270, newFaceLandmarks: List<NormalizedLandmark> = emptyList()) {
         this.landmarks = newLandmarks
+        this.faceLandmarks = newFaceLandmarks
         this.rotationDegrees = rotation
         invalidate() // Trigger redraw on main UI thread
     }
 
     fun clear() {
         this.landmarks = emptyList()
+        this.faceLandmarks = emptyList()
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (landmarks.isEmpty()) return
+        if (landmarks.isEmpty() && faceLandmarks.isEmpty()) return
 
         val viewWidth = width.toFloat()
         val viewHeight = height.toFloat()
@@ -106,7 +123,16 @@ class HandOverlayView @JvmOverloads constructor(
             }
         }
 
-        // 1. Draw Glowing Under-Lines & Main Lines
+        // 1. Draw Face Mesh Keypoint Coordinates Overlay (Mouth & Eyes Landmark Dots)
+        if (faceLandmarks.isNotEmpty()) {
+            for (lm in faceLandmarks) {
+                val (cx, cy) = transformCoords(lm.x(), lm.y())
+                canvas.drawCircle(cx, cy, 6f, faceGlowPaint)
+                canvas.drawCircle(cx, cy, 3.5f, facePointPaint)
+            }
+        }
+
+        // 2. Draw Glowing Under-Lines & Main Lines for Hand
         for (connection in connections) {
             val startIdx = connection.first
             val endIdx = connection.second
@@ -122,7 +148,7 @@ class HandOverlayView @JvmOverloads constructor(
             }
         }
 
-        // 2. Draw Keypoint Dots (Outer Glow + Center Point)
+        // 3. Draw Hand Keypoint Dots (Outer Glow + Center Point)
         for (i in landmarks.indices) {
             val lm = landmarks[i]
             val (cx, cy) = transformCoords(lm.x(), lm.y())
