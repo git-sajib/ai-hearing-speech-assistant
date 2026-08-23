@@ -2148,17 +2148,17 @@ fun CameraXInferenceView(
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
 
-                            // Add prediction to 8-frame sliding window (~0.25s) for instant super-fast gesture detection
+                            // Add prediction to 12-frame sliding window (~0.4s) for high accuracy & zero-jitter stability
                             synchronized(predictionWindow) {
                                 predictionWindow.add(gesture)
-                                if (predictionWindow.size > 8) {
+                                if (predictionWindow.size > 12) {
                                     predictionWindow.removeAt(0)
                                 }
                                 
-                                // Require gesture to be stable across at least 5 frames to lock in prediction instantly
+                                // Require gesture to be stable across at least 7 frames (majority lock) for extreme accuracy
                                 val counts = predictionWindow.groupingBy { it }.eachCount()
                                 val topGesture = counts.maxByOrNull { it.value }
-                                val mostFrequentGesture = if (topGesture != null && topGesture.value >= 5) topGesture.key else "Detecting..."
+                                val mostFrequentGesture = if (topGesture != null && topGesture.value >= 7) topGesture.key else "Detecting..."
 
                                 ContextCompat.getMainExecutor(context).execute {
                                     onGestureDetected(mostFrequentGesture, confidence)
