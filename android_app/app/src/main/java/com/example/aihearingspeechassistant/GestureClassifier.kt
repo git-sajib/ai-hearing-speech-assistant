@@ -151,12 +151,18 @@ class GestureClassifier(private val context: Context) {
             } else if (isFistClenched && thumbIndexDist < 0.16) {
                 // S: Solid Clenched Fist with Thumb folded OVER index/middle fingers (NO hollow aperture)
                 predictedLabel = "S"
-            } else if (!isFistClenched && thumbIndexDist < 0.14 && indexExtendDist < 0.28 && middleExtendDist < 0.28) {
-                // O: Hollow curved finger aperture where tips curve down to touch thumb tip
+            } else if (!isFistClenched && thumbIndexDist < 0.14 && indexExtendDist < 0.28 && middleExtendDist < 0.28 && pinkyExtendDist < 0.25) {
+                // O: Hollow curved finger aperture where tips curve down to touch thumb tip (Pinky NOT extended)
                 predictedLabel = "O"
-            } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist < 0.25) {
-                // W: Index, Middle, Ring extended, Pinky tucked
-                predictedLabel = "W"
+            } else if (pinkyExtendDist > 0.26 && indexExtendDist < 0.26 && middleExtendDist < 0.26 && ringExtendDist < 0.26) {
+                // I / J: Pinky finger extended up while index/middle/ring are folded into fist
+                // If pinky is tilted or moving (or thumb-pinky spread), it is J, otherwise upright I
+                val pinkyTilt = Math.abs(pinkyTipX - wristX)
+                if (pinkyTilt > 0.10) {
+                    predictedLabel = "J"
+                } else {
+                    predictedLabel = "I"
+                }
             } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && indexMiddleDist > 0.12) {
                 // V: Index & Middle extended separated
                 predictedLabel = "V"
