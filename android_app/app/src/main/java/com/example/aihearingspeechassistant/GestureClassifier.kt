@@ -148,6 +148,9 @@ class GestureClassifier(private val context: Context) {
             if (indexExtendDist > 0.32 && middleExtendDist > 0.32 && ringExtendDist > 0.32 && pinkyExtendDist > 0.32 && thumbExtendDist > 0.32) {
                 // Space: All 5 fingers fully spread open hand
                 predictedLabel = "space"
+            } else if (isFistClenched && thumbTipY > wristY + 0.05) {
+                // DEL (Delete): Thumbs Down gesture - Fist clenched with Thumb pointing downwards below wrist
+                predictedLabel = "del"
             } else if (isFistClenched && thumbIndexDist < 0.16) {
                 // S: Solid Clenched Fist with Thumb folded OVER index/middle fingers (NO hollow aperture)
                 predictedLabel = "S"
