@@ -39,6 +39,13 @@ An intelligent, real-time, on-device mobile application designed to bridge the c
 
 ---
 
+## 🎯 Models & Datasets Used (Kaggle Benchmarks)
+
+1. **[Google Isolated Sign Language Recognition (GISLR) / ASL Alphabet](https://www.kaggle.com/datasets/grassknoted/asl-alphabet)**: Hand landmarks and 3D gesture trajectory dataset for 36 ASL gesture sign language recognition (Alphabets A-Z & Digits 0-9).
+2. **[FER-2013 Facial Expression Dataset](https://www.kaggle.com/datasets/msambare/fer2013)**: Benchmark dataset for real-time facial expression and emotion landmark classification.
+
+---
+
 ## ✨ Comprehensive Feature Matrix
 
 1. **🤟 Real-Time Gesture Recognition (Sign AI)**
