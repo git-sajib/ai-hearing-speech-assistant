@@ -2040,7 +2040,7 @@ fun CameraXInferenceView(
                     val faceResult: FaceLandmarkerResult? = faceLandmarker?.detect(mpImage)
 
                     try {
-                        var isRealFaceSmile = false
+                        var detectedFaceEmotion = "Neutral 😐"
                         var currentDetectedFaceLandmarks = emptyList<com.google.mediapipe.tasks.components.containers.NormalizedLandmark>()
 
                         if (faceResult != null && faceResult.faceLandmarks().isNotEmpty()) {
@@ -2048,26 +2048,50 @@ fun CameraXInferenceView(
                             currentDetectedFaceLandmarks = faceLms
 
                             // MediaPipe 468 Face Mesh Landmarks:
-                            // Landmark #61: Left Lip Corner | Landmark #291: Right Lip Corner
-                            // Landmark #61 & #291 Mouth Spread Distance vs Facial Width (#133 & #362)
+                            // #61 Left Lip Corner | #291 Right Lip Corner
+                            // #0 Upper Lip | #17 Lower Lip
+                            // #70 Left Inner Eyebrow | #300 Right Inner Eyebrow
+                            // #133 Left Eye Outer | #362 Right Eye Outer
                             if (faceLms.size > 362) {
                                 val leftLip = faceLms[61]
                                 val rightLip = faceLms[291]
+                                val upperLip = faceLms[0]
+                                val lowerLip = faceLms[17]
+                                val leftEyebrow = faceLms[70]
+                                val rightEyebrow = faceLms[300]
                                 val leftEyeOuter = faceLms[133]
                                 val rightEyeOuter = faceLms[362]
-
-                                val lipWidth = kotlin.math.sqrt(
-                                    ((rightLip.x() - leftLip.x()) * (rightLip.x() - leftLip.x()) +
-                                     (rightLip.y() - leftLip.y()) * (rightLip.y() - leftLip.y())).toDouble()
-                                )
 
                                 val faceWidth = kotlin.math.sqrt(
                                     ((rightEyeOuter.x() - leftEyeOuter.x()) * (rightEyeOuter.x() - leftEyeOuter.x()) +
                                      (rightEyeOuter.y() - leftEyeOuter.y()) * (rightEyeOuter.y() - leftEyeOuter.y())).toDouble()
                                 )
 
+                                val lipWidth = kotlin.math.sqrt(
+                                    ((rightLip.x() - leftLip.x()) * (rightLip.x() - leftLip.x()) +
+                                     (rightLip.y() - leftLip.y()) * (rightLip.y() - leftLip.y())).toDouble()
+                                )
+
+                                val mouthOpenDist = kotlin.math.sqrt(
+                                    ((lowerLip.x() - upperLip.x()) * (lowerLip.x() - upperLip.x()) +
+                                     (lowerLip.y() - upperLip.y()) * (lowerLip.y() - upperLip.y())).toDouble()
+                                )
+
+                                val eyebrowDist = kotlin.math.sqrt(
+                                    ((rightEyebrow.x() - leftEyebrow.x()) * (rightEyebrow.x() - leftEyebrow.x()) +
+                                     (rightEyebrow.y() - leftEyebrow.y()) * (rightEyebrow.y() - leftEyebrow.y())).toDouble()
+                                )
+
                                 val smileRatio = if (faceWidth > 0) lipWidth / faceWidth else 0.0
-                                isRealFaceSmile = smileRatio > 0.44
+                                val mouthOpenRatio = if (faceWidth > 0) mouthOpenDist / faceWidth else 0.0
+                                val eyebrowRatio = if (faceWidth > 0) eyebrowDist / faceWidth else 0.0
+
+                                detectedFaceEmotion = when {
+                                    smileRatio > 0.435 -> "Happy 😊"
+                                    mouthOpenRatio > 0.18 -> "Surprised 😲"
+                                    eyebrowRatio < 0.22 -> "Angry 😡"
+                                    else -> "Neutral 😐"
+                                }
                             }
                         }
 
@@ -2087,13 +2111,11 @@ fun CameraXInferenceView(
 
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
-                            
-                            val isSmiling = isRealFaceSmile || gesture.contains("Love", ignoreCase = true) || gesture.contains("Y", ignoreCase = true) || gesture.contains("V", ignoreCase = true)
                             val isConcerned = gesture.contains("Help", ignoreCase = true) || gesture.contains("Emergency", ignoreCase = true)
                             val isFocused = gesture.isNotEmpty() && gesture != "nothing" && gesture != "Detecting..."
 
                             val emotion = when {
-                                isSmiling -> "Happy 😊"
+                                detectedFaceEmotion != "Neutral 😐" -> detectedFaceEmotion
                                 isConcerned -> "Concerned 😟"
                                 isFocused -> "Focused 🧐"
                                 else -> "Neutral 😐"
@@ -2125,10 +2147,9 @@ fun CameraXInferenceView(
                             synchronized(predictionWindow) {
                                 predictionWindow.clear()
                             }
-                            val fallbackEmotion = if (isRealFaceSmile) "Happy 😊" else "Neutral 😐"
                             ContextCompat.getMainExecutor(context).execute {
                                 onGestureDetected("nothing", 1.0f)
-                                onEmotionDetected(fallbackEmotion)
+                                onEmotionDetected(detectedFaceEmotion)
                                 overlayView.updateLandmarks(emptyList(), imageProxy.imageInfo.rotationDegrees, currentDetectedFaceLandmarks)
                             }
                         }

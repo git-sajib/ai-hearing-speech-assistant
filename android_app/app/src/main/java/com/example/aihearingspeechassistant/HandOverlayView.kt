@@ -67,18 +67,39 @@ class HandOverlayView @JvmOverloads constructor(
 
     private var faceLandmarks: List<NormalizedLandmark> = emptyList()
 
-    // Face Landmark Paint for Cyberpunk Glowing Emerald Face Mesh
+    // Futuristic Sci-Fi Glowing Emerald Face Mesh Paint
     private val facePointPaint = Paint().apply {
-        color = Color.parseColor("#FFD700") // Glowing Gold / Amber Accent for Face Oval & Lip Mesh
+        color = Color.parseColor("#10B981") // Vibrant Emerald Green
         style = Paint.Style.FILL
         isAntiAlias = true
     }
 
     private val faceGlowPaint = Paint().apply {
-        color = Color.parseColor("#80FFD700")
+        color = Color.parseColor("#4010B981") // Soft Translucent Emerald Halo
         style = Paint.Style.FILL
         isAntiAlias = true
     }
+
+    private val faceMeshLinePaint = Paint().apply {
+        color = Color.parseColor("#6034D399") // Translucent Neon Mint Mesh Wireframe
+        strokeWidth = 2.5f
+        style = Paint.Style.STROKE
+        isAntiAlias = true
+    }
+
+    // Key MediaPipe 468 Face Mesh Wireframe Connections (Face Oval, Lips, Eyes, Eyebrows)
+    private val faceConnections = listOf(
+        // Lip Outline Connections
+        Pair(61, 185), Pair(185, 40), Pair(40, 39), Pair(39, 37), Pair(37, 0), Pair(0, 267), Pair(267, 269), Pair(269, 270), Pair(270, 409), Pair(409, 291), // Upper Lip Outer
+        Pair(61, 146), Pair(146, 91), Pair(91, 181), Pair(181, 84), Pair(84, 17), Pair(17, 314), Pair(314, 405), Pair(405, 321), Pair(321, 375), Pair(375, 291), // Lower Lip Outer
+        Pair(78, 95), Pair(95, 88), Pair(88, 178), Pair(178, 87), Pair(87, 14), Pair(14, 317), Pair(317, 402), Pair(402, 318), Pair(318, 324), Pair(324, 308), // Inner Lip
+        // Eyebrows
+        Pair(70, 63), Pair(63, 105), Pair(105, 66), Pair(66, 107), Pair(55, 65), Pair(65, 52), Pair(52, 53), Pair(53, 46), // Left Eyebrow
+        Pair(300, 293), Pair(293, 334), Pair(334, 296), Pair(296, 336), Pair(285, 295), Pair(295, 282), Pair(282, 283), Pair(283, 276), // Right Eyebrow
+        // Eyes
+        Pair(33, 160), Pair(160, 158), Pair(158, 133), Pair(133, 153), Pair(153, 144), Pair(144, 33), // Left Eye
+        Pair(362, 385), Pair(385, 387), Pair(387, 263), Pair(263, 373), Pair(373, 380), Pair(380, 362)  // Right Eye
+    )
 
     fun updateLandmarks(newLandmarks: List<NormalizedLandmark>, rotation: Int = 270, newFaceLandmarks: List<NormalizedLandmark> = emptyList()) {
         this.landmarks = newLandmarks
@@ -123,12 +144,24 @@ class HandOverlayView @JvmOverloads constructor(
             }
         }
 
-        // 1. Draw Face Mesh Keypoint Coordinates Overlay (Mouth & Eyes Landmark Dots)
+        // 1. Draw Futuristic Sci-Fi Face Mesh Wireframe Lines & Glowing Emerald Dots
         if (faceLandmarks.isNotEmpty()) {
+            // Draw Wireframe Lines between face keypoints
+            for (conn in faceConnections) {
+                val startIdx = conn.first
+                val endIdx = conn.second
+                if (startIdx < faceLandmarks.size && endIdx < faceLandmarks.size) {
+                    val (startX, startY) = transformCoords(faceLandmarks[startIdx].x(), faceLandmarks[startIdx].y())
+                    val (endX, endY) = transformCoords(faceLandmarks[endIdx].x(), faceLandmarks[endIdx].y())
+                    canvas.drawLine(startX, startY, endX, endY, faceMeshLinePaint)
+                }
+            }
+
+            // Draw glowing emerald dots for all 468 landmarks
             for (lm in faceLandmarks) {
                 val (cx, cy) = transformCoords(lm.x(), lm.y())
-                canvas.drawCircle(cx, cy, 6f, faceGlowPaint)
-                canvas.drawCircle(cx, cy, 3.5f, facePointPaint)
+                canvas.drawCircle(cx, cy, 5f, faceGlowPaint)
+                canvas.drawCircle(cx, cy, 2.5f, facePointPaint)
             }
         }
 
