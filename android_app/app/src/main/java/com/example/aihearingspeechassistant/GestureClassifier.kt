@@ -143,11 +143,16 @@ class GestureClassifier(private val context: Context) {
             }
         } else {
             // Precision Geometric Rules for ASL Alphabets (A-Z, Space, Del)
+            val isFistClenched = indexExtendDist < 0.23 && middleExtendDist < 0.23 && ringExtendDist < 0.23 && pinkyExtendDist < 0.23
+
             if (indexExtendDist > 0.32 && middleExtendDist > 0.32 && ringExtendDist > 0.32 && pinkyExtendDist > 0.32 && thumbExtendDist > 0.32) {
                 // Space: All 5 fingers fully spread open hand
                 predictedLabel = "space"
-            } else if (thumbIndexDist < 0.14 && indexExtendDist < 0.26 && middleExtendDist < 0.26 && ringExtendDist < 0.26 && pinkyExtendDist < 0.26) {
-                // O: All fingertips meeting thumb tip in a circular O shape
+            } else if (isFistClenched && thumbIndexDist < 0.16) {
+                // S: Solid Clenched Fist with Thumb folded OVER index/middle fingers (NO hollow aperture)
+                predictedLabel = "S"
+            } else if (!isFistClenched && thumbIndexDist < 0.14 && indexExtendDist < 0.28 && middleExtendDist < 0.28) {
+                // O: Hollow curved finger aperture where tips curve down to touch thumb tip
                 predictedLabel = "O"
             } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist < 0.25) {
                 // W: Index, Middle, Ring extended, Pinky tucked
@@ -176,12 +181,9 @@ class GestureClassifier(private val context: Context) {
             } else if (thumbIndexDist > 0.15 && indexExtendDist > 0.18 && pinkyExtendDist < 0.25 && ringExtendDist < 0.25) {
                 // C: Curved hand shape
                 predictedLabel = "C"
-            } else if (indexExtendDist < 0.25 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && thumbExtendDist > 0.25) {
+            } else if (isFistClenched && thumbExtendDist > 0.25) {
                 // A: Fist with Thumb resting on the side
                 predictedLabel = "A"
-            } else if (indexExtendDist < 0.25 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && thumbIndexDist < 0.15) {
-                // S: Fist with Thumb folded over fingers
-                predictedLabel = "S"
             } else if (thumbIndexDist < 0.18 && middleExtendDist > 0.28 && ringExtendDist > 0.28 && pinkyExtendDist > 0.28) {
                 // F: Thumb & Index forming circle, other 3 extended
                 predictedLabel = "F"

@@ -982,7 +982,6 @@ fun MainScreen(
 
                                         if (gesture != "nothing" && gesture != "Detecting...") {
                                             // Strict Gesture Latch: Add letter only ONCE per physical sign hold.
-                                            // To add the same gesture again, user must either change gesture or lower/reset hand ("nothing")
                                             if (!hasCommittedCurrentGesture || gesture != lastAddedGesture) {
                                                 if (gesture == "space") {
                                                     // Auto-Speak the last formed word when Space sign is made
@@ -1002,7 +1001,13 @@ fun MainScreen(
                                                 hasCommittedCurrentGesture = true
                                             }
                                         } else {
-                                            // Reset latch when hand is removed or idle so next gesture can be added fresh
+                                            // Auto-Speak on Hand Lowering: When user lowers/removes hand after spelling a word, automatically pronounce the last formed word!
+                                            if (hasCommittedCurrentGesture) {
+                                                val lastWord = translatedSentence.trim().split(" ").lastOrNull() ?: ""
+                                                if (lastWord.isNotEmpty()) {
+                                                    onSpeakText(lastWord)
+                                                }
+                                            }
                                             hasCommittedCurrentGesture = false
                                             lastAddedGesture = ""
                                         }
@@ -1044,27 +1049,38 @@ fun MainScreen(
 
                         Spacer(modifier = Modifier.height(6.dp))
 
-                        // Yellow Active Live Letter Bar (Like Friend's App UI)
+                        // Ultra-Modern Glowing Amber Active Live Letter Bar
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 4.dp),
+                                .padding(horizontal = 6.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = Color(0x33F59E0B),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFF59E0B))
+                                ) {
+                                    Box(
+                                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 3.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = if (currentGesture != "nothing" && currentGesture != "Detecting...") currentGesture else "_",
+                                            color = Color(0xFFF59E0B), // Vibrant Amber Yellow Highlight
+                                            fontSize = 22.sp,
+                                            fontWeight = FontWeight.Black
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    text = if (currentGesture != "nothing" && currentGesture != "Detecting...") currentGesture else "_",
-                                    color = Color(0xFFF59E0B), // Vibrant Amber Yellow Highlight
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Black
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .height(3.dp)
-                                        .width(40.dp)
-                                        .background(Color(0xFFF59E0B), RoundedCornerShape(2.dp))
+                                    text = if (currentGesture != "nothing" && currentGesture != "Detecting...") (if (isBanglaLanguage) "লাইভ সংকেত চিনে নেওয়া হয়েছে" else "Live Sign Recognized") else (if (isBanglaLanguage) "সংকেতের জন্য অপেক্ষারত..." else "Waiting for Sign..."),
+                                    color = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF64748B),
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
 
