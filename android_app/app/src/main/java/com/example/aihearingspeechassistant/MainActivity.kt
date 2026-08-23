@@ -972,8 +972,6 @@ fun MainScreen(
                             var lastAddedGesture by remember { mutableStateOf("") }
                             var lastGestureTime by remember { mutableLongStateOf(0L) }
 
-                            var currentEmotion by remember { mutableStateOf("Neutral 😐") }
-
                             CameraXInferenceView(
                                 gestureClassifier = gestureClassifier,
                                 selectedMode = selectedMode,
@@ -999,9 +997,6 @@ fun MainScreen(
                                             }
                                         }
                                     }
-                                },
-                                onEmotionDetected = { emotion ->
-                                    currentEmotion = emotion
                                 }
                             )
 
@@ -1029,32 +1024,6 @@ fun MainScreen(
                                         color = Color.White,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 12.sp
-                                    )
-                                }
-                            }
-
-                            // Dynamic Real-Time Facial Landmark Emotion Overlay Badge
-                            val detectedEmotionText = currentEmotion
-
-                            Surface(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(10.dp),
-                                shape = RoundedCornerShape(10.dp),
-                                color = Color(0xCC831843),
-                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF472B6).copy(alpha = 0.6f))
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(Icons.Default.Face, contentDescription = "Facial AI", tint = Color(0xFFF472B6), modifier = Modifier.size(13.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = if (isBanglaLanguage) "মুখের ভাব: $detectedEmotionText" else "Face: $detectedEmotionText",
-                                        color = Color.White,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 10.sp
                                     )
                                 }
                             }
@@ -2049,8 +2018,7 @@ fun MainScreen(
 fun CameraXInferenceView(
     gestureClassifier: GestureClassifier,
     selectedMode: String,
-    onGestureDetected: (String, Float) -> Unit,
-    onEmotionDetected: (String) -> Unit = {}
+    onGestureDetected: (String, Float) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -2058,15 +2026,11 @@ fun CameraXInferenceView(
     val previewView = remember { PreviewView(context) }
     val overlayView = remember { HandOverlayView(context) }
     val predictionWindow = remember { mutableListOf<String>() }
-    val emotionPredictionWindow = remember { mutableListOf<String>() }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
     LaunchedEffect(selectedMode) {
         synchronized(predictionWindow) {
             predictionWindow.clear()
-        }
-        synchronized(emotionPredictionWindow) {
-            emotionPredictionWindow.clear()
         }
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -2081,7 +2045,7 @@ fun CameraXInferenceView(
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
-            // Initialize MediaPipe Tasks HandLandmarker & FaceLandmarker
+            // Initialize MediaPipe Tasks HandLandmarker
             val handBaseOptions = BaseOptions.builder()
                 .setModelAssetPath("hand_landmarker.task")
                 .build()
@@ -2094,23 +2058,9 @@ fun CameraXInferenceView(
                 .setRunningMode(RunningMode.IMAGE)
                 .build()
 
-            val faceBaseOptions = BaseOptions.builder()
-                .setModelAssetPath("face_landmarker.task")
-                .build()
-
-            val faceOptions = FaceLandmarker.FaceLandmarkerOptions.builder()
-                .setBaseOptions(faceBaseOptions)
-                .setMinFaceDetectionConfidence(0.5f)
-                .setMinTrackingConfidence(0.5f)
-                .setNumFaces(1)
-                .setRunningMode(RunningMode.IMAGE)
-                .build()
-
             var handLandmarker: HandLandmarker? = null
-            var faceLandmarker: FaceLandmarker? = null
             try {
                 handLandmarker = HandLandmarker.createFromOptions(context, handOptions)
-                faceLandmarker = FaceLandmarker.createFromOptions(context, faceOptions)
             } catch (e: Exception) {
                 Log.e("CameraXInference", "MediaPipe task load error: ${e.message}")
             }
@@ -2120,81 +2070,8 @@ fun CameraXInferenceView(
                 if (bitmap != null) {
                     val mpImage = BitmapImageBuilder(bitmap).build()
                     val handResult: HandLandmarkerResult? = handLandmarker?.detect(mpImage)
-                    val faceResult: FaceLandmarkerResult? = faceLandmarker?.detect(mpImage)
 
                     try {
-                        var detectedFaceEmotion = "Neutral 😐"
-                        var currentDetectedFaceLandmarks = emptyList<com.google.mediapipe.tasks.components.containers.NormalizedLandmark>()
-
-                        if (faceResult != null && faceResult.faceLandmarks().isNotEmpty()) {
-                            val faceLms = faceResult.faceLandmarks()[0]
-                            currentDetectedFaceLandmarks = faceLms
-
-                            // MediaPipe 468 Face Mesh Landmarks:
-                            // #61 Left Lip Corner | #291 Right Lip Corner
-                            // #0 Upper Lip | #17 Lower Lip
-                            // #70 Left Inner Eyebrow | #300 Right Inner Eyebrow
-                            // #133 Left Eye Outer | #362 Right Eye Outer
-                            if (faceLms.size > 362) {
-                                val leftLip = faceLms[61]
-                                val rightLip = faceLms[291]
-                                val upperLip = faceLms[0]
-                                val lowerLip = faceLms[17]
-                                val leftEyebrow = faceLms[70]
-                                val rightEyebrow = faceLms[300]
-                                val leftEyeOuter = faceLms[133]
-                                val rightEyeOuter = faceLms[362]
-
-                                val faceWidth = kotlin.math.sqrt(
-                                    ((rightEyeOuter.x() - leftEyeOuter.x()) * (rightEyeOuter.x() - leftEyeOuter.x()) +
-                                     (rightEyeOuter.y() - leftEyeOuter.y()) * (rightEyeOuter.y() - leftEyeOuter.y())).toDouble()
-                                )
-
-                                val lipWidth = kotlin.math.sqrt(
-                                    ((rightLip.x() - leftLip.x()) * (rightLip.x() - leftLip.x()) +
-                                     (rightLip.y() - leftLip.y()) * (rightLip.y() - leftLip.y())).toDouble()
-                                )
-
-                                val mouthOpenDist = kotlin.math.sqrt(
-                                    ((lowerLip.x() - upperLip.x()) * (lowerLip.x() - upperLip.x()) +
-                                     (lowerLip.y() - upperLip.y()) * (lowerLip.y() - upperLip.y())).toDouble()
-                                )
-
-                                val eyebrowDist = kotlin.math.sqrt(
-                                    ((rightEyebrow.x() - leftEyebrow.x()) * (rightEyebrow.x() - leftEyebrow.x()) +
-                                     (rightEyebrow.y() - leftEyebrow.y()) * (rightEyebrow.y() - leftEyebrow.y())).toDouble()
-                                )
-
-                                val smileRatio = if (faceWidth > 0) lipWidth / faceWidth else 0.0
-                                val mouthOpenRatio = if (faceWidth > 0) mouthOpenDist / faceWidth else 0.0
-                                val eyebrowRatio = if (faceWidth > 0) eyebrowDist / faceWidth else 0.0
-
-                                // Calculate lip curvature (upward curvature for true smile)
-                                val lipCenterY = (upperLip.y() + lowerLip.y()) / 2.0f
-                                val lipCornersY = (leftLip.y() + rightLip.y()) / 2.0f
-                                val lipSmileCurvature = lipCenterY - lipCornersY // Positive when lip corners pull upwards
-
-                                detectedFaceEmotion = when {
-                                    smileRatio > 0.52 && lipSmileCurvature > 0.015 -> "Happy 😊"
-                                    mouthOpenRatio > 0.32 -> "Surprised 😲"
-                                    eyebrowRatio < 0.16 -> "Angry 😡"
-                                    else -> "Neutral 😐"
-                                }
-                            }
-                        }
-
-                        // Smooth emotion predictions across 15-frame sliding window to prevent instant flickers
-                        val smoothedEmotion: String
-                        synchronized(emotionPredictionWindow) {
-                            emotionPredictionWindow.add(detectedFaceEmotion)
-                            if (emotionPredictionWindow.size > 15) {
-                                emotionPredictionWindow.removeAt(0)
-                            }
-                            val emotionCounts = emotionPredictionWindow.groupingBy { it }.eachCount()
-                            val topEmotion = emotionCounts.maxByOrNull { it.value }
-                            smoothedEmotion = if (topEmotion != null && topEmotion.value >= 9) topEmotion.key else "Neutral 😐"
-                        }
-
                         if (handResult != null && handResult.landmarks().isNotEmpty() && handResult.landmarks()[0].size >= 21) {
                             val handLandmarks = handResult.landmarks()[0]
                             val wrist = handLandmarks[0]
@@ -2211,17 +2088,6 @@ fun CameraXInferenceView(
 
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
-                            val isGestureHappy = gesture.contains("Love", ignoreCase = true) || gesture.contains("Y", ignoreCase = true) || gesture.contains("V", ignoreCase = true) || gesture == "I"
-                            val isGestureConcerned = gesture.contains("Help", ignoreCase = true) || gesture.contains("Emergency", ignoreCase = true) || gesture == "S" || gesture == "T"
-                            val isGestureFocused = gesture.isNotEmpty() && gesture != "nothing" && gesture != "Detecting..." && !isGestureHappy && !isGestureConcerned
-
-                            val finalEmotion = when {
-                                smoothedEmotion != "Neutral 😐" -> smoothedEmotion
-                                isGestureHappy -> "Happy 😊"
-                                isGestureConcerned -> "Concerned 😟"
-                                isGestureFocused -> "Focused 🧐"
-                                else -> "Neutral 😐"
-                            }
 
                             // Add prediction to 25-frame sliding window (~0.8s) for ultra-stable steady gesture detection
                             synchronized(predictionWindow) {
@@ -2230,20 +2096,19 @@ fun CameraXInferenceView(
                                     predictionWindow.removeAt(0)
                                 }
                                 
-                                // Require gesture to be stable across at least 15 frames (>60% majority) to lock in prediction
+                                // Require gesture to be stable across at least 14 frames (>60% majority) to lock in prediction
                                 val counts = predictionWindow.groupingBy { it }.eachCount()
                                 val topGesture = counts.maxByOrNull { it.value }
                                 val mostFrequentGesture = if (topGesture != null && topGesture.value >= 14) topGesture.key else "Detecting..."
 
                                 ContextCompat.getMainExecutor(context).execute {
                                     onGestureDetected(mostFrequentGesture, confidence)
-                                    onEmotionDetected(finalEmotion)
                                 }
                             }
                             
-                            // Send 21 hand landmarks, face mesh landmarks, and rotation to overlay view for exact screen alignment
+                            // Send 21 hand landmarks and rotation to overlay view for exact screen alignment
                             ContextCompat.getMainExecutor(context).execute {
-                                overlayView.updateLandmarks(handLandmarks, rotationDegrees, currentDetectedFaceLandmarks)
+                                overlayView.updateLandmarks(handLandmarks, rotationDegrees)
                             }
                         } else {
                             synchronized(predictionWindow) {
@@ -2251,15 +2116,13 @@ fun CameraXInferenceView(
                             }
                             ContextCompat.getMainExecutor(context).execute {
                                 onGestureDetected("nothing", 1.0f)
-                                onEmotionDetected(smoothedEmotion)
-                                overlayView.updateLandmarks(emptyList(), imageProxy.imageInfo.rotationDegrees, currentDetectedFaceLandmarks)
+                                overlayView.updateLandmarks(emptyList(), imageProxy.imageInfo.rotationDegrees)
                             }
                         }
                     } catch (e: Exception) {
                         Log.e("CameraXInference", "Error analyzing landmarks: ${e.message}")
                         ContextCompat.getMainExecutor(context).execute {
                             onGestureDetected("nothing", 1.0f)
-                            onEmotionDetected("Neutral 😐")
                             overlayView.clear()
                         }
                     }
