@@ -1979,11 +1979,15 @@ fun CameraXInferenceView(
     val previewView = remember { PreviewView(context) }
     val overlayView = remember { HandOverlayView(context) }
     val predictionWindow = remember { mutableListOf<String>() }
+    val emotionPredictionWindow = remember { mutableListOf<String>() }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
     LaunchedEffect(selectedMode) {
         synchronized(predictionWindow) {
             predictionWindow.clear()
+        }
+        synchronized(emotionPredictionWindow) {
+            emotionPredictionWindow.clear()
         }
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -2092,12 +2096,24 @@ fun CameraXInferenceView(
                                 val lipSmileCurvature = lipCenterY - lipCornersY // Positive when lip corners pull upwards
 
                                 detectedFaceEmotion = when {
-                                    smileRatio > 0.49 && lipSmileCurvature > 0.008 -> "Happy 😊"
-                                    mouthOpenRatio > 0.22 -> "Surprised 😲"
-                                    eyebrowRatio < 0.19 -> "Angry 😡"
+                                    smileRatio > 0.52 && lipSmileCurvature > 0.015 -> "Happy 😊"
+                                    mouthOpenRatio > 0.32 -> "Surprised 😲"
+                                    eyebrowRatio < 0.16 -> "Angry 😡"
                                     else -> "Neutral 😐"
                                 }
                             }
+                        }
+
+                        // Smooth emotion predictions across 15-frame sliding window to prevent instant flickers
+                        val smoothedEmotion: String
+                        synchronized(emotionPredictionWindow) {
+                            emotionPredictionWindow.add(detectedFaceEmotion)
+                            if (emotionPredictionWindow.size > 15) {
+                                emotionPredictionWindow.removeAt(0)
+                            }
+                            val emotionCounts = emotionPredictionWindow.groupingBy { it }.eachCount()
+                            val topEmotion = emotionCounts.maxByOrNull { it.value }
+                            smoothedEmotion = if (topEmotion != null && topEmotion.value >= 9) topEmotion.key else "Neutral 😐"
                         }
 
                         if (handResult != null && handResult.landmarks().isNotEmpty() && handResult.landmarks()[0].size >= 21) {
@@ -2119,8 +2135,8 @@ fun CameraXInferenceView(
                             val isConcerned = gesture.contains("Help", ignoreCase = true) || gesture.contains("Emergency", ignoreCase = true)
                             val isFocused = gesture.isNotEmpty() && gesture != "nothing" && gesture != "Detecting..."
 
-                            val emotion = when {
-                                detectedFaceEmotion != "Neutral 😐" -> detectedFaceEmotion
+                            val finalEmotion = when {
+                                smoothedEmotion != "Neutral 😐" -> smoothedEmotion
                                 isConcerned -> "Concerned 😟"
                                 isFocused -> "Focused 🧐"
                                 else -> "Neutral 😐"
@@ -2140,7 +2156,7 @@ fun CameraXInferenceView(
 
                                 ContextCompat.getMainExecutor(context).execute {
                                     onGestureDetected(mostFrequentGesture, confidence)
-                                    onEmotionDetected(emotion)
+                                    onEmotionDetected(finalEmotion)
                                 }
                             }
                             
@@ -2154,7 +2170,7 @@ fun CameraXInferenceView(
                             }
                             ContextCompat.getMainExecutor(context).execute {
                                 onGestureDetected("nothing", 1.0f)
-                                onEmotionDetected(detectedFaceEmotion)
+                                onEmotionDetected(smoothedEmotion)
                                 overlayView.updateLandmarks(emptyList(), imageProxy.imageInfo.rotationDegrees, currentDetectedFaceLandmarks)
                             }
                         }
