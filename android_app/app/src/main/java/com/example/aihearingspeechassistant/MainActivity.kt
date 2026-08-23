@@ -206,87 +206,9 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var showProjectDetailsDialog by remember { mutableStateOf(false) }
 
-    var showSplashScreen by remember { mutableStateOf(true) }
     var activeBottomTab by remember { mutableStateOf("TRANSLATOR") } // Tabs: TRANSLATOR, LISTEN, DICTIONARY, EMOTIONS, SOS
     var isBanglaLanguage by remember { mutableStateOf(false) }
     var isDarkTheme by remember { mutableStateOf(true) }
-
-    LaunchedEffect(Unit) {
-        kotlinx.coroutines.delay(2200) // 2.2 seconds modern splash animation duration
-        showSplashScreen = false
-    }
-
-    if (showSplashScreen) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color(0xFF0F172A), Color(0xFF1E1B4B), Color(0xFF0284C7))
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(24.dp)
-            ) {
-                // Futuristic 3D Holographic Splash Emblem
-                Surface(
-                    shape = RoundedCornerShape(28.dp),
-                    color = Color(0x33FFFFFF),
-                    border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFF38BDF8)),
-                    shadowElevation = 16.dp,
-                    modifier = Modifier.size(140.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.splash_logo),
-                        contentDescription = "AI Sign Splash Emblem",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(12.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(28.dp))
-
-                Text(
-                    text = "AI Sign & Speech Assistant",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.White
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text(
-                    text = "Real-Time 3D Vision & Speech Synthesis Engine",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF93C5FD)
-                )
-
-                Spacer(modifier = Modifier.height(36.dp))
-
-                CircularProgressIndicator(
-                    color = Color(0xFF38BDF8),
-                    strokeWidth = 3.dp,
-                    modifier = Modifier.size(32.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Loading TensorFlow & MediaPipe Models...",
-                    fontSize = 11.sp,
-                    color = Color(0xFFCBD5E1),
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-    } else {
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -2041,7 +1963,6 @@ fun MainScreen(
                 }
             }
         )
-    }
     }
 }
 
