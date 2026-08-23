@@ -2132,13 +2132,15 @@ fun CameraXInferenceView(
 
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
-                            val isConcerned = gesture.contains("Help", ignoreCase = true) || gesture.contains("Emergency", ignoreCase = true)
-                            val isFocused = gesture.isNotEmpty() && gesture != "nothing" && gesture != "Detecting..."
+                            val isGestureHappy = gesture.contains("Love", ignoreCase = true) || gesture.contains("Y", ignoreCase = true) || gesture.contains("V", ignoreCase = true) || gesture == "I"
+                            val isGestureConcerned = gesture.contains("Help", ignoreCase = true) || gesture.contains("Emergency", ignoreCase = true) || gesture == "S" || gesture == "T"
+                            val isGestureFocused = gesture.isNotEmpty() && gesture != "nothing" && gesture != "Detecting..." && !isGestureHappy && !isGestureConcerned
 
                             val finalEmotion = when {
                                 smoothedEmotion != "Neutral 😐" -> smoothedEmotion
-                                isConcerned -> "Concerned 😟"
-                                isFocused -> "Focused 🧐"
+                                isGestureHappy -> "Happy 😊"
+                                isGestureConcerned -> "Concerned 😟"
+                                isGestureFocused -> "Focused 🧐"
                                 else -> "Neutral 😐"
                             }
 
