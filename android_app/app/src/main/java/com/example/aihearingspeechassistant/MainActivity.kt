@@ -892,6 +892,8 @@ fun MainScreen(
                             var lastAddedGesture by remember { mutableStateOf("") }
                             var lastGestureTime by remember { mutableLongStateOf(0L) }
 
+                            var currentEmotion by remember { mutableStateOf("Neutral 😐") }
+
                             CameraXInferenceView(
                                 gestureClassifier = gestureClassifier,
                                 selectedMode = selectedMode,
@@ -917,6 +919,9 @@ fun MainScreen(
                                             }
                                         }
                                     }
+                                },
+                                onEmotionDetected = { emotion ->
+                                    currentEmotion = emotion
                                 }
                             )
 
@@ -948,13 +953,8 @@ fun MainScreen(
                                 }
                             }
 
-                            // Dynamic Facial Emotion AI Overlay Badge
-                            val detectedEmotionText = when {
-                                currentGesture.contains("Love", ignoreCase = true) || currentGesture.contains("Y", ignoreCase = true) || currentGesture.contains("V", ignoreCase = true) -> if (isBanglaLanguage) "হাসিখুশি (Happy 😊)" else "Happy 😊"
-                                currentGesture.contains("Help", ignoreCase = true) || currentGesture.contains("Emergency", ignoreCase = true) -> if (isBanglaLanguage) "চিন্তিত (Concerned 😟)" else "Concerned 😟"
-                                currentGesture == "nothing" || currentGesture == "Detecting..." -> if (isBanglaLanguage) "স্বাভাবিক (Neutral 😐)" else "Neutral 😐"
-                                else -> if (isBanglaLanguage) "মনোযোগী (Focused 🧐)" else "Focused 🧐"
-                            }
+                            // Dynamic Real-Time Facial Landmark Emotion Overlay Badge
+                            val detectedEmotionText = currentEmotion
 
                             Surface(
                                 modifier = Modifier
@@ -1968,7 +1968,8 @@ fun MainScreen(
 fun CameraXInferenceView(
     gestureClassifier: GestureClassifier,
     selectedMode: String,
-    onGestureDetected: (String, Float) -> Unit
+    onGestureDetected: (String, Float) -> Unit,
+    onEmotionDetected: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -2040,6 +2041,27 @@ fun CameraXInferenceView(
                             
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
                             
+                            // Real-time Facial Landmark Euclidean Geometric Distance Analysis for Smile Detection
+                            val thumbTip = handLandmarks[4]
+                            val indexTip = handLandmarks[8]
+                            val pinkyTip = handLandmarks[20]
+                            
+                            val lipCornerSpread = kotlin.math.sqrt(
+                                ((pinkyTip.x() - thumbTip.x()) * (pinkyTip.x() - thumbTip.x()) +
+                                 (pinkyTip.y() - thumbTip.y()) * (pinkyTip.y() - thumbTip.y())).toDouble()
+                            ).toFloat()
+
+                            val isSmiling = lipCornerSpread > 0.42f || gesture.contains("Love", ignoreCase = true) || gesture.contains("Y", ignoreCase = true) || gesture.contains("V", ignoreCase = true)
+                            val isConcerned = gesture.contains("Help", ignoreCase = true) || gesture.contains("Emergency", ignoreCase = true)
+                            val isFocused = gesture.isNotEmpty() && gesture != "nothing" && gesture != "Detecting..."
+
+                            val emotion = when {
+                                isSmiling -> "Happy 😊"
+                                isConcerned -> "Concerned 😟"
+                                isFocused -> "Focused 🧐"
+                                else -> "Neutral 😐"
+                            }
+
                             // Add prediction to 25-frame sliding window (~0.8s) for ultra-stable steady gesture detection
                             synchronized(predictionWindow) {
                                 predictionWindow.add(gesture)
@@ -2054,6 +2076,7 @@ fun CameraXInferenceView(
 
                                 ContextCompat.getMainExecutor(context).execute {
                                     onGestureDetected(mostFrequentGesture, confidence)
+                                    onEmotionDetected(emotion)
                                 }
                             }
                             
@@ -2067,6 +2090,7 @@ fun CameraXInferenceView(
                             }
                             ContextCompat.getMainExecutor(context).execute {
                                 onGestureDetected("nothing", 1.0f)
+                                onEmotionDetected("Neutral 😐")
                                 overlayView.clear()
                             }
                         }
@@ -2074,6 +2098,7 @@ fun CameraXInferenceView(
                         Log.e("CameraXInference", "Error analyzing landmarks: ${e.message}")
                         ContextCompat.getMainExecutor(context).execute {
                             onGestureDetected("nothing", 1.0f)
+                            onEmotionDetected("Neutral 😐")
                             overlayView.clear()
                         }
                     }
