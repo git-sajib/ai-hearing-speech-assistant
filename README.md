@@ -1,6 +1,7 @@
 # AI-Driven Assistance for Hearing and Speech Impairments 🤟🤖
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Release v1.0.0](https://img.shields.io/badge/GitHub%20Release-v1.0.0--APK-success.svg)](https://github.com/git-sajib/ai-hearing-speech-assistant/releases/tag/v1.0.0)
 [![Android Kotlin](https://img.shields.io/badge/Android-Kotlin-purple.svg)](https://kotlinlang.org/)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4.svg)](https://developer.android.com/jetpack/compose)
 [![TensorFlow Lite](https://img.shields.io/badge/TensorFlow-Lite-FF6F00.svg)](https://www.tensorflow.org/lite)
