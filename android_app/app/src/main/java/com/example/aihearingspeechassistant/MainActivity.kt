@@ -970,7 +970,7 @@ fun MainScreen(
                                 .background(Color.Black)
                         ) {
                             var lastAddedGesture by remember { mutableStateOf("") }
-                            var lastGestureTime by remember { mutableLongStateOf(0L) }
+                            var hasCommittedCurrentGesture by remember { mutableStateOf(false) }
 
                             CameraXInferenceView(
                                 gestureClassifier = gestureClassifier,
@@ -980,9 +980,10 @@ fun MainScreen(
                                         currentGesture = gesture
                                         confidence = conf
 
-                                        val currentTime = System.currentTimeMillis()
                                         if (gesture != "nothing" && gesture != "Detecting...") {
-                                            if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 1200) {
+                                            // Strict Gesture Latch: Add letter only ONCE per physical sign hold.
+                                            // To add the same gesture again, user must either change gesture or lower/reset hand ("nothing")
+                                            if (!hasCommittedCurrentGesture || gesture != lastAddedGesture) {
                                                 if (gesture == "space") {
                                                     // Auto-Speak the last formed word when Space sign is made
                                                     val lastWord = translatedSentence.trim().split(" ").lastOrNull() ?: ""
@@ -998,9 +999,16 @@ fun MainScreen(
                                                     translatedSentence += gesture
                                                 }
                                                 lastAddedGesture = gesture
-                                                lastGestureTime = currentTime
+                                                hasCommittedCurrentGesture = true
                                             }
+                                        } else {
+                                            // Reset latch when hand is removed or idle so next gesture can be added fresh
+                                            hasCommittedCurrentGesture = false
+                                            lastAddedGesture = ""
                                         }
+                                    } else {
+                                        hasCommittedCurrentGesture = false
+                                        lastAddedGesture = ""
                                     }
                                 }
                             )
@@ -1034,13 +1042,55 @@ fun MainScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        // Yellow Active Live Letter Bar (Like Friend's App UI)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = if (currentGesture != "nothing" && currentGesture != "Detecting...") currentGesture else "_",
+                                    color = Color(0xFFF59E0B), // Vibrant Amber Yellow Highlight
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Black
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .height(3.dp)
+                                        .width(40.dp)
+                                        .background(Color(0xFFF59E0B), RoundedCornerShape(2.dp))
+                                )
+                            }
+
+                            // Quick Action Clear All Button
+                            Surface(
+                                onClick = { translatedSentence = "" },
+                                shape = RoundedCornerShape(12.dp),
+                                color = if (isDarkTheme) Color(0xFF334155) else Color(0xFFE2E8F0)
+                            ) {
+                                Text(
+                                    text = if (isBanglaLanguage) "সব মুছুন" else "Clear All",
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569),
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
 
                         // Compact Text Translation Output Card with Light/Dark Theme Adaptation
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(115.dp),
+                                .height(110.dp),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
                             border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0x33818CF8) else Color(0xFFCBD5E1)),

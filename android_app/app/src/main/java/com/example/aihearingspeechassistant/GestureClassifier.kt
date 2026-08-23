@@ -142,8 +142,14 @@ class GestureClassifier(private val context: Context) {
                 predictedLabel = digitLabelsMap[idx] ?: "0"
             }
         } else {
-            // Precision Geometric Rules for ASL Alphabets (A-Z)
-            if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist < 0.25) {
+            // Precision Geometric Rules for ASL Alphabets (A-Z, Space, Del)
+            if (indexExtendDist > 0.32 && middleExtendDist > 0.32 && ringExtendDist > 0.32 && pinkyExtendDist > 0.32 && thumbExtendDist > 0.32) {
+                // Space: All 5 fingers fully spread open hand
+                predictedLabel = "space"
+            } else if (thumbIndexDist < 0.14 && indexExtendDist < 0.26 && middleExtendDist < 0.26 && ringExtendDist < 0.26 && pinkyExtendDist < 0.26) {
+                // O: All fingertips meeting thumb tip in a circular O shape
+                predictedLabel = "O"
+            } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist > 0.30 && pinkyExtendDist < 0.25) {
                 // W: Index, Middle, Ring extended, Pinky tucked
                 predictedLabel = "W"
             } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && indexMiddleDist > 0.12) {
@@ -159,7 +165,7 @@ class GestureClassifier(private val context: Context) {
                 // B: 4 fingers extended together, Thumb tucked
                 predictedLabel = "B"
             } else if (indexExtendDist > 0.30 && pinkyExtendDist > 0.30 && middleExtendDist < 0.25 && ringExtendDist < 0.25) {
-                // Y: Thumb & Pinky (or Index & Pinky ILY) extended
+                // Y: Thumb & Pinky extended
                 predictedLabel = "Y"
             } else if (indexExtendDist > 0.30 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && thumbMiddleDist < 0.18) {
                 // D: Index extended, Thumb touches Middle
