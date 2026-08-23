@@ -216,22 +216,23 @@ fun MainScreen(
                 drawerContentColor = if (isDarkTheme) Color.White else Color(0xFF0F172A),
                 modifier = Modifier.width(320.dp)
             ) {
+                // Compact Drawer Padding Adjustment
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(20.dp)
+                        .padding(14.dp)
                 ) {
                     // Drawer Top Bar with Close (X) Button
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 12.dp),
+                            .padding(bottom = 6.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = if (isBanglaLanguage) "প্রজেক্ট মেনু ও নেভিগেশন" else "PROJECT NAVIGATION",
-                            color = Color(0xFF64748B),
+                            color = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -241,7 +242,7 @@ fun MainScreen(
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = "Close Drawer",
-                                tint = Color(0xFF94A3B8)
+                                tint = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569)
                             )
                         }
                     }
@@ -250,8 +251,8 @@ fun MainScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 12.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                            .padding(bottom = 8.dp)
+                            .clip(RoundedCornerShape(14.dp))
                             .background(
                                 Brush.verticalGradient(
                                     colors = listOf(
@@ -261,33 +262,33 @@ fun MainScreen(
                                     )
                                 )
                             )
-                            .border(1.dp, Color(0x44818CF8), RoundedCornerShape(16.dp))
+                            .border(1.dp, Color(0x44818CF8), RoundedCornerShape(14.dp))
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp),
+                                .padding(8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Surface(
                                 shape = CircleShape,
                                 color = Color.White,
-                                modifier = Modifier.size(56.dp),
+                                modifier = Modifier.size(46.dp),
                                 shadowElevation = 6.dp
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.bup_logo),
                                     contentDescription = "Round Official BUP Emblem Crest Logo",
                                     modifier = Modifier
-                                        .padding(3.dp)
+                                        .padding(2.dp)
                                         .fillMaxSize()
                                 )
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = if (isBanglaLanguage) "বাংলাদেশ ইউনিভার্সিটি অব প্রফেশনালস" else "Bangladesh University of Professionals",
                                 color = Color(0xFFA5B4FC),
-                                fontSize = 11.sp,
+                                fontSize = 10.5.sp,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1
                             )
@@ -295,14 +296,14 @@ fun MainScreen(
                             Text(
                                 text = if (isBanglaLanguage) "বাক ও শ্রবণপ্রতিবন্ধীদের জন্য এআই সহকারী" else "AI-Driven Assistance for Hearing & Speech Impairments",
                                 color = Color.White,
-                                fontSize = 11.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = if (isBanglaLanguage) "আইসিটি বিভাগ, এফএসটি, বিইউপি" else "Dept of ICT, FST, BUP",
                                 color = Color(0xFF38BDF8),
-                                fontSize = 10.sp,
+                                fontSize = 9.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -311,16 +312,16 @@ fun MainScreen(
                     // bKash-Inspired Circular Quick Feature Grid Shortcuts in Drawer
                     Text(
                         text = if (isBanglaLanguage) "দ্রুত নেভিগেশন শর্টকাট" else "QUICK NAVIGATION SHORTCUTS",
-                        color = Color(0xFF64748B),
-                        fontSize = 11.sp,
+                        color = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569),
+                        fontSize = 10.5.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.padding(vertical = 4.dp)
                     )
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 4.dp),
+                            .padding(vertical = 2.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         val shortcuts = listOf(
@@ -340,26 +341,26 @@ fun MainScreen(
                                         activeBottomTab = tabKey
                                         scope.launch { drawerState.close() }
                                     }
-                                    .padding(4.dp)
+                                    .padding(2.dp)
                             ) {
                                 Surface(
                                     shape = CircleShape,
                                     color = if (isSelected) accentColor.copy(alpha = 0.25f) else (if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFE2E8F0)),
                                     border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) accentColor else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
-                                    modifier = Modifier.size(54.dp),
-                                    shadowElevation = if (isSelected) 8.dp else 2.dp
+                                    modifier = Modifier.size(46.dp),
+                                    shadowElevation = if (isSelected) 6.dp else 1.dp
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(imageVector = icon, contentDescription = label, tint = if (isSelected) (if (isDarkTheme) Color.White else accentColor) else accentColor, modifier = Modifier.size(24.dp))
+                                        Icon(imageVector = icon, contentDescription = label, tint = if (isSelected) (if (isDarkTheme) Color.White else accentColor) else accentColor, modifier = Modifier.size(20.dp))
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(label, color = if (isSelected) accentColor else (if (isDarkTheme) Color.White else Color(0xFF0F172A)), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(label, color = if (isSelected) accentColor else (if (isDarkTheme) Color.White else Color(0xFF0F172A)), fontSize = 9.5.sp, fontWeight = FontWeight.ExtraBold)
                             }
                         }
                     }
 
-                    HorizontalDivider(color = if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1), modifier = Modifier.padding(vertical = 10.dp))
+                    HorizontalDivider(color = if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1), modifier = Modifier.padding(vertical = 6.dp))
 
                     // Persistent User Profile & Guardian Emergency Contact
                     val profilePrefs = remember { context.getSharedPreferences("user_profile_pref", Context.MODE_PRIVATE) }
@@ -375,47 +376,47 @@ fun MainScreen(
                         Text(
                             text = if (isBanglaLanguage) "ব্যবহারকারীর প্রোফাইল ও অভিভাবক" else "USER PROFILE & GUARDIAN",
                             color = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF475569),
-                            fontSize = 11.sp,
+                            fontSize = 10.5.sp,
                             fontWeight = FontWeight.Bold
                         )
                         IconButton(
                             onClick = { showProfileDialog = true },
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.size(24.dp)
                         ) {
-                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile", tint = Color(0xFF0284C7), modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile", tint = Color(0xFF0284C7), modifier = Modifier.size(14.dp))
                         }
                     }
 
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 6.dp),
-                        shape = RoundedCornerShape(14.dp),
+                            .padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFFFFFF)),
                         border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkTheme) Color(0xFF6366F1).copy(alpha = 0.4f) else Color(0xFF0284C7).copy(alpha = 0.4f))
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(10.dp),
+                                .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Surface(
                                 shape = CircleShape,
                                 color = Color(0xFF4F46E5),
-                                modifier = Modifier.size(38.dp)
+                                modifier = Modifier.size(34.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Person, contentDescription = "User", tint = Color.White, modifier = Modifier.size(20.dp))
+                                    Icon(Icons.Default.Person, contentDescription = "User", tint = Color.White, modifier = Modifier.size(18.dp))
                                 }
                             }
-                            Spacer(modifier = Modifier.width(10.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Column {
-                                Text(userName, color = if (isDarkTheme) Color.White else Color(0xFF0F172A), fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Text(userName, color = if (isDarkTheme) Color.White else Color(0xFF0F172A), fontWeight = FontWeight.Bold, fontSize = 11.5.sp)
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.ContactEmergency, contentDescription = "Guardian", tint = Color(0xFFDC2626), modifier = Modifier.size(12.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Emergency: $guardianPhone", color = if (isDarkTheme) Color(0xFFFCA5A5) else Color(0xFF991B1B), fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                                    Icon(Icons.Default.ContactEmergency, contentDescription = "Guardian", tint = Color(0xFFDC2626), modifier = Modifier.size(11.dp))
+                                    Spacer(modifier = Modifier.width(3.dp))
+                                    Text("Emergency: $guardianPhone", color = if (isDarkTheme) Color(0xFFFCA5A5) else Color(0xFF991B1B), fontSize = 9.5.sp, fontWeight = FontWeight.SemiBold)
                                 }
                             }
                         }
@@ -1351,13 +1352,13 @@ fun MainScreen(
                                 Surface(
                                     onClick = { filterCategory = catKey },
                                     shape = RoundedCornerShape(20.dp),
-                                    color = if (isSelected) Color(0xFF4F46E5) else Color(0xFF1E293B).copy(alpha = 0.7f),
-                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color(0xFF818CF8) else Color(0xFF334155)),
+                                    color = if (isSelected) Color(0xFF4F46E5) else (if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.7f) else Color(0xFFE2E8F0)),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color(0xFF818CF8) else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                     shadowElevation = if (isSelected) 8.dp else 0.dp
                                 ) {
                                     Text(
                                         text = catLabel,
-                                        color = if (isSelected) Color.White else Color(0xFF94A3B8),
+                                        color = if (isSelected) Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF334155)),
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.ExtraBold,
                                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
@@ -1841,15 +1842,15 @@ fun MainScreen(
                                 Surface(
                                     onClick = { selectedEmotionCategory = catKey },
                                     shape = RoundedCornerShape(20.dp),
-                                    color = if (isSelected) catColor else Color(0xFF1E293B).copy(alpha = 0.7f),
-                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color.White else Color(0xFF334155)),
+                                    color = if (isSelected) catColor else (if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.7f) else Color(0xFFE2E8F0)),
+                                    border = androidx.compose.foundation.BorderStroke(1.5.dp, if (isSelected) Color.White else (if (isDarkTheme) Color(0xFF334155) else Color(0xFFCBD5E1))),
                                     modifier = Modifier.weight(1f),
                                     shadowElevation = if (isSelected) 8.dp else 0.dp
                                 ) {
                                     Box(modifier = Modifier.padding(vertical = 10.dp), contentAlignment = Alignment.Center) {
                                         Text(
                                             text = catLabel,
-                                            color = Color.White,
+                                            color = if (isSelected) Color.White else (if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF334155)),
                                             fontSize = 11.sp,
                                             fontWeight = FontWeight.ExtraBold
                                         )
