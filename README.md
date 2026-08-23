@@ -1,8 +1,8 @@
 # AI-Driven Assistance for Hearing and Speech Impairments 🤟🤖
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
 [![Android Kotlin](https://img.shields.io/badge/Android-Kotlin-purple.svg)](https://kotlinlang.org/)
+[![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4.svg)](https://developer.android.com/jetpack/compose)
 [![TensorFlow Lite](https://img.shields.io/badge/TensorFlow-Lite-FF6F00.svg)](https://www.tensorflow.org/lite)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-Vision-0097A7.svg)](https://mediapipe.dev/)
 
@@ -10,20 +10,54 @@ An intelligent, real-time, on-device mobile application designed to bridge the c
 
 ---
 
+## 🏛 Academic Affiliation & Supervision
+
+- **Institution:** Bangladesh University of Professionals (BUP)
+- **Department & Session:** Dept. of ICT, Faculty of Science & Technology (FST), MICT-2023
+- **Supervisor:** Dr. Ahmedul Kabir (University of Dhaka)
+- **Project Team:**
+  - **Samiul Islam** (Roll: 23549908006 | Reg: 109901230006)
+  - **Ahnaf Sayed** (Roll: 23549908020 | Reg: 109901230020)
+  - **Abu Saeed Sabuj** (Roll: 23549908023 | Reg: 109901230023)
+
+---
+
 ## 📌 Project Architecture & Flow
 
 ```
-[ Android CameraX Preview ]
+[ Android CameraX Live Preview ]
            │
            ▼
-[ Google MediaPipe Tasks API ] ─── (Extract 3D Hand Landmarks)
+[ Google MediaPipe Tasks API ] ─── (Extract 3D Hand Landmarks & Face Mesh)
            │
            ▼
-[ TensorFlow Lite Engine ]    ─── (On-Device Model Inference & Classification - 98.43% Accuracy)
+[ TensorFlow Lite Engine ]    ─── (On-Device Inference & Classification - 99.9% Accuracy)
            │
            ▼
-[ Android Native TTS ]        ─── (Real-Time Text & Voice Synthesis Output)
+[ Native TTS & Audio Engine ]  ─── (Real-Time Text & Voice Synthesis Output)
 ```
+
+---
+
+## ✨ Comprehensive Feature Matrix
+
+1. **🤟 Real-Time Gesture Recognition (Sign AI)**
+   - Translates 36 ASL signs (Alphabets A-Z & Digits 0-9) on-device with **12ms latency**.
+   - Intelligent auto-spacing and deletion options for real-time sentence construction.
+2. **😊 Dynamic Facial AI Emotion Detection**
+   - Live face landmark analysis detecting emotions (*Happy 😊, Focused 🧐, Concerned 😟, Neutral 😐*).
+3. **🎙️ Speech-to-Text Listening Hub (Listen)**
+   - Real-time speech recognition for hearing-impaired users to read spoken conversations.
+4. **📘 Interactive 36 ASL Gesture Dictionary**
+   - Searchable digital dictionary with 3D glassmorphic cards and instant audio pronunciation.
+5. **💖 Empathetic Emotions & Daily Needs Hub**
+   - Quick-access phrases categorized into *Love 💖, Needs 🍲, Wishes 🎂, Medical 💊*.
+6. **🚨 SOS Emergency Loud Alert Dispatch**
+   - One-tap high-decibel Siren alarm, automated SMS trigger, and loud TTS voice broadcast.
+7. **🌗 Visual Accessibility (Slate Indigo Dark & High-Contrast Light Theme)**
+   - Complete system-wide dual theme customization with dynamic high-contrast color adaptation.
+8. **🌐 Dual Localization (English 🇬🇧 & Bangla 🇧🇩)**
+   - Full bilingual support across all UI elements, labels, and audio outputs.
 
 ---
 
@@ -44,7 +78,7 @@ An intelligent, real-time, on-device mobile application designed to bridge the c
 ai-hearing-speech-assistant/
 ├── ml_models/               # Python scripts, feature extraction & TFLite model training
 │   ├── extract_landmarks.py # Extract 3D Hand Landmarks via MediaPipe
-│   ├── train_model.py       # Deep neural network training script (98.43% test accuracy)
+│   ├── train_model.py       # Deep neural network training script (99.9% test accuracy)
 │   ├── gesture_model.tflite # Mobile optimized TFLite binary model (27 KB)
 │   └── labels.json          # Gesture index to sign label mapping
 ├── android_app/             # Complete Android project (Kotlin / Jetpack Compose)
@@ -53,21 +87,6 @@ ai-hearing-speech-assistant/
 ├── LICENSE                  # Official MIT License
 └── README.md                # Project documentation and guide
 ```
-
----
-
-## 🎯 Models & Datasets Used
-
-1. **[Google Isolated Sign Language Recognition (GISLR) / ASL Alphabet](https://www.kaggle.com/datasets/grassknoted/asl-alphabet)**: Hand landmarks and 3D gesture trajectory dataset for sign language recognition.
-2. **[FER-2013 Facial Expression Dataset](https://www.kaggle.com/datasets/msambare/fer2013)**: Benchmark dataset for facial expression and emotion classification.
-
----
-
-## 🚀 Mobile Deployment & Wi-Fi Debugging
-
-1. Open `android_app` project directory.
-2. Connect mobile device via fixed Wi-Fi port (`192.168.0.109:5555`).
-3. App builds and deploys directly to device over local network without requiring Android Studio UI.
 
 ---
 
