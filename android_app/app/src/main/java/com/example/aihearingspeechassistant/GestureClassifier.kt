@@ -107,6 +107,7 @@ class GestureClassifier(private val context: Context) {
                 val idx = (Math.abs(thumbIndexDist * 100 + indexPinkyDist * 50).toInt()) % (digitLabelsMap.size.takeIf { it > 0 } ?: 10)
                 predictedLabel = digitLabelsMap[idx] ?: "0"
             }
+        } else {
             // Precision Geometric Rules matching official ASL Alphabet dataset
             val isFistClenched = indexExtendDist < 0.25 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25
 
