@@ -107,24 +107,31 @@ class GestureClassifier(private val context: Context) {
                 val idx = (Math.abs(thumbIndexDist * 100 + indexPinkyDist * 50).toInt()) % (digitLabelsMap.size.takeIf { it > 0 } ?: 10)
                 predictedLabel = digitLabelsMap[idx] ?: "0"
             }
-        } else {
             // Precision Geometric Rules matching official ASL Alphabet dataset
-            val isFistClenched = indexExtendDist < 0.23 && middleExtendDist < 0.23 && ringExtendDist < 0.23 && pinkyExtendDist < 0.23
+            val isFistClenched = indexExtendDist < 0.25 && middleExtendDist < 0.25 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25
 
             if (indexExtendDist > 0.32 && middleExtendDist > 0.32 && ringExtendDist > 0.32 && pinkyExtendDist > 0.32 && thumbExtendDist > 0.32) {
+                // Space: All 5 fingers fully spread open hand
                 predictedLabel = "space"
-            } else if (isFistClenched && thumbTipY > wristY + 0.05) {
-                predictedLabel = "del"
             } else if (pinkyExtendDist > 0.26 && indexExtendDist < 0.26 && middleExtendDist < 0.26 && ringExtendDist < 0.26) {
+                // I / J: Pinky finger extended up
                 val pinkyTilt = Math.abs(pinkyTipX - wristX)
                 if (pinkyTilt > 0.10) {
                     predictedLabel = "J"
                 } else {
                     predictedLabel = "I"
                 }
-            } else if (isFistClenched && thumbIndexDist < 0.16) {
+            } else if (isFistClenched && thumbTipY > wristY + 0.08) {
+                // DEL (Delete): Thumbs Down - Fist with Thumb pointing strictly DOWNWARDS below wrist
+                predictedLabel = "del"
+            } else if (isFistClenched && (thumbTipX - wristX) > 0.12 && thumbExtendDist > 0.20) {
+                // A: Fist with Thumb resting UP/OUTSIDE along the side of index finger (NOT folded over)
+                predictedLabel = "A"
+            } else if (isFistClenched && thumbIndexDist < 0.15) {
+                // S: Solid Clenched Fist with Thumb folded OVER index & middle fingers
                 predictedLabel = "S"
-            } else if (!isFistClenched && thumbIndexDist < 0.14 && indexExtendDist < 0.28 && middleExtendDist < 0.28 && pinkyExtendDist < 0.25) {
+            } else if (!isFistClenched && thumbIndexDist < 0.16 && indexExtendDist < 0.28 && middleExtendDist < 0.28) {
+                // O: Hollow curved finger aperture where index/middle tips curve down to meet thumb tip
                 predictedLabel = "O"
             } else if (indexExtendDist > 0.30 && middleExtendDist > 0.30 && ringExtendDist < 0.25 && pinkyExtendDist < 0.25 && indexMiddleDist > 0.12) {
                 predictedLabel = "V"
