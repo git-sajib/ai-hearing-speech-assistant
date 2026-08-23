@@ -982,8 +982,13 @@ fun MainScreen(
 
                                         val currentTime = System.currentTimeMillis()
                                         if (gesture != "nothing" && gesture != "Detecting...") {
-                                            if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 2200) {
+                                            if (gesture != lastAddedGesture || (currentTime - lastGestureTime) > 1200) {
                                                 if (gesture == "space") {
+                                                    // Auto-Speak the last formed word when Space sign is made
+                                                    val lastWord = translatedSentence.trim().split(" ").lastOrNull() ?: ""
+                                                    if (lastWord.isNotEmpty()) {
+                                                        onSpeakText(lastWord)
+                                                    }
                                                     translatedSentence += " "
                                                 } else if (gesture == "del") {
                                                     if (translatedSentence.isNotEmpty()) {
@@ -2089,17 +2094,17 @@ fun CameraXInferenceView(
                             val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                             val (gesture, confidence) = gestureClassifier.classify(floatLandmarks, selectedMode)
 
-                            // Add prediction to 25-frame sliding window (~0.8s) for ultra-stable steady gesture detection
+                            // Add prediction to 8-frame sliding window (~0.25s) for instant super-fast gesture detection
                             synchronized(predictionWindow) {
                                 predictionWindow.add(gesture)
-                                if (predictionWindow.size > 25) {
+                                if (predictionWindow.size > 8) {
                                     predictionWindow.removeAt(0)
                                 }
                                 
-                                // Require gesture to be stable across at least 14 frames (>60% majority) to lock in prediction
+                                // Require gesture to be stable across at least 5 frames to lock in prediction instantly
                                 val counts = predictionWindow.groupingBy { it }.eachCount()
                                 val topGesture = counts.maxByOrNull { it.value }
-                                val mostFrequentGesture = if (topGesture != null && topGesture.value >= 14) topGesture.key else "Detecting..."
+                                val mostFrequentGesture = if (topGesture != null && topGesture.value >= 5) topGesture.key else "Detecting..."
 
                                 ContextCompat.getMainExecutor(context).execute {
                                     onGestureDetected(mostFrequentGesture, confidence)
